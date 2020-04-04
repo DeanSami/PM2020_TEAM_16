@@ -21,7 +21,7 @@ pipeline {
             }
             steps {
                 sh 'npm install && cd frontend && npm install && npm run lint'
-                echo 'finish test'
+                echo 'finished test'
             }
         }
     }
