@@ -7,14 +7,28 @@ router.use(function adminLog (req, res, next) {
     next()
 })
 
-router.use(function adminLog (req, res, next) {
+router.use(function isAdmin (req, res, next) {
     if (req.originalUrl != '/admin/login') {
-        console.log(JSON.stringify(req.headers)['accept'])
+        console.log(JSON.stringify(req.headers))
     }
     next()
 })
 
 router.post('/dog_parks/add', function (req, res) {
+    console.log('<LOG> - Admin Add New Park Dog')
+
+    const { 
+        name, 
+        SHAPE_Leng, 
+        SHAPE_Area, 
+        street, 
+        house_number, 
+        neighborhood, 
+        operator, 
+        handicapped, 
+        condition 
+    } = req.body
+
     //......
     // validate admin
     // connect db
