@@ -3,7 +3,7 @@ const app = require('../index');
 
 describe('Index Endpoint', () => {
     it('should return hello world message', done => {
-        request(app.app)
+        request(app)
         .get('/')
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
@@ -16,4 +16,4 @@ describe('Index Endpoint', () => {
     })
 })
 
-app.app.close();
+app.close();
