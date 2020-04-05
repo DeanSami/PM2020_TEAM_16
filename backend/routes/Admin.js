@@ -1,8 +1,8 @@
-var express = require('express');
-const db = require('../db-connect');
+var express = require('express')
+const db = require('../db-connect')
 const globals = require('../globals')
-var router = express.Router();
-var hat = require('hat');
+var router = express.Router()
+var hat = require('hat')
 
 router.use(function adminLog (req, res, next) {
     console.log('<LOG> -', new Date().toUTCString());
@@ -21,7 +21,7 @@ router.use(function isAdmin (req, res, next) {
                 res.json(globals.messages.failure)
             }
         })
-    } 
+    }
     next()
 });
 
@@ -80,6 +80,19 @@ router.post('/login', function (req, res) {
             res.statusCode = 401
             res.json(globals.messages.failure)
         }
+    })
+});
+
+router.get('/login', function (req, res) {
+    console.log('<LOG> - Admin Login');
+    const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
+    db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ?', [incoming_token], function(err, result) {
+        if (err) console.error(err)
+        delete result[0].password
+        res.json({
+            status: true,
+            user: result[0]
+        })
     })
 });
 
