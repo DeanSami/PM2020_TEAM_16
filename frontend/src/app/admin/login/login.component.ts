@@ -30,24 +30,39 @@ export class LoginComponent implements OnInit {
   }
 
   form = new FormGroup({
-    username: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required]),
+    phone: new FormControl('', [
+      Validators.required,
+      Validators.minLength(10),
+      Validators.maxLength(15)
+    ]),
+    pass: new FormControl('',
+      [
+        Validators.required,
+        Validators.minLength(6),
+        Validators.maxLength(50)
+      ]),
   });
 
-  get username() {
-    return this.form.get('username');
+  get phone() {
+    return this.form.get('phone');
   }
 
-  get password() {
-    return this.form.get('password');
+  get pass() {
+    return this.form.get('pass');
+  }
+
+  setLogin() {
+    if (this.form.invalid) {
+      this.toastr.error('חובה למלא את כל השדות');
+      return;
+    }
+    this.login();
   }
 
   login() {
     this.loadingService.loading.next(true);
-    this.userService.login('0666', 'admin').then(() => {
-
+    this.userService.login(this.phone.value, this.pass.value).then(() => {
       this.router.navigate(['/admin/dashboard']).then(() => {
-        console.log('login');
         setTimeout(() => this.close = true, 400);
       });
     }, () => {

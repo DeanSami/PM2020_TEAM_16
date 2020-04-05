@@ -7,9 +7,6 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
-  public menuSetting = {
-    matches: true
-  };
   opened = true;
   mode = new FormControl('push');
 

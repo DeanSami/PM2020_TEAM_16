@@ -4,6 +4,7 @@ import { LocalStorage } from 'ngx-store';
 import { ApiProviderService } from '../../services/api-provider.service';
 import { Router } from '@angular/router';
 import { User } from '../../models/users';
+import { LoginResponse } from '../../models/Responses';
 
 @Injectable({
   providedIn: 'root'
@@ -22,27 +23,34 @@ export class AuthService {
     this._token = token;
   }
 
-  constructor(private api: ApiProviderService, private router: Router) { }
+  constructor(private api: ApiProviderService, private router: Router) {
+    this.api.token = this._token;
+  }
 
   login(phone?: string, pass?: string) {
     return new Promise((resolve, reject) => {
       if (phone && pass) {
         console.log('auth');
-        this.api.post('admin/login', { phone, pass }).subscribe((response: { user: User, message: string }) => {
-          this.loggedIn = true;
-          // this.token = response.token;
-          this.currentUser.next(response.user);
-          resolve(this.loggedIn);
+        this.api.post('admin/login', { phone, pass }).subscribe((response: LoginResponse) => {
+          if (response.status) {
+            this.loggedIn = response.status;
+            this.token = response.token;
+            this.currentUser.next(response.user);
+            resolve(this.loggedIn);
+          }
+          reject(false);
         }, err => {
           this.logout();
           reject(err);
         });
       } else if (this.token) {
-        console.log('check', this.token);
-        this.api.get('admin/login').subscribe((user: User) => {
-          this.loggedIn = true;
-          this.currentUser.next(user);
-          resolve(this.loggedIn);
+        this.api.get('admin/login').subscribe((response: LoginResponse) => {
+          if (response.status) {
+            this.loggedIn = response.status;
+            this.currentUser.next(response.user);
+            resolve(this.loggedIn);
+          }
+          reject(false);
         }, err => {
           this.loggedIn = false;
           this.currentUser.next(null);
