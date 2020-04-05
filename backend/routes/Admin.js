@@ -16,31 +16,34 @@ router.use(function isAdmin (req, res, next) {
             if (err) console.error(err)
             if (result.length > 0) {
                 next()
-            } else
+            } else {
+                res.statusCode = 401
                 res.json(globals.messages.failure)
+            }
         })
-    } else
-        res.json(globals.messages.failure)
+    } 
+    next()
 });
 
 router.post('/dog_parks/add', function (req, res) {
     console.log('<LOG> - Admin Add New Park Dog')
 
     const {
+        type,
         name, 
         SHAPE_Leng, 
         SHAPE_Area, 
-        street, 
-        house_number, 
-        neighborhood, 
-        operator, 
-        handicapped, 
-        condition 
+        street,
+        house_number,
+        neighborhood,
+        operator,
+        handicapped,
+        condition
     } = req.body.user_input
 
-    var values = [[name, SHAPE_Leng, SHAPE_Area, street, house_number, neighborhood, operator, handicapped, condition]]
-
-    db.query('INSERT INTO places(name,SHAPE_Leng,SHAPE_Area,street,house_number,neighborhood,operator,handicapped,condition) VALUES ?', [values], function (err, result) {
+    var values = [[type, name, SHAPE_Leng, SHAPE_Area, street, house_number, neighborhood, operator, handicapped, condition]]
+    var sql = 'INSERT INTO places(type,name,SHAPE_Leng,SHAPE_Area,street,house_number,neighborhood,operator,handicapped,condition) VALUES (0, dean,a,a,a,a,a,a,0,0)'
+    db.query(sql, function (err, result) {
         if (err) {
             console.error(err)
             res.json(globals.messages.failure)
@@ -51,7 +54,6 @@ router.post('/dog_parks/add', function (req, res) {
         })
     })
     
-    res.json(globals.messages.failure);
 });
 
 router.post('/login', function (req, res) {
@@ -75,6 +77,7 @@ router.post('/login', function (req, res) {
                 user: result[0]
             })
         } else {
+            res.statusCode = 401
             res.json(globals.messages.failure)
         }
     })
