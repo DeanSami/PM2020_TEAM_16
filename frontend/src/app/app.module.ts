@@ -27,6 +27,7 @@ import { ApiProviderService } from './services/api-provider.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { NewDogParkComponent } from './admin/new-dog-park/new-dog-park.component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { NewDogParkComponent } from './admin/new-dog-park/new-dog-park.component
     AdminComponent,
     SidebarComponent,
     LoginComponent,
-    NewDogParkComponent
+    NewDogParkComponent,
+    AdminDashboardComponent
   ],
   imports: [
     HttpClientModule,
