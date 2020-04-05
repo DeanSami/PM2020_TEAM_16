@@ -16,11 +16,13 @@ router.use(function isAdmin (req, res, next) {
             if (err) console.error(err)
             if (result.length > 0) {
                 next()
-            } else
+            } else {
+                res.statusCode = 401
                 res.json(globals.messages.failure)
+            }
         })
-    } else
-        res.json(globals.messages.failure)
+    } 
+    next()
 });
 
 router.post('/dog_parks/add', function (req, res) {
@@ -75,7 +77,7 @@ router.post('/login', function (req, res) {
                 user: result[0]
             })
         } else {
-            res.statusCode(401)
+            res.statusCode = 401
             res.json(globals.messages.failure)
         }
     })
