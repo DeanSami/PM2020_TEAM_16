@@ -10,8 +10,8 @@ router.use(function adminLog (req, res, next) {
 });
 
 router.use(function isAdmin (req, res, next) {
-    if (req.originalUrl != '/admin/login') {
-        const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
+    const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
+    if (incoming_token) {
         db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ? AND user_type = ?', [incoming_token, globals.user_types.admin], function (err, result) {
             if (err) console.error(err)
             if (result.length > 0) {
@@ -21,8 +21,11 @@ router.use(function isAdmin (req, res, next) {
                 res.json(globals.messages.failure)
             }
         })
+    } else {
+        res.statusCode = 401
+        res.json(globals.messages.failure)
     }
-    next()
+        
 });
 
 router.post('/dog_parks/add', function (req, res) {
@@ -41,17 +44,16 @@ router.post('/dog_parks/add', function (req, res) {
         condition
     } = req.body.user_input
 
-    var values = [[type, name, SHAPE_Leng, SHAPE_Area, street, house_number, neighborhood, operator, handicapped, condition]]
-    var sql = 'INSERT INTO places(type,name,SHAPE_Leng,SHAPE_Area,street,house_number,neighborhood,operator,handicapped,condition) VALUES (0, dean,a,a,a,a,a,a,0,0)'
-    db.query(sql, function (err, result) {
+    var values = {type:type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, street:street, house_number:house_number, neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition}
+    db.query('INSERT INTO places SET ?', values, function (err, result) {
         if (err) {
             console.error(err)
             res.json(globals.messages.failure)
+        } else {
+            res.json({
+                status: true
+            })
         }
-        console.log(result)
-        res.json({
-            status: true
-        })
     })
     
 });
@@ -86,14 +88,16 @@ router.post('/login', function (req, res) {
 router.get('/login', function (req, res) {
     console.log('<LOG> - Admin Login');
     const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
-    db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ?', [incoming_token], function(err, result) {
-        if (err) console.error(err)
-        delete result[0].password
-        res.json({
-            status: true,
-            user: result[0]
+    if (incoming_token) {
+        db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ?', [incoming_token], function(err, result) {
+            if (err) console.error(err)
+            delete result[0].password
+            res.json({
+                status: true,
+                user: result[0]
+            })
         })
-    })
+    }
 });
 
 module.exports = router;
