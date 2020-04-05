@@ -1,7 +1,9 @@
 var express = require('express');
 const db = require('../db-connect');
+const globals = require('../globals')
 var router = express.Router();
 var hat = require('hat');
+
 router.use(function adminLog (req, res, next) {
     console.log('<LOG> -', new Date().toUTCString());
     next();
@@ -9,13 +11,17 @@ router.use(function adminLog (req, res, next) {
 
 router.use(function isAdmin (req, res, next) {
     if (req.originalUrl != '/admin/login') {
-<<<<<<< HEAD
-        console.log(JSON.stringify(req.headers))
-=======
-        console.log(JSON.stringify(req.headers)['accept']);
->>>>>>> 09a9fd3797f558b63af6be31a5a659446aa596dd
-    }
-    next();
+        const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
+        const uid = req.body.user.uid
+        db.query('SELECT * FROM user_sessions WHERE user_id = ? AND session = ?', [uid, incoming_token], function (err, result) {
+            if (err) console.error(err)
+            if (result.length > 0) {
+                next()
+            } else
+                res.json(globals.failure)
+        })
+    } else
+        res.json(globals.failure)
 });
 
 router.post('/dog_parks/add', function (req, res) {
@@ -31,7 +37,7 @@ router.post('/dog_parks/add', function (req, res) {
         operator, 
         handicapped, 
         condition 
-    } = req.body
+    } = req.body.user_input
 
     //......
     // validate admin
@@ -57,14 +63,12 @@ router.post('/login', function (req, res) {
             // insert to db to user_sessions
             console.log("token:", token);
             res.json({
-                message: 'Admin Login Success',
+                status: true,
                 token: token,
                 user: result[0]
             })
         } else {
-            res.json({
-                message: 'Something went wrong. Check your credentials and try again.'
-            })
+            res.json(globals.failure)
         }
     })
 });
