@@ -1,1 +1,31 @@
-<p>new-dog-park works!</p>
+<div fxFill class="container" fxFill fxLayout="row" fxLayoutAlign="space-around center" >
+  <div fxLayout="column">
+      <form [formGroup]="form" fxLayout="column">
+        <mat-form-field appearance="fill">
+          <mat-label>שם הפארק</mat-label>
+          <input matInput placeholder="שם הפארק" formControlName="nameofpark">
+          <input matInput>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>מיקום הפארק</mat-label>
+          <input matInput placeholder="מיקום הפארק" formControlName="newpark">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Select</mat-label>
+          <mat-select>
+            <mat-option formControlName="type_park" value="check1">גינת כלבים</mat-option>
+            <mat-option formControlName="type_park" value="check2">פארקים היסטורים</mat-option>
+            <mat-option formControlName="type_park" value="check3">בית קפה עם הכלב</mat-option>
+            <mat-option formControlName="type_park" value="check4">גנים לאומים</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>רחוב הפארק</mat-label>
+          <input matInput placeholder="רחוב הפארק" formControlName="street">
+        </mat-form-field>
+        <mat-slide-toggle formControlName="street">אקדא</mat-slide-toggle>
+        <button mat-button >התחבר</button>
+      </form>
+
+  </div>
+</div>

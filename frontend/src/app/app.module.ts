@@ -27,6 +27,8 @@ import { ApiProviderService } from './services/api-provider.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { NewDogParkComponent } from './admin/new-dog-park/new-dog-park.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,8 @@ import { NewDogParkComponent } from './admin/new-dog-park/new-dog-park.component
     MatInputModule,
     MatCardModule,
     ReactiveFormsModule,
+    MatSelectModule,
+    MatSlideToggleModule,
     ToastrModule.forRoot(),
   ],
   exports: [
