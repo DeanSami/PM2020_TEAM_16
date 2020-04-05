@@ -28,6 +28,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { NewDogParkComponent } from './admin/new-dog-park/new-dog-park.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -57,6 +59,8 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
     MatInputModule,
     MatCardModule,
     ReactiveFormsModule,
+    MatSelectModule,
+    MatSlideToggleModule,
     ToastrModule.forRoot(),
   ],
   exports: [

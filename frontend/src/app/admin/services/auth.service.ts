@@ -4,6 +4,7 @@ import { LocalStorage } from 'ngx-store';
 import { ApiProviderService } from '../../services/api-provider.service';
 import { Router } from '@angular/router';
 import { User } from '../../models/users';
+import { LoginResponse } from '../../models/Responses';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,7 @@ export class AuthService {
     return new Promise((resolve, reject) => {
       if (phone && pass) {
         console.log('auth');
-        this.api.post('admin/login', { phone, pass }).subscribe((response: { user: User, message: string }) => {
+        this.api.post('admin/login', { phone, pass }).subscribe((response: LoginResponse) => {
           this.loggedIn = true;
           // this.token = response.token;
           this.currentUser.next(response.user);
