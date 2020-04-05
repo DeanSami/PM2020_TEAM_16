@@ -7,6 +7,24 @@ router.use(function adminLog (req, res, next) {
     next()
 })
 
+router.use(function adminLog (req, res, next) {
+    if (req.originalUrl != '/admin/login') {
+        console.log(JSON.stringify(req.headers)['accept'])
+    }
+    next()
+})
+
+router.post('/dog_parks/add', function (req, res) {
+    //......
+    // validate admin
+    // connect db
+    // query from db
+    // filter results
+    // return information
+    //......
+    res.json({})
+})
+
 router.post('/login', function (req, res) {
     console.log('<LOG> - Admin Login')
     const phone = req.body.phone
@@ -17,6 +35,8 @@ router.post('/login', function (req, res) {
         if (err) console.error(err)
         if (result.length > 0) {
             delete result[0].password
+            // create token for user
+            // insert to db to user_sessions
             res.json({
                 message: 'Admin Login Success',
                 user: result[0]
