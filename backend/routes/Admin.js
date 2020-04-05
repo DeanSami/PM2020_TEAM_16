@@ -45,6 +45,7 @@ router.post('/dog_parks/add', function (req, res) {
     } = req.body.user_input
 
     var values = {type:type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, street:street, house_number:house_number, neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition}
+    
     db.query('INSERT INTO places SET ?', values, function (err, result) {
         if (err) {
             console.error(err)
