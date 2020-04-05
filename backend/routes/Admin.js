@@ -17,16 +17,16 @@ router.use(function isAdmin (req, res, next) {
             if (result.length > 0) {
                 next()
             } else
-                res.json(globals.failure)
+                res.json(globals.messages.failure)
         })
     } else
-        res.json(globals.failure)
+        res.json(globals.messages.failure)
 });
 
 router.post('/dog_parks/add', function (req, res) {
     console.log('<LOG> - Admin Add New Park Dog')
 
-    const { 
+    const {
         name, 
         SHAPE_Leng, 
         SHAPE_Area, 
@@ -38,14 +38,20 @@ router.post('/dog_parks/add', function (req, res) {
         condition 
     } = req.body.user_input
 
-    //......
-    // validate admin
-    // connect db
-    // query from db
-    // filter results
-    // return information
-    //......
-    res.json({});
+    var values = [[name, SHAPE_Leng, SHAPE_Area, street, house_number, neighborhood, operator, handicapped, condition]]
+
+    db.query('INSERT INTO places(name,SHAPE_Leng,SHAPE_Area,street,house_number,neighborhood,operator,handicapped,condition) VALUES ?', [values], function (err, result) {
+        if (err) {
+            console.error(err)
+            res.json(globals.messages.failure)
+        }
+        console.log(result)
+        res.json({
+            status: true
+        })
+    })
+    
+    res.json(globals.messages.failure);
 });
 
 router.post('/login', function (req, res) {
@@ -69,7 +75,7 @@ router.post('/login', function (req, res) {
                 user: result[0]
             })
         } else {
-            res.json(globals.failure)
+            res.json(globals.messages.failure)
         }
     })
 });
