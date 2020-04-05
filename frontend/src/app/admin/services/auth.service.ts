@@ -23,7 +23,9 @@ export class AuthService {
     this._token = token;
   }
 
-  constructor(private api: ApiProviderService, private router: Router) { }
+  constructor(private api: ApiProviderService, private router: Router) {
+    this.api.token = this._token;
+  }
 
   login(phone?: string, pass?: string) {
     return new Promise((resolve, reject) => {
@@ -42,11 +44,9 @@ export class AuthService {
           reject(err);
         });
       } else if (this.token) {
-        console.log('check', this.token);
         this.api.get('admin/login').subscribe((response: LoginResponse) => {
           if (response.status) {
             this.loggedIn = response.status;
-            this.token = response.token;
             this.currentUser.next(response.user);
             resolve(this.loggedIn);
           }

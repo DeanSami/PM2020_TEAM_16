@@ -51,15 +51,18 @@ export class LoginComponent implements OnInit {
     return this.form.get('pass');
   }
 
-  login() {
+  setLogin() {
     if (this.form.invalid) {
       this.toastr.error('חובה למלא את כל השדות');
       return;
     }
+    this.login();
+  }
+
+  login() {
     this.loadingService.loading.next(true);
     this.userService.login(this.phone.value, this.pass.value).then(() => {
       this.router.navigate(['/admin/dashboard']).then(() => {
-        console.log('login');
         setTimeout(() => this.close = true, 400);
       });
     }, () => {
@@ -69,7 +72,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.login();
+    this.login();
   }
 
 }
