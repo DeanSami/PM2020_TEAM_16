@@ -30,7 +30,6 @@ router.post('/login', function (req, res) {
     const phone = req.body.phone
     const password = req.body.pass
     // encode pass
-    db.connect();
     db.query('SELECT * FROM users WHERE phone = ? AND password = ?', [phone, password], function (err, result) {
         if (err) console.error(err)
         if (result.length > 0) {
@@ -47,7 +46,6 @@ router.post('/login', function (req, res) {
             })
         }
     })
-    db.end()
 })
 
 module.exports = router
