@@ -37,7 +37,9 @@ router.post('/login', function (req, res) {
             // create token for user
             var token = hat();
             // insert to db to user_sessions
-            console.log("token:", token);
+            db.query('INSERT INTO user_sessions(user_id,session) VALUES (?,?)',[result[0].id,token],function (err, result){
+                if (err) console.error(err);
+            });
             res.json({
                 message: 'Admin Login Success',
                 token: token,
