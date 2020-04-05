@@ -1,6 +1,5 @@
 export interface User {
   id: number;
-  street?: string;
   user_type: UserType;
   email?: string;
   phone: number;
