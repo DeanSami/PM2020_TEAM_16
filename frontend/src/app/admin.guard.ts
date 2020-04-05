@@ -27,6 +27,7 @@ export class AdminGuard implements CanActivate {
           });
         });
       }
+      console.log('this.userService.loggedIn', this.userService.loggedIn);
       if (this.userService.loggedIn && this.userService.currentUser.getValue().user_type === UserType.Admin) {
         return true;
       }

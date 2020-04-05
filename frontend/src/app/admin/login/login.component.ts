@@ -52,9 +52,12 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
+    if (this.form.invalid) {
+      this.toastr.error('חובה למלא את כל השדות');
+      return;
+    }
     this.loadingService.loading.next(true);
-    this.userService.login('0666', 'admin').then(() => {
-
+    this.userService.login(this.phone.value, this.pass.value).then(() => {
       this.router.navigate(['/admin/dashboard']).then(() => {
         console.log('login');
         setTimeout(() => this.close = true, 400);

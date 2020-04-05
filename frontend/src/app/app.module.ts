@@ -27,9 +27,10 @@ import { ApiProviderService } from './services/api-provider.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { NewDogParkComponent } from './admin/new-dog-park/new-dog-park.component';
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { AdminSidebarComponent } from './admin/admin-sidebar/admin-sidebar.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     SidebarComponent,
     LoginComponent,
     NewDogParkComponent,
-    AdminDashboardComponent
+    AdminDashboardComponent,
+    AdminSidebarComponent
   ],
   imports: [
     HttpClientModule,
