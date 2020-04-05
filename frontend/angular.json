@@ -119,7 +119,8 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/assets/styles/style.scss"
             ],
             "scripts": []
           }

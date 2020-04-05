@@ -5,7 +5,12 @@ import { AdminComponent } from './admin/admin.component';
 
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', component: MainComponent },
+  { path: '',
+    pathMatch: 'full',
+    component: MainComponent,
+    children: [
+    ]
+  },
   { path: 'admin', pathMatch: 'full', component: AdminComponent }
 ];
 
