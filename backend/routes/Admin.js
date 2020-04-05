@@ -12,8 +12,7 @@ router.use(function adminLog (req, res, next) {
 router.use(function isAdmin (req, res, next) {
     if (req.originalUrl != '/admin/login') {
         const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
-        const uid = req.body.user.uid
-        db.query('SELECT * FROM user_sessions WHERE user_id = ? AND session = ?', [uid, incoming_token], function (err, result) {
+        db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ? AND user_type = ?', [incoming_token, globals.user_types.admin], function (err, result) {
             if (err) console.error(err)
             if (result.length > 0) {
                 next()
