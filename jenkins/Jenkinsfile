@@ -21,10 +21,7 @@ pipeline {
             }
             steps {
                 sh 'npm install'
-                sh 'cd frontend'
-                sh 'npm install --save @angular/cli'
-                sh 'npm install'
-                sh 'npm run lint'
+                sh 'cd frontend && npm install'
                 echo 'finished test'
             }
         }
@@ -37,9 +34,8 @@ pipeline {
             }
             steps {
                 sh 'npm install'
-                sh 'cd backend'
-                sh 'npm install'
-                sh 'npm run test'
+                sh 'cd backend && npm install'
+                sh 'cd backend && npm run test'
                 echo 'Finished backend Tests'
             }
         }
