@@ -1,1 +1,26 @@
-<p>login works!</p>
+<div fxLayout="column" fxLayoutAlign="center center" fxFill *ngIf="loading">
+  <mat-progress-spinner
+    class="example-margin"
+    [color]="color"
+    [mode]="mode"
+    [value]="value">
+  </mat-progress-spinner>
+</div>
+<div fxFill *ngIf="!loading" class="container" fxFill fxLayout="row" fxLayoutAlign="space-around center" >
+  <div>
+      <mat-card fxLayout="column" >
+        <form [formGroup]="form" fxLayout="column">
+          <mat-form-field appearance="fill">
+            <mat-label>username</mat-label>
+            <input matInput>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>password</mat-label>
+            <input matInput>
+          </mat-form-field>
+          <button mat-button>התחבר</button>
+        </form>
+      </mat-card>
+
+  </div>
+</div>

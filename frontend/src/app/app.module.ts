@@ -18,6 +18,14 @@ import { SidebarComponent } from './main/sidebar/sidebar.component';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from './shared/shared.module';
 import { LoginComponent } from './admin/login/login.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
+import { ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from './admin/services/auth.service';
+import { ApiProviderService } from './services/api-provider.service';
+import { HttpClientModule } from '@angular/common/http';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -28,6 +36,7 @@ import { LoginComponent } from './admin/login/login.component';
     LoginComponent
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -39,7 +48,12 @@ import { LoginComponent } from './admin/login/login.component';
     MatListModule,
     MatToolbarModule,
     MatButtonModule,
-    SharedModule
+    SharedModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    ToastrModule.forRoot(),
   ],
   exports: [
     MatSidenavModule,
@@ -49,6 +63,8 @@ import { LoginComponent } from './admin/login/login.component';
     MatToolbarModule
   ],
   providers: [
+    AuthService,
+    ApiProviderService,
     LoadingService
   ],
   bootstrap: [AppComponent]

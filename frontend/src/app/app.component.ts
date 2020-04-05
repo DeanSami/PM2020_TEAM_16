@@ -10,14 +10,5 @@ import { User } from './models/Users';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  loading = true;
-  title = 'dogs-project';
-  color: ThemePalette = 'primary';
-  mode: ProgressSpinnerMode = 'indeterminate';
-  value = 50;
-
-
-  constructor(loadingService: LoadingService) {
-      loadingService.loading.subscribe(loading => this.loading = loading);
-  }
+  constructor() { }
 }

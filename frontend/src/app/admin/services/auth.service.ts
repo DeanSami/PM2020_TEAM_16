@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { LocalStorage } from 'ngx-store';
+import { ApiProviderService } from '../../services/api-provider.service';
+import { Router } from '@angular/router';
+import { User } from '../../models/users';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +12,7 @@ export class AuthService {
   loggedIn = false;
   currentUser = new BehaviorSubject<User>(null);
 
+  // tslint:disable-next-line:variable-name
   @LocalStorage() _token: string = null;
   get token() {
     return this._token;
@@ -18,12 +22,12 @@ export class AuthService {
     this._token = token;
   }
 
-  constructor() { }
+  constructor(private api: ApiProviderService, private router: Router) { }
 
-  login(phone?: string, password?: string) {
+  login(username?: string, password?: string) {
     return new Promise((resolve, reject) => {
-      if (phone && password) {
-        this.api.post('users/login', { phone, password }).subscribe((response: { user: User, token: string }) => {
+      if (username && password) {
+        this.api.post('users/login', { username, password }).subscribe((response: { user: User, token: string }) => {
           this.loggedIn = true;
           this.token = response.token;
           this.currentUser.next(response.user);
@@ -47,5 +51,12 @@ export class AuthService {
         reject('err');
       }
     });
+  }
+
+  logout() {
+    this.loggedIn = false;
+    this.token = null;
+    this.currentUser.next(null);
+    this.router.navigate(['/login']);
   }
 }
