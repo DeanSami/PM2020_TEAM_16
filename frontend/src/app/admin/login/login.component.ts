@@ -43,19 +43,21 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-
-  }
-
-  ngOnInit() {
     this.loadingService.loading.next(true);
-    this.userService.login().then(() => {
-        this.router.navigate(['/admin']).then(() => {
-          setTimeout(() => this.close = true, 400);
-        });
+    this.userService.login('0666', 'admin').then(() => {
+
+      this.router.navigate(['/admin/dashboard']).then(() => {
+        console.log('login');
+        setTimeout(() => this.close = true, 400);
+      });
     }, () => {
       this.loadingService.loading.next(false);
       this.toastr.error('התחברות נכשלה');
     });
+  }
+
+  ngOnInit() {
+    this.login();
   }
 
 }

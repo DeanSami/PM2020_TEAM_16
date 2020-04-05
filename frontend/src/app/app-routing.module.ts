@@ -8,8 +8,9 @@ import { LoginComponent } from './admin/login/login.component';
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/admin/login' },
   { path: 'main', pathMatch: 'full', component: MainComponent },
-  { path: 'admin', pathMatch: 'full', component: AdminComponent },
-  { path: 'admin/login', component: LoginComponent }
+  { path: 'admin', pathMatch: 'full', redirectTo: '/admin/login' },
+  { path: 'admin/login', component: LoginComponent },
+  { path: 'admin/dashboard', component: AdminComponent }
 ];
 
 @NgModule({
