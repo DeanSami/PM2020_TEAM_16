@@ -11,12 +11,12 @@
       <mat-card fxLayout="column" >
         <form [formGroup]="form" fxLayout="column">
           <mat-form-field appearance="fill">
-            <mat-label>username</mat-label>
-            <input matInput>
+            <mat-label>phone</mat-label>
+            <input matInput formControlName="phone">
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>password</mat-label>
-            <input matInput>
+            <input matInput formControlName="pass">
           </mat-form-field>
           <button mat-button (click)="login()">התחבר</button>
         </form>
