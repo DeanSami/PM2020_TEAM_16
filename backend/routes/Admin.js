@@ -121,12 +121,18 @@ router.get('/login', function (req, res) {
                 console.error(err)
                 res.json(globals.messages.failure)
             } else {
-                delete result[0].password
-                console.log('<LOG> - GET /admin/login - SUCCESS');
-                res.json({
-                    status: true,
-                    user: result[0]
-                })
+                if (result.length > 0) {
+                    delete result[0].password
+                    console.log('<LOG> - GET /admin/login - SUCCESS');
+                    res.json({
+                        status: true,
+                        user: result[0]
+                    })
+                } else {
+                    console.log('<LOG> - GET /admin/login - Unauthorized Credentials');
+                    res.statusCode = 401
+                    res.json(globals.messages.failure)
+                }
             }
         })
     } else {
