@@ -34,9 +34,11 @@ import { AdminSidebarComponent } from './admin/admin-sidebar/admin-sidebar.compo
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { DogParksComponent } from './dog-parks/dog-parks.component';
+import { DogParksComponent } from './admin/dog-parks/dog-parks.component';
 import { MatTableModule } from '@angular/material/table';
 import { DogParksResolver } from './admin/resolvers/dogParksResolver.resolver';
+import { AreYouSureDialogComponent } from './are-you-sure-dialog/are-you-sure-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,8 @@ import { DogParksResolver } from './admin/resolvers/dogParksResolver.resolver';
     NewDogParkComponent,
     AdminDashboardComponent,
     AdminSidebarComponent,
-    DogParksComponent
+    DogParksComponent,
+    AreYouSureDialogComponent
   ],
   imports: [
     HttpClientModule,
@@ -67,6 +70,7 @@ import { DogParksResolver } from './admin/resolvers/dogParksResolver.resolver';
     MatToolbarModule,
     MatButtonModule,
     MatTableModule,
+    MatDialogModule,
     SharedModule,
     MatFormFieldModule,
     MatInputModule,

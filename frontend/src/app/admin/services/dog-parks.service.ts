@@ -13,7 +13,10 @@ export class DogParksService {
 
   getPlaces(): Observable<Place[]> {
     return this.api.get('admin/dog_parks/get');
+  }
 
+  deleteDogPark(dogParkId: string): Observable<boolean> {
+    return this.api.post('admin/dog_parks/delete', {id: dogParkId});
   }
 
   saveDogPark(park: {user_input: Place}): Observable<Place> {
