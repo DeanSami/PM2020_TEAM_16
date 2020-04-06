@@ -97,7 +97,7 @@ router.post('/dog_parks/add', function (req, res) {
                         if (err) {
                             console.log('<LOG> - POST /admin/dog_parks/add - ERROR')
                             console.error(err)
-                            res.statusCode(400)
+                            res.statusCode = 400
                             res.json(globals.messages.failure)
                         } else {
                             console.log('<LOG> - POST /admin/dog_parks/add - SUCCESS')
