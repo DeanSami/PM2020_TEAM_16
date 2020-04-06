@@ -58,8 +58,15 @@ router.post('/dog_parks/add', function (req, res) {
             condition
         } = req.body.user_input;
     
-        if (!type || typeof(type) !== Number || !name || typeof(name) !== String || !SHAPE_Leng || typeof(SHAPE_Leng) !== String || !SHAPE_Area || typeof(SHAPE_Area) !== String || !house_number ||
-        typeof(house_number) !== String || !neighborhood || typeof(neighborhood) !== String || !operator || typeof(operator) !== String || !handicapped || typeof(handicapped) !== Boolean || !condition || typeof(condition) !== Boolean)
+        if (!type || typeof(type) !== Number 
+            || !name || typeof(name) !== String 
+            || !SHAPE_Leng || typeof(SHAPE_Leng) !== String 
+            || !SHAPE_Area || typeof(SHAPE_Area) !== String 
+            || !house_number || typeof(house_number) !== String 
+            || !neighborhood || typeof(neighborhood) !== String 
+            || !operator || typeof(operator) !== String 
+            || !handicapped || typeof(handicapped) !== Boolean 
+            || !condition || typeof(condition) !== Number)
         {
             console.log('<LOG> - POST /dog_parks/add - Error with type of at least 1 input field')
             res.statusCode = 401
