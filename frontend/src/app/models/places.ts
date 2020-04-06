@@ -1,6 +1,6 @@
 export interface Place {
   id?: number;
-  type: PlacesType;
+  type?: PlacesType;
   name: string;
   SHAPE_Leng: string;
   SHAPE_Area: string;

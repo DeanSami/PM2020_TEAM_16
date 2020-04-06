@@ -21,7 +21,6 @@ const routes: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: '/admin/dashboard' },
       { path: 'dashboard', component: AdminDashboardComponent },
-      { path: 'newPark', component: NewDogParkComponent },
       { path: 'dogParks', component: DogParksComponent, resolve: { dogParks: DogParksResolver } },
     ]
   },

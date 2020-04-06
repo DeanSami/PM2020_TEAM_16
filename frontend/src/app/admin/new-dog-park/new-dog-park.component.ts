@@ -4,7 +4,7 @@ import { DogParksService } from '../services/dog-parks.service';
 import { ConditionType, Place, PlacesType } from '../../models/places';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-new-dog-park',
@@ -18,13 +18,13 @@ export class NewDogParkComponent implements OnInit {
     private dogParkService: DogParksService,
     private router: Router,
     private toastr: ToastrService,
+    public dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public dialogData: Place
   ) {
   }
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    type: new FormControl('', [Validators.required, Validators.minLength(5)]),
     SHAPE_Leng: new FormControl('', [Validators.required, Validators.minLength(5)]),
     SHAPE_Area: new FormControl('', [Validators.required, Validators.minLength(5)]),
     street: new FormControl('', []),
@@ -39,10 +39,6 @@ export class NewDogParkComponent implements OnInit {
 
   get name() {
     return this.form.get('name');
-  }
-
-  get type() {
-    return this.form.get('type');
   }
 
   get SHAPE_Leng() {
@@ -81,7 +77,6 @@ export class NewDogParkComponent implements OnInit {
     if (this.dialogData) {
       this.form.setValue({
         name: this.dialogData.name,
-        type: this.dialogData.type,
         SHAPE_Leng: this.dialogData.SHAPE_Leng,
         SHAPE_Area: this.dialogData.SHAPE_Area,
         street: this.dialogData.street,
@@ -102,7 +97,6 @@ export class NewDogParkComponent implements OnInit {
     }
     this.dogParkService.saveDogPark({
       user_input: {
-        type: this.type.value,
         name: this.name.value,
         SHAPE_Leng: this.SHAPE_Leng.value,
         SHAPE_Area: this.SHAPE_Area.value,
@@ -115,7 +109,7 @@ export class NewDogParkComponent implements OnInit {
       }
     }).subscribe((res) => {
       this.toastr.success('הפעולה הסתיימה בהצלחה');
-      this.router.navigate(['/admin/dogParks']);
+      this.dialogRef.close(res);
     }, err => {
       this.toastr.error('הפעולה נכשלה');
       console.log('err', err);

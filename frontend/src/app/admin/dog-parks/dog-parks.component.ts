@@ -63,4 +63,15 @@ export class DogParksComponent implements OnInit {
     });
   }
 
+  addDogPark() {
+    this.dialog.open(NewDogParkComponent, {
+      width: '600px',
+      data: null
+    }).afterClosed().subscribe(result => {
+      if (result && result.status) {
+        this.dataSource.data.push(result.place);
+      }
+    });
+  }
+
 }
