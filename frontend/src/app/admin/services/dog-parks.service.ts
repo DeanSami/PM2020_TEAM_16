@@ -6,17 +6,17 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class PlacesService {
+export class DogParksService {
   places: Place[] = [];
 
   constructor(private api: ApiProviderService) { }
 
-  // getPlaces(): Observable<Place[]> {
-  //   return this.api.get
-  //
-  // }
+  getPlaces(): Observable<Place[]> {
+    return this.api.get('admin/dog_parks/get');
 
-  saveDogPark(park: Place): Observable<Place> {
-    return this.api.post('dog_parks/add', park);
+  }
+
+  saveDogPark(park: {user_input: Place}): Observable<Place> {
+    return this.api.post('admin/dog_parks/add', park);
   }
 }

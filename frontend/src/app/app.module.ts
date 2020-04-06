@@ -34,6 +34,9 @@ import { AdminSidebarComponent } from './admin/admin-sidebar/admin-sidebar.compo
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { DogParksComponent } from './dog-parks/dog-parks.component';
+import { MatTableModule } from '@angular/material/table';
+import { DogParksResolver } from './admin/resolvers/dogParksResolver.resolver';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     LoginComponent,
     NewDogParkComponent,
     AdminDashboardComponent,
-    AdminSidebarComponent
+    AdminSidebarComponent,
+    DogParksComponent
   ],
   imports: [
     HttpClientModule,
@@ -62,6 +66,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     MatListModule,
     MatToolbarModule,
     MatButtonModule,
+    MatTableModule,
     SharedModule,
     MatFormFieldModule,
     MatInputModule,
@@ -81,7 +86,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
   providers: [
     AuthService,
     ApiProviderService,
-    LoadingService
+    LoadingService,
+    DogParksResolver
   ],
   bootstrap: [AppComponent]
 })

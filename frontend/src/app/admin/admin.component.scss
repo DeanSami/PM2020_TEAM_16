@@ -3,3 +3,8 @@
   min-height: 100vh;
   padding: 50px;
 }
+.sidebar-wrapper {
+  .nav {
+    padding-inline-start: 0;
+  }
+}

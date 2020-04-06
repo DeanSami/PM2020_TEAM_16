@@ -7,11 +7,11 @@
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>סוג המיקום</mat-label>
-        <mat-select formControlName="type_park">
-          <mat-option value="check1">גינת כלבים</mat-option>
-          <mat-option value="check2">פארקים היסטורים</mat-option>
-          <mat-option value="check3">בית קפה עם הכלב</mat-option>
-          <mat-option value="check4">גנים לאומים</mat-option>
+        <mat-select formControlName="type_park" required>
+          <mat-option [value]="placesType.Dog_garden">גינת כלבים</mat-option>
+          <mat-option [value]="placesType.Historic_Parks">פארקים היסטורים</mat-option>
+          <mat-option [value]="placesType.Cafewithdog">בית קפה עם הכלב</mat-option>
+          <mat-option [value]="placesType.NationalParks">גנים לאומים</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="fill">
@@ -19,12 +19,20 @@
         <input matInput placeholder="שכונה" formControlName="neighborhood">
       </mat-form-field>
       <mat-form-field appearance="fill">
+        <mat-label>אורך צורה</mat-label>
+        <input matInput placeholder="שכונה" formControlName="SHAPE_Leng">
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>אזור צורה</mat-label>
+        <input matInput placeholder="שכונה" formControlName="SHAPE_Area">
+      </mat-form-field>
+      <mat-form-field appearance="fill">
         <mat-label>רחוב הפארק</mat-label>
         <input matInput placeholder="רחוב הפארק" formControlName="street">
       </mat-form-field>
       <mat-form-field appearance="fill">
-        <mat-label>מס' בית(יש לשנות)</mat-label>
-        <input matInput placeholder="מס' בית(יש לשנות)" formControlName="house_number">
+        <mat-label>מס' בית</mat-label>
+        <input matInput placeholder="מס' בית" formControlName="house_number">
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>מפעיל המתקן</mat-label>
@@ -33,7 +41,7 @@
 
       <mat-form-field appearance="fill">
         <mat-label>תקינות המקום</mat-label>
-        <mat-select formControlName="condition">
+        <mat-select formControlName="condition" required>
           <mat-option [value]="conditionType.Working_Active">תקין ופעיל</mat-option>
           <mat-option [value]="conditionType.Working_Not_Active">תקין ולא פעיל</mat-option>
           <mat-option [value]="conditionType.Not_Working_Active">לא תקין ופעיל</mat-option>
@@ -41,7 +49,7 @@
         </mat-select>
       </mat-form-field>
 
-      <div class="text-white">
+      <div class="text-white" fxLayout="column" fxLayoutAlign="center start" >
         <mat-label>מותאם לבעלי מוגבלויות?</mat-label>
         <mat-slide-toggle formControlName="handicapped" color="primary"></mat-slide-toggle>
       </div>

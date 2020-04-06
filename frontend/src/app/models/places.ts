@@ -28,3 +28,9 @@ export enum ConditionType {
   Not_Working_Active = 2,
   Not_Working_Not_Active = 3,
 }
+
+export let ConditionTypeTitles = { };
+ConditionTypeTitles[ConditionType.Working_Active] = 'פעיל ותקין';
+ConditionTypeTitles[ConditionType.Working_Not_Active] = 'תקין ולא פעיל';
+ConditionTypeTitles[ConditionType.Not_Working_Active] = 'לא תקין ופעיל';
+ConditionTypeTitles[ConditionType.Not_Working_Not_Active] = 'לא תקין ולא פעיל';
