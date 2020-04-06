@@ -6,8 +6,6 @@ const globals = require('./globals')
 
 const Admin = require('./routes/Admin')
 
-const db = require('./db-connect')
-
 const app = express()
 const port = 3000
 

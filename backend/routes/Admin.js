@@ -178,7 +178,7 @@ router.post('/login', function (req, res) {
                         res.json(globals.messages.failure)
                     } else {
                         if (!pass_compare) {
-                            console.log('<LOG> - POST /admin/login - Wrong Credentials');
+                            console.log('<LOG> - POST /admin/login - Wrong Credentials pass');
                             res.statusCode = 401
                             res.json(globals.messages.failure)
                         } else {
@@ -186,7 +186,7 @@ router.post('/login', function (req, res) {
                             var token = hat();
                             db.query('INSERT INTO user_sessions(user_id,session) VALUES (?,?)',[phone_query_result[0].id,token],function (err, insert_query_result){
                                 if (err) {
-                                    console.log('<LOG> - POST /admin/login - Wrong Credentials');
+                                    console.log('<LOG> - POST /admin/login - Wrong Values inserted');
                                     console.error(err);
                                     res.statusCode = 401
                                     res.json(globals.messages.failure)
@@ -203,7 +203,7 @@ router.post('/login', function (req, res) {
                     }
                 })
             } else {
-                console.log('<LOG> - POST /admin/login - Credentials');
+                console.log('<LOG> - POST /admin/login - Wrong Credentials');
                 res.statusCode = 401
                 res.json(globals.messages.failure)
             }
