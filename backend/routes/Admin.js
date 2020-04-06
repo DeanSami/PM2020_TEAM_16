@@ -52,24 +52,24 @@ router.post('/dog_parks/add', function (req, res) {
         handicapped,
         condition
     } = req.body.user_input;
-    //לשאול את שושן לגבי שדה street
-    console.log("check1");
-    if (type !== Number || name !== String || SHAPE_Leng !== String || SHAPE_Area !== String || house_number !== String || neighborhood !== String || operator !== String || handicapped !== Boolean || condition !== Boolean)
-        console.error("typeof error");
 
-    console.log("check2");
-    var values = {type:type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, street:street, house_number:house_number, neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition}
+    if (type !== Number || name !== String || SHAPE_Leng !== String || SHAPE_Area !== String ||
+        house_number !== String || neighborhood !== String || operator !== String || handicapped !== Boolean || condition !== Boolean)
+        console.error("typeof error");
+    var values = {type:type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number, neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
+    if (street != NULL)
+        values.street = street;
     
-    db.query('INSERT INTO places SET ?', values, function (err, result) {
-        if (err) {
-            console.log('<LOG> - POST /admin/dog_parks/add - ERROR')
-            console.error(err)
-            res.json(globals.messages.failure)
-        } else {
-            console.log('<LOG> - POST /admin/dog_parks/add SUCCESS')
-            res.json({
-                status: true
-            })
+     db.query('INSERT INTO places SET ?', values, function (err, result) {
+         if (err) {
+                console.log('<LOG> - POST /admin/dog_parks/add - ERROR')
+                console.error(err)
+                res.json(globals.messages.failure)
+            } else {
+               console.log('<LOG> - POST /admin/dog_parks/add SUCCESS')
+                res.json({
+                 status: true
+                })
         }
     })
 
