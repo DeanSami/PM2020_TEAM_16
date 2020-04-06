@@ -9,8 +9,8 @@ describe('Index Endpoint', () => {
         .expect('Content-Type', 'application/json; charset=utf-8')
         .end((err, res) => {
             if (err) return done(err);
-            expect(res.body).toHaveProperty('message');
-            expect(res.body.message).toEqual('Hello World!');
+            expect(res.body).toHaveProperty('status');
+            expect(res.body.status).toEqual(true);
             done();
         });
     })
