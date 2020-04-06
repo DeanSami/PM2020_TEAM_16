@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt')
 router.use(function isAdmin (req, res, next) {
     if (req.originalUrl == '/admin/login' || req.originalUrl == '/admin/register') next()
     else {
-    console.log('<LOG> - POST /admin/*')
+    console.log('<LOG> - POST /admin/* - Middleware')
         const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
         if (incoming_token) {
             db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ? AND user_type = ?', [incoming_token, globals.user_types.admin], function (err, result) {
@@ -38,7 +38,7 @@ router.use(function isAdmin (req, res, next) {
 router.use(globals.log_func);
 
 router.post('/dog_parks/add', function (req, res) {
-    console.log('<LOG> - POST /admin/dog_parks/add')
+    console.log('<LOG> - POST /admin/dog_parks/add - Invoke')
 
     if (!req.body.user_input) {
         console.log('<LOG> - POST /dog_parks/add - Wrong Payload Format')
@@ -46,7 +46,6 @@ router.post('/dog_parks/add', function (req, res) {
         res.json(globals.messages.failure)
     } else {
         const {
-            type,
             name,
             SHAPE_Leng,
             SHAPE_Area,
@@ -58,8 +57,7 @@ router.post('/dog_parks/add', function (req, res) {
             condition
         } = req.body.user_input;
 
-        if (type == undefined
-            || name == undefined
+        if (name == undefined
             || SHAPE_Leng == undefined
             || SHAPE_Area == undefined 
             || house_number == undefined
@@ -72,8 +70,7 @@ router.post('/dog_parks/add', function (req, res) {
                 res.statusCode = 400
                 res.json(globals.messages.failure)
             }
-        else if (typeof(type) !== 'number'
-            || typeof(name) !== 'string'
+        else if (typeof(name) !== 'string'
             || typeof(SHAPE_Leng) !== 'string'
             || typeof(SHAPE_Area) !== 'string'
             || typeof(house_number) !== 'string'
@@ -86,19 +83,29 @@ router.post('/dog_parks/add', function (req, res) {
             res.statusCode = 400
             res.json(globals.messages.failure)
         } else {
-            var values = {type:type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
+            var values = {type: 0, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
             if (street !== undefined)
                 values.street = street;
-        
-            db.query('INSERT INTO places SET ?', values, function (err, result) {
+
+            db.query('INSERT INTO places SET ?', values, function (err, insert_dog_park_result) {
                 if (err) {
                     console.log('<LOG> - POST /admin/dog_parks/add - ERROR')
                     console.error(err)
                     res.json(globals.messages.failure)
                 } else {
-                console.log('<LOG> - POST /admin/dog_parks/add SUCCESS')
-                    res.json({
-                        status: true
+                    db.query('SELECT * FROM places WHERE id = ?', insert_dog_park_result.id, function (err, select_dog_park_result) {
+                        if (err) {
+                            console.log('<LOG> - POST /admin/dog_parks/add - ERROR')
+                            console.error(err)
+                            res.statusCode(400)
+                            res.json(globals.messages.failure)
+                        } else {
+                            console.log('<LOG> - POST /admin/dog_parks/add - SUCCESS')
+                            res.json({
+                                status: true,
+                                places: select_dog_park_result
+                            })
+                        }
                     })
                 }
             })
@@ -108,7 +115,7 @@ router.post('/dog_parks/add', function (req, res) {
 });
 
 router.get('/dog_parks/get' , function(req, res) {
-    console.log('<LOG> - GET /admin/dog_parks/get');
+    console.log('<LOG> - GET /admin/dog_parks/get - Invoke');
     //if the clint want specific park dog
     if (req.body.id)
     {
@@ -131,7 +138,7 @@ router.get('/dog_parks/get' , function(req, res) {
     //if the clint want all the park dog that at the db
     else{
         //todo enum to set Places.dogPark and remove 0
-        db.query('SELECT * FROM places WHERE deleted = 0 AND type = ?' ,[0],function (err,result) {
+        db.query('SELECT * FROM places WHERE deleted = 0 AND type = 0', function (err, result) {
             if (err) {
                 console.log('<LOG> - GET /admin/dog_parks/get - ERROR');
                 console.error(err);
@@ -144,7 +151,6 @@ router.get('/dog_parks/get' , function(req, res) {
                     places: result
                 })
             }
-
         })
     }
 
@@ -152,7 +158,7 @@ router.get('/dog_parks/get' , function(req, res) {
 });
 //delete park
 router.post('/dog_parks/delete',function (req,res) {
-    console.log('<LOG> - Admin DELETE Dog Park');
+    console.log('<LOG> - POST /dog_parks/delete - Invoke');
     if(req.body.id)
     {
         var temp_id = req.body.id;
@@ -191,7 +197,7 @@ router.post('/register', function(req, res) {
 })
 
 router.post('/login', function (req, res) {
-    console.log('<LOG> - POST /admin/login');
+    console.log('<LOG> - POST /admin/login - Invoke');
     const phone = req.body.phone;
     db.query('SELECT * FROM users WHERE phone = ?', [phone], function (err, phone_query_result) {
         if (err) {
@@ -242,7 +248,7 @@ router.post('/login', function (req, res) {
 });
 
 router.get('/login', function (req, res) {
-    console.log('<LOG> - GET /admin/login');
+    console.log('<LOG> - GET /admin/login - Invoke');
     const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
     if (incoming_token) {
         db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ?', [incoming_token], function(err, result) {
@@ -271,8 +277,5 @@ router.get('/login', function (req, res) {
         res.json(globals.messages.failure)
     }
 });
-
-
-
 
 module.exports = router;
