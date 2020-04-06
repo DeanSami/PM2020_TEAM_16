@@ -150,6 +150,31 @@ router.get('/dog_parks/get' , function(req, res) {
 
 
 });
+//delete park
+router.post('/dog_parks/delete',function (req,res) {
+    console.log('<LOG> - Admin DELETE Dog Park');
+    if(req.body.id)
+    {
+        var temp_id = req.body.id;
+        db.query('DELETE FROM places WHERE id = ? ', [temp_id],function (err,result) {
+            if (err) {
+                console.log('<LOG> - POST /admin/DELETE - ERROR');
+                console.error(err);
+                res.json(globals.messages.failure);
+            } else {
+                res.json({
+                    status: true,
+                    message: "delete action has been done",
+                    place: result
+                });
+            }
+        });
+    }
+    else{
+        console.error("not ID has been send");
+        res.json(globals.messages.failure);
+    }
+});
 
 router.post('/register', function(req, res) {
     bcrypt.hash(req.body.pass, 10, function (err, hash) {
