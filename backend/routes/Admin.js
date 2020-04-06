@@ -43,6 +43,10 @@ router.post('/dog_parks/add', function (req, res) {
         handicapped,
         condition
     } = req.body.user_input
+    //לשאול את שושן לגבי שדה street
+    if (type !== Number || name !== String || SHAPE_Leng !== String || house_number !== String || neighborhood !== String || operator !== String || handicapped !== Boolean || condition !== Boolean)
+        console.error("typeof error");
+
 
     var values = {type:type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, street:street, house_number:house_number, neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition}
     
