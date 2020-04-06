@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const globals = require('./globals')
 
 
 const Admin = require('./routes/Admin')
@@ -16,7 +17,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 app.use('/admin', Admin)
 
-app.get('/', (req, res) => res.json({message: 'Hello World!'}))
+app.get('/', (req, res) => res.json(globals.messages.success))
 
 // db.connect();
 // db.query('SELECT 1 + 1 AS solution', function (err, rows, fields) {
