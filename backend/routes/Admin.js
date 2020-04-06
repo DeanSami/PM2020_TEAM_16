@@ -4,10 +4,7 @@ const globals = require('../globals')
 var router = express.Router()
 var hat = require('hat')
 
-router.use(function adminLog (req, res, next) {
-    console.log('<LOG> -', new Date().toUTCString());
-    next();
-});
+router.use(globals.log_func);
 
 router.use(function isAdmin (req, res, next) {
     if (req.originalUrl == '/admin/login') next()
@@ -59,7 +56,7 @@ router.post('/dog_parks/add', function (req, res) {
             handicapped,
             condition
         } = req.body.user_input;
-        
+
         if (type == undefined
             || name == undefined
             || SHAPE_Leng == undefined
@@ -74,14 +71,14 @@ router.post('/dog_parks/add', function (req, res) {
                 res.statusCode = 401
                 res.json(globals.messages.failure)
             }
-        else if (typeof(type) !== 'number' 
-            || typeof(name) !== 'string' 
-            || typeof(SHAPE_Leng) !== 'string' 
-            || typeof(SHAPE_Area) !== 'string' 
-            || typeof(house_number) !== 'string' 
-            || typeof(neighborhood) !== 'string' 
-            || typeof(operator) !== 'string' 
-            || typeof(handicapped) !== 'boolean' 
+        else if (typeof(type) !== 'number'
+            || typeof(name) !== 'string'
+            || typeof(SHAPE_Leng) !== 'string'
+            || typeof(SHAPE_Area) !== 'string'
+            || typeof(house_number) !== 'string'
+            || typeof(neighborhood) !== 'string'
+            || typeof(operator) !== 'string'
+            || typeof(handicapped) !== 'boolean'
             || typeof(condition) !== 'number')
         {
             console.log('<LOG> - POST /dog_parks/add - Error with type of at least 1 input field')
