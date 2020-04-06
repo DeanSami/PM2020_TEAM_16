@@ -10,26 +10,35 @@ router.use(function adminLog (req, res, next) {
 });
 
 router.use(function isAdmin (req, res, next) {
-    const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
-    if (incoming_token) {
-        db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ? AND user_type = ?', [incoming_token, globals.user_types.admin], function (err, result) {
-            if (err) console.error(err)
-            if (result.length > 0) {
-                next()
-            } else {
-                res.statusCode = 401
-                res.json(globals.messages.failure)
-            }
-        })
-    } else {
-        res.statusCode = 401
-        res.json(globals.messages.failure)
+if (req.originalUrl == '/admin/login') next()
+else {
+    console.log('<LOG> - POST /admin/*')
+        const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
+        if (incoming_token) {
+            db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ? AND user_type = ?', [incoming_token, globals.user_types.admin], function (err, result) {
+                if (err) {
+                    console.log('<LOG> - POST /admin/* - ERROR')
+                    console.error(err)
+                }
+                if (result.length > 0) {
+                    console.log('<LOG> - POST /admin/* - SUCCESS')
+                    next()
+                } else {
+                    console.log('<LOG> - POST /admin/* - Unauthorized Access Attempt')
+                    res.statusCode = 401
+                    res.json(globals.messages.failure)
+                }
+            })
+        } else {
+            console.log('<LOG> - POST /admin/* - Missing Credentials')
+            res.statusCode = 401
+            res.json(globals.messages.failure)
+        }
     }
-        
 });
 
 router.post('/dog_parks/add', function (req, res) {
-    console.log('<LOG> - Admin Add New Park Dog')
+    console.log('<LOG> - POST /admin/dog_parks/add')
 
     const {
         type,
@@ -53,9 +62,11 @@ router.post('/dog_parks/add', function (req, res) {
     
     db.query('INSERT INTO places SET ?', values, function (err, result) {
         if (err) {
+            console.log('<LOG> - POST /admin/dog_parks/add - ERROR')
             console.error(err)
             res.json(globals.messages.failure)
         } else {
+            console.log('<LOG> - POST /admin/dog_parks/add SUCCESS')
             res.json({
                 status: true
             })
@@ -110,47 +121,71 @@ router.get('/dog_parks/get' , function(req,res){
 });
 
 router.post('/login', function (req, res) {
-    console.log('<LOG> - Admin Login');
+    console.log('<LOG> - POST /admin/login');
     const phone = req.body.phone;
     const password = req.body.pass;
-    // encode pass
     db.query('SELECT * FROM users WHERE phone = ? AND password = ?', [phone, password], function (err, result) {
-        if (err) console.error(err);
-        if (result.length > 0) {
-            delete result[0].password;
-            // create token for user
-            var token = hat();
-            // insert to db to user_sessions
-            db.query('INSERT INTO user_sessions(user_id,session) VALUES (?,?)',[result[0].id,token],function (err, result){
-                if (err) console.error(err);
-            });
-            res.json({
-                status: true,
-                token: token,
-                user: result[0]
-            })
-        } else {
-            res.statusCode = 401
+        if (err) {
+            console.log('<LOG> - POST /admin/login - ERROR');
+            console.error(err);
             res.json(globals.messages.failure)
+        } else {
+            if (result.length > 0) {
+                delete result[0].password;
+                var token = hat();
+                db.query('INSERT INTO user_sessions(user_id,session) VALUES (?,?)',[result[0].id,token],function (err, result){
+                    if (err) {
+                        console.log('<LOG> - POST /admin/login - Wrong Credentials');
+                        console.error(err);
+                        res.statusCode = 401
+                        res.json(globals.messages.failure)
+                    } else {
+                        console.log('<LOG> - POST /admin/login - SUCCESS');
+                        res.json({
+                            status: true,
+                            token: token,
+                            user: result[0]
+                        })
+                    }
+                });
+            } else {
+                console.log('<LOG> - Admin Login Wrong Credentials');
+                res.statusCode = 401
+                res.json(globals.messages.failure)
+            }
         }
     })
 });
 
 router.get('/login', function (req, res) {
-    console.log('<LOG> - Admin Login');
+    console.log('<LOG> - GET /admin/login');
     const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
     if (incoming_token) {
         db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ?', [incoming_token], function(err, result) {
-            if (err) console.error(err)
-            delete result[0].password
-            res.json({
-                status: true,
-                user: result[0]
-            })
+            if (err) {
+                console.log('<LOG> - GET /admin/login - ERROR');
+                console.error(err)
+                res.json(globals.messages.failure)
+            } else {
+                if (result.length > 0) {
+                    delete result[0].password
+                    console.log('<LOG> - GET /admin/login - SUCCESS');
+                    res.json({
+                        status: true,
+                        user: result[0]
+                    })
+                } else {
+                    console.log('<LOG> - GET /admin/login - Unauthorized Credentials');
+                    res.statusCode = 401
+                    res.json(globals.messages.failure)
+                }
+            }
         })
+    } else {
+        console.log('<LOG> - GET /admin/login - Credentials Missing');
+        res.statusCode = 401
+        res.json(globals.messages.failure)
     }
 });
 
 module.exports = router;
-
-// INSERT INTO `users` (`id`, `name`, `user_type`, `email`, `phone`, `password`, `avatar`, `deleted`, `created_at`, `update_at`) VALUES (NULL, 'Admin', '0', 'admin@doggiehunt.co.il', '0666', 'admin', '', '', CURRENT_TIMESTAMP, '');
