@@ -93,7 +93,7 @@ router.post('/dog_parks/add', function (req, res) {
                     console.error(err)
                     res.json(globals.messages.failure)
                 } else {
-                    db.query('SELECT * FROM places WHERE id = ?', insert_dog_park_result.id, function (err, select_dog_park_result) {
+                    db.query('SELECT * FROM places WHERE id = (?)', [insert_dog_park_result.id], function (err, select_dog_park_result) {
                         if (err) {
                             console.log('<LOG> - POST /admin/dog_parks/add - ERROR')
                             console.error(err)
