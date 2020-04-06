@@ -27,4 +27,4 @@ app.get('/', (req, res) => res.json(globals.messages.success))
 
 // db.end()
 
-module.exports = app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
+module.exports = app.listen(port, () => console.log(`Doggie Hunt Server Side listening at http://localhost:${port}`))
