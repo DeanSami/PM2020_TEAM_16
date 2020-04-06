@@ -15,7 +15,7 @@ router.use(function isAdmin (req, res, next) {
                 if (err) {
                     console.log('<LOG> - POST /admin/* - ERROR')
                     console.error(err)
-                    res.statusCode = 401
+                    res.statusCode = 400
                     res.json(globals.messages.failure)
                 }
                 else if (result.length > 0) {
@@ -42,7 +42,7 @@ router.post('/dog_parks/add', function (req, res) {
 
     if (!req.body.user_input) {
         console.log('<LOG> - POST /dog_parks/add - Wrong Payload Format')
-        res.statusCode = 401
+        res.statusCode = 400
         res.json(globals.messages.failure)
     } else {
         const {
@@ -69,7 +69,7 @@ router.post('/dog_parks/add', function (req, res) {
             || condition == undefined)
             {
                 console.log('<LOG> - POST /dog_parks/add - At least 1 field is missing')
-                res.statusCode = 401
+                res.statusCode = 400
                 res.json(globals.messages.failure)
             }
         else if (typeof(type) !== 'number'
@@ -83,7 +83,7 @@ router.post('/dog_parks/add', function (req, res) {
             || typeof(condition) !== 'number')
         {
             console.log('<LOG> - POST /dog_parks/add - Error with type of at least 1 input field')
-            res.statusCode = 401
+            res.statusCode = 400
             res.json(globals.messages.failure)
         } else {
             var values = {type:type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
@@ -142,7 +142,7 @@ router.get('/dog_parks/get' , function(req, res) {
                 })
             }
             else{
-                res.statusCode = 401;
+                res.statusCode = 400;
                 res.json(globals.messages.failure);
             }
 
@@ -164,7 +164,6 @@ router.post('/dog_parks/delete',function (req,res) {
                 console.error(err);
                 res.json(globals.messages.failure);
             } if (result.affectedRows > 0) {
-                res.statusCode = 200;
                 res.json({
                     status: true,
                     message: "delete action has been done",
@@ -220,7 +219,7 @@ router.post('/login', function (req, res) {
                                 if (err) {
                                     console.log('<LOG> - POST /admin/login - Wrong Values inserted');
                                     console.error(err);
-                                    res.statusCode = 401
+                                    res.statusCode = 400
                                     res.json(globals.messages.failure)
                                 } else {
                                     console.log('<LOG> - POST /admin/login - SUCCESS');
