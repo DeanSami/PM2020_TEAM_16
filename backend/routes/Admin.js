@@ -150,6 +150,37 @@ router.get('/dog_parks/get' , function(req, res) {
 
 
 });
+//delete park
+router.post('/dog_parks/delete',function (req,res) {
+    console.log('<LOG> - Admin DELETE Dog Park');
+    if(req.body.id)
+    {
+        var temp_id = req.body.id;
+        db.query('UPDATE places SET deleted = 1 WHERE id = ? ', [temp_id],function (err,result) {
+            if (err) {
+                console.log('<LOG> - POST /admin/DELETE - ERROR');
+                console.error(err);
+                res.json(globals.messages.failure);
+            } if (result.length>0) {
+                res.statusCode = 200;
+                res.json({
+                    status: true,
+                    message: "delete action has been done",
+                })
+            }
+                else {
+                    console.log('<LOG> - POST /admin/Delete - Wrong Credentials pass');
+                    res.statusCode = 400;
+                    res.json(globals.messages.failure);
+                }
+
+        });
+    }
+    else{
+        console.error("not ID has been send");
+        res.json(globals.messages.failure);
+    }
+});
 
 router.post('/register', function(req, res) {
     bcrypt.hash(req.body.pass, 10, function (err, hash) {
@@ -241,5 +272,8 @@ router.get('/login', function (req, res) {
         res.json(globals.messages.failure)
     }
 });
+
+
+
 
 module.exports = router;

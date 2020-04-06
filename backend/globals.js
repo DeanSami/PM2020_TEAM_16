@@ -8,7 +8,7 @@ module.exports = {
         }
     },
     user_types: {
-        admin: 0
+        admin: 0,
     },
     log_func: function Log (req, res, next) {
         console.log('<LOG> -', new Date().toUTCString());

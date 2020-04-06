@@ -8,7 +8,7 @@ export interface LoginResponse {
   token?: string;
 }
 
-export interface PlaceResponse{
+export interface PlaceResponse {
   status: boolean;
   message?: string;
   Place?: Place | Place[];
