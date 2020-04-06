@@ -10,8 +10,8 @@ router.use(function adminLog (req, res, next) {
 });
 
 router.use(function isAdmin (req, res, next) {
-if (req.originalUrl == '/admin/login') next()
-else {
+    if (req.originalUrl == '/admin/login') next()
+    else {
     console.log('<LOG> - POST /admin/*')
         const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
         if (incoming_token) {
@@ -19,8 +19,10 @@ else {
                 if (err) {
                     console.log('<LOG> - POST /admin/* - ERROR')
                     console.error(err)
+                    res.statusCode = 401
+                    res.json(globals.messages.failure)
                 }
-                if (result.length > 0) {
+                else if (result.length > 0) {
                     console.log('<LOG> - POST /admin/* - SUCCESS')
                     next()
                 } else {
@@ -47,9 +49,9 @@ router.post('/dog_parks/add', function (req, res) {
     } else {
         const {
             type,
-            name, 
-            SHAPE_Leng, 
-            SHAPE_Area, 
+            name,
+            SHAPE_Leng,
+            SHAPE_Area,
             street,
             house_number,
             neighborhood,
@@ -57,37 +59,37 @@ router.post('/dog_parks/add', function (req, res) {
             handicapped,
             condition
         } = req.body.user_input;
-    
-        if (!type 
-            || !name 
-            || !SHAPE_Leng 
-            || !SHAPE_Area 
-            || !house_number 
-            || !neighborhood
-            || !operator 
-            || !handicapped
-            || !condition)
+        
+        if (type == undefined
+            || name == undefined
+            || SHAPE_Leng == undefined
+            || SHAPE_Area == undefined 
+            || house_number == undefined
+            || neighborhood == undefined
+            || operator == undefined
+            || handicapped == undefined
+            || condition == undefined)
             {
                 console.log('<LOG> - POST /dog_parks/add - At least 1 field is missing')
                 res.statusCode = 401
                 res.json(globals.messages.failure)
             }
-        else if (typeof(type) !== Number 
-            || typeof(name) !== String 
-            || typeof(SHAPE_Leng) !== String 
-            || typeof(SHAPE_Area) !== String 
-            || typeof(house_number) !== String 
-            || typeof(neighborhood) !== String 
-            || typeof(operator) !== String 
-            || typeof(handicapped) !== Boolean 
-            || typeof(condition) !== Number)
+        else if (typeof(type) !== 'number' 
+            || typeof(name) !== 'string' 
+            || typeof(SHAPE_Leng) !== 'string' 
+            || typeof(SHAPE_Area) !== 'string' 
+            || typeof(house_number) !== 'string' 
+            || typeof(neighborhood) !== 'string' 
+            || typeof(operator) !== 'string' 
+            || typeof(handicapped) !== 'boolean' 
+            || typeof(condition) !== 'number')
         {
             console.log('<LOG> - POST /dog_parks/add - Error with type of at least 1 input field')
             res.statusCode = 401
             res.json(globals.messages.failure)
         } else {
             var values = {type:type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
-            if (street != NULL)
+            if (street !== undefined)
                 values.street = street;
         
             db.query('INSERT INTO places SET ?', values, function (err, result) {
