@@ -108,42 +108,41 @@ router.post('/dog_parks/add', function (req, res) {
 });
 
 router.get('/dog_parks/get' , function(req, res) {
-    console.log('<LOG> - Admin GET Park Dog');
+    console.log('<LOG> - GET /admin/dog_parks/get');
     //if the clint want specific park dog
     if (req.body.id)
     {
         var temp_id = req.body.id;
         db.query('SELECT * FROM places WHERE id = ?',[temp_id] , function (err,result) {
-            if(err)
+            if(err) {
+                console.log('<LOG> - GET /admin/dog_parks/get - ERROR');
                 console.error(err);
-            if (result.length == 0){
-                res.statusCode = 401;
+                res.statusCode = 400;
                 res.json(globals.messages.failure);
+            } else {
+                console.log('<LOG> - GET /admin/dog_parks/get - SUCCESS');
+                res.json({
+                    status:true,
+                    places:result
+                })
             }
-            console.log(result);
-            res.json({
-                status:true,
-                place:result[0]
-            })
         })
     }
     //if the clint want all the park dog that at the db
     else{
         //todo enum to set Places.dogPark and remove 0
         db.query('SELECT * FROM places WHERE deleted = 0 AND type = ?' ,[0],function (err,result) {
-            if (err)
+            if (err) {
+                console.log('<LOG> - GET /admin/dog_parks/get - ERROR');
                 console.error(err);
-            if (result.length>0)
-            {
-                console.log(result);
-                res.json({
-                    status: true,
-                    place: result
-                })
-            }
-            else{
                 res.statusCode = 400;
                 res.json(globals.messages.failure);
+            } else {
+                console.log('<LOG> - GET /admin/dog_parks/get - SUCCESS');
+                res.json({
+                    status: true,
+                    places: result
+                })
             }
 
         })
