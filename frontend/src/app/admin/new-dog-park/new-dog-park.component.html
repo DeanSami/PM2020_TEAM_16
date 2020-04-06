@@ -1,22 +1,17 @@
 <div fxFill class="container" fxFill fxLayout="row" fxLayoutAlign="space-around center" >
-  <div fxLayout="column">
+  <div fxLayout="column" fxFill>
     <form [formGroup]="form" fxLayout="column">
       <mat-form-field appearance="fill">
         <mat-label>שם הפארק</mat-label>
-        <input matInput placeholder="שם הפארק" formControlName="nameofpark">
-        <input matInput>
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>idplaces</mat-label>
-        <input matInput placeholder="idplaces" formControlName="idplaces">
+        <input matInput placeholder="שם הפארק" formControlName="name">
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>סוג המיקום</mat-label>
-        <mat-select>
-          <mat-option formControlName="type_park" value="check1">גינת כלבים</mat-option>
-          <mat-option formControlName="type_park" value="check2">פארקים היסטורים</mat-option>
-          <mat-option formControlName="type_park" value="check3">בית קפה עם הכלב</mat-option>
-          <mat-option formControlName="type_park" value="check4">גנים לאומים</mat-option>
+        <mat-select formControlName="type_park">
+          <mat-option value="check1">גינת כלבים</mat-option>
+          <mat-option value="check2">פארקים היסטורים</mat-option>
+          <mat-option value="check3">בית קפה עם הכלב</mat-option>
+          <mat-option value="check4">גנים לאומים</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="fill">
@@ -35,12 +30,22 @@
         <mat-label>מפעיל המתקן</mat-label>
         <input matInput placeholder="מפעיל המתקן" formControlName="operator">
       </mat-form-field>
+
       <mat-form-field appearance="fill">
         <mat-label>תקינות המקום</mat-label>
-        <input matInput placeholder="תקינות המקום" formControlName="condition">
+        <mat-select formControlName="condition">
+          <mat-option [value]="conditionType.Working_Active">תקין ופעיל</mat-option>
+          <mat-option [value]="conditionType.Working_Not_Active">תקין ולא פעיל</mat-option>
+          <mat-option [value]="conditionType.Not_Working_Active">לא תקין ופעיל</mat-option>
+          <mat-option [value]="conditionType.Not_Working_Not_Active">לא תקין ולא פעיל</mat-option>
+        </mat-select>
       </mat-form-field>
-      <mat-slide-toggle formControlName="handicapped">בעל מוגבלות?</mat-slide-toggle>
-      <button mat-button>התחבר</button>
+
+      <div class="text-white">
+        <mat-label>מותאם לבעלי מוגבלויות?</mat-label>
+        <mat-slide-toggle formControlName="handicapped" color="primary"></mat-slide-toggle>
+      </div>
+      <button class="btn btn-primary" mat-button (click)="addDogPark()">הוסף פארק</button>
     </form>
   </div>
 </div>
