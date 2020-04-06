@@ -59,7 +59,7 @@ export class ApiProviderService {
     }
 
     const url = environment.apiUrl + path;
-
+    console.log('auth token', this.token);
     if (this.token) {
       headers = headers.append('x-auth', this.token);
     }

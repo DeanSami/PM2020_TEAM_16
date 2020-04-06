@@ -10,27 +10,30 @@ router.use(function adminLog (req, res, next) {
 });
 
 router.use(function isAdmin (req, res, next) {
+if (req.originalUrl == '/admin/login') next()
+else {
     console.log('<LOG> - POST /admin/*')
-    const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
-    if (incoming_token) {
-        db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ? AND user_type = ?', [incoming_token, globals.user_types.admin], function (err, result) {
-            if (err) {
-                console.log('<LOG> - POST /admin/* - ERROR')
-                console.error(err)
-            }
-            if (result.length > 0) {
-                console.log('<LOG> - POST /admin/* - SUCCESS')
-                next()
-            } else {
-                console.log('<LOG> - POST /admin/* - Unauthorized Access Attempt')
-                res.statusCode = 401
-                res.json(globals.messages.failure)
-            }
-        })
-    } else {
-        console.log('<LOG> - POST /admin/* - Missing Credentials')
-        res.statusCode = 401
-        res.json(globals.messages.failure)
+        const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
+        if (incoming_token) {
+            db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ? AND user_type = ?', [incoming_token, globals.user_types.admin], function (err, result) {
+                if (err) {
+                    console.log('<LOG> - POST /admin/* - ERROR')
+                    console.error(err)
+                }
+                if (result.length > 0) {
+                    console.log('<LOG> - POST /admin/* - SUCCESS')
+                    next()
+                } else {
+                    console.log('<LOG> - POST /admin/* - Unauthorized Access Attempt')
+                    res.statusCode = 401
+                    res.json(globals.messages.failure)
+                }
+            })
+        } else {
+            console.log('<LOG> - POST /admin/* - Missing Credentials')
+            res.statusCode = 401
+            res.json(globals.messages.failure)
+        }
     }
 });
 
@@ -49,8 +52,13 @@ router.post('/dog_parks/add', function (req, res) {
         handicapped,
         condition
     } = req.body.user_input
+    //לשאול את שושן לגבי שדה street
+    if (type !== Number || name !== String || SHAPE_Leng !== String || house_number !== String || neighborhood !== String || operator !== String || handicapped !== Boolean || condition !== Boolean)
+        console.error("typeof error");
+
 
     var values = {type:type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, street:street, house_number:house_number, neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition}
+    
     db.query('INSERT INTO places SET ?', values, function (err, result) {
         if (err) {
             console.log('<LOG> - POST /admin/dog_parks/add - ERROR')

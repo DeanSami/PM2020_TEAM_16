@@ -11,12 +11,20 @@ export class NewDogParkComponent implements OnInit {
   constructor() { }
 
   form = new FormGroup({
-    nameofpark: new FormControl('', [Validators.required]),
-    newpark: new FormControl('', [Validators.required]),
-    type_park: new FormControl('', [Validators.required]),
+    idplaces: new FormControl('', [Validators.maxLength(10)]),
+    nameofpark: new FormControl('', [Validators.minLength(6)]),
+    type_park: new FormControl('', [Validators.minLength(5)]),
+    SHAPE_Leng: new FormControl('', [Validators.minLength(5)]),
+    SHAPE_Area: new FormControl('', [Validators.minLength(5)]),
+    created_at: new FormControl('', []),
+    update_at: new FormControl('', []),
     street: new FormControl('', []),
-    neighborhood: new FormControl('', [Validators.required]),
-
+    house_number: new FormControl('', [Validators.maxLength(3)]),
+    neighborhood: new FormControl('', [Validators.minLength(5)]),
+    operator: new FormControl('', [Validators.maxLength(10)]),
+    handicapped: new FormControl('', [Validators.required]),
+    condition: new FormControl('', [Validators.maxLength(6)]),
+    deleted: new FormControl('', []),
   });
   mode: any;
 

@@ -21,12 +21,14 @@ export class AdminGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       if (!this.userService.loggedIn) {
         return new Promise<boolean>((resolve, reject) => {
-          this.userService.login().then((res: LoginResponse) => res.user ? resolve(true) : reject(false), () => {
-            reject(false);
+          this.userService.login().then((res: LoginResponse) => {
+            res ? resolve(true) : reject(false);
+          }, () => {
             this.router.navigate(['/login']);
           });
         });
       }
+      console.log('this.userService.loggedIn', this.userService.loggedIn);
       if (this.userService.loggedIn && this.userService.currentUser.getValue().user_type === UserType.Admin) {
         return true;
       }

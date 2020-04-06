@@ -4,7 +4,7 @@ import { MainComponent } from './main/main.component';
 import { AdminComponent } from './admin/admin.component';
 import { LoginComponent } from './admin/login/login.component';
 import {NewDogParkComponent} from './admin/new-dog-park/new-dog-park.component';
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import { AdminGuard } from './admin.guard';
 
 
