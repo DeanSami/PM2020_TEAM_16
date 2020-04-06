@@ -40,42 +40,53 @@ else {
 router.post('/dog_parks/add', function (req, res) {
     console.log('<LOG> - POST /admin/dog_parks/add')
 
-    const {
-        type,
-        name, 
-        SHAPE_Leng, 
-        SHAPE_Area, 
-        street,
-        house_number,
-        neighborhood,
-        operator,
-        handicapped,
-        condition
-    } = req.body.user_input;
-
-    if (type !== Number || name !== String || SHAPE_Leng !== String || SHAPE_Area !== String ||
-        house_number !== String || neighborhood !== String || operator !== String || handicapped !== Boolean || condition !== Boolean)
-        console.error("typeof error");
-    var values = {type:type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number, neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
-    if (street != NULL)
-        values.street = street;
+    if (!req.body.user_input) {
+        console.log('<LOG> - POST /dog_parks/add - Wrong Payload Format')
+        res.statusCode = 401
+        res.json(globals.messages.failure)
+    } else {
+        const {
+            type,
+            name, 
+            SHAPE_Leng, 
+            SHAPE_Area, 
+            street,
+            house_number,
+            neighborhood,
+            operator,
+            handicapped,
+            condition
+        } = req.body.user_input;
     
-     db.query('INSERT INTO places SET ?', values, function (err, result) {
-         if (err) {
-                console.log('<LOG> - POST /admin/dog_parks/add - ERROR')
-                console.error(err)
-                res.json(globals.messages.failure)
-            } else {
-               console.log('<LOG> - POST /admin/dog_parks/add SUCCESS')
-                res.json({
-                 status: true
-                })
+        if (!type || typeof(type) !== Number || !name || typeof(name) !== String || !SHAPE_Leng || typeof(SHAPE_Leng) !== String || !SHAPE_Area || typeof(SHAPE_Area) !== String || !house_number ||
+        typeof(house_number) !== String || !neighborhood || typeof(neighborhood) !== String || !operator || typeof(operator) !== String || !handicapped || typeof(handicapped) !== Boolean || !condition || typeof(condition) !== Boolean)
+        {
+            console.log('<LOG> - POST /dog_parks/add - Error with type of at least 1 input field')
+            res.statusCode = 401
+            res.json(globals.messages.failure)
+        } else {
+            var values = {type:type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
+            if (street != NULL)
+                values.street = street;
+        
+            db.query('INSERT INTO places SET ?', values, function (err, result) {
+                if (err) {
+                    console.log('<LOG> - POST /admin/dog_parks/add - ERROR')
+                    console.error(err)
+                    res.json(globals.messages.failure)
+                } else {
+                console.log('<LOG> - POST /admin/dog_parks/add SUCCESS')
+                    res.json({
+                        status: true
+                    })
+                }
+            })
         }
-    })
+    }
 
 });
 
-router.get('/dog_parks/get' , function(req,res){
+router.get('/dog_parks/get' , function(req, res) {
     console.log('<LOG> - Admin GET Park Dog');
     //if the clint want specific park dog
     if (req.body.id)
@@ -105,7 +116,6 @@ router.get('/dog_parks/get' , function(req,res){
                 console.log(result);
                 res.json({
                     status: true,
-
                     place: result
                 })
             }
