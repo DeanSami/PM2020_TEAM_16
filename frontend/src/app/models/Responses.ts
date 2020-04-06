@@ -1,5 +1,6 @@
 import { User } from './users';
-import { Places } from './places'
+import { Place } from './places';
+
 export interface LoginResponse {
   status: boolean;
   message?: string;
@@ -10,5 +11,5 @@ export interface LoginResponse {
 export interface PlaceResponse{
   status: boolean;
   message?: string;
-  Place?: Places | [Places];
+  Place?: Place | Place[];
 }
