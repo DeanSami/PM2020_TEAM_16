@@ -58,8 +58,29 @@ router.post('/dog_parks/add', function (req, res) {
             condition
         } = req.body.user_input;
     
-        if (!type || typeof(type) !== Number || !name || typeof(name) !== String || !SHAPE_Leng || typeof(SHAPE_Leng) !== String || !SHAPE_Area || typeof(SHAPE_Area) !== String || !house_number ||
-        typeof(house_number) !== String || !neighborhood || typeof(neighborhood) !== String || !operator || typeof(operator) !== String || !handicapped || typeof(handicapped) !== Boolean || !condition || typeof(condition) !== Boolean)
+        if (!type 
+            || !name 
+            || !SHAPE_Leng 
+            || !SHAPE_Area 
+            || !house_number 
+            || !neighborhood
+            || !operator 
+            || !handicapped
+            || !condition)
+            {
+                console.log('<LOG> - POST /dog_parks/add - At least 1 field is missing')
+                res.statusCode = 401
+                res.json(globals.messages.failure)
+            }
+        else if (typeof(type) !== Number 
+            || typeof(name) !== String 
+            || typeof(SHAPE_Leng) !== String 
+            || typeof(SHAPE_Area) !== String 
+            || typeof(house_number) !== String 
+            || typeof(neighborhood) !== String 
+            || typeof(operator) !== String 
+            || typeof(handicapped) !== Boolean 
+            || typeof(condition) !== Number)
         {
             console.log('<LOG> - POST /dog_parks/add - Error with type of at least 1 input field')
             res.statusCode = 401
