@@ -33,17 +33,18 @@ export class DogParksComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.places = this.rout.snapshot.data.dogParks.place;
+    this.places = this.rout.snapshot.data.dogParks.places;
     this.dataSource = new MatTableDataSource<Place>(this.places);
   }
 
-  removeDogPark(dogParkId: string) {
+  removeDogPark(dogParkId: number) {
     this.dialog.open(AreYouSureDialogComponent, {
       width: '250px',
     }).afterClosed().subscribe(result => {
       if (result) {
         this.dogParkService.deleteDogPark(dogParkId).subscribe(res => {
           console.log(res);
+          this.dataSource.data = this.dataSource.data.filter(park => park.id !== dogParkId);
           this.toastr.success('נמחק בהצלחה');
         }, err =>  {
           console.log(err);

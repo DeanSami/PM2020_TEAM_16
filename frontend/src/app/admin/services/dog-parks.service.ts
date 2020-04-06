@@ -11,11 +11,11 @@ export class DogParksService {
 
   constructor(private api: ApiProviderService) { }
 
-  getPlaces(): Observable<Place[]> {
+  getDogsPark(): Observable<Place[]> {
     return this.api.get('admin/dog_parks/get');
   }
 
-  deleteDogPark(dogParkId: string): Observable<boolean> {
+  deleteDogPark(dogParkId: number): Observable<boolean> {
     return this.api.post('admin/dog_parks/delete', {id: dogParkId});
   }
 

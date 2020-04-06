@@ -12,6 +12,6 @@ export class DogParksResolver implements Resolve<Place[]> {
 
   resolve() {
     const startTime = Date.now();
-    return this.dogParksService.getPlaces().pipe(delayWhen(() => timer(300 + startTime - Date.now())));
+    return this.dogParksService.getDogsPark().pipe(delayWhen(() => timer(300 + startTime - Date.now())));
   }
 }
