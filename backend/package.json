@@ -18,7 +18,11 @@
   },
   "homepage": "https://github.com/DeanSami/PM2020_TEAM_16#readme",
   "dependencies": {
+<<<<<<< HEAD
     "aws-sdk": "^2.653.0",
+=======
+    "bcrypt": "^4.0.1",
+>>>>>>> 3e52464edb892d86df5d13e048edaeba27e66c35
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",

@@ -1,13 +1,12 @@
-var express = require('express')
+const express = require('express')
 const db = require('../db-connect')
 const globals = require('../globals')
-var router = express.Router()
-var hat = require('hat')
-
-router.use(globals.log_func);
+const router = express.Router()
+const hat = require('hat')
+const bcrypt = require('bcrypt')
 
 router.use(function isAdmin (req, res, next) {
-    if (req.originalUrl == '/admin/login') next()
+    if (req.originalUrl == '/admin/login' || req.originalUrl == '/admin/register') next()
     else {
     console.log('<LOG> - POST /admin/*')
         const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
@@ -35,6 +34,8 @@ router.use(function isAdmin (req, res, next) {
         }
     }
 });
+
+router.use(globals.log_func);
 
 router.post('/dog_parks/add', function (req, res) {
     console.log('<LOG> - POST /admin/dog_parks/add')
@@ -150,36 +151,59 @@ router.get('/dog_parks/get' , function(req, res) {
 
 });
 
+router.post('/register', function(req, res) {
+    bcrypt.hash(req.body.pass, 10, function (err, hash) {
+        const values = {phone: req.body.phone, password: hash, user_type: 0}
+        db.query('INSERT INTO users SET ?', values, function (err, result) {
+            if (!err) res.json(globals.messages.success)
+        })
+    })
+})
+
 router.post('/login', function (req, res) {
     console.log('<LOG> - POST /admin/login');
     const phone = req.body.phone;
-    const password = req.body.pass;
-    db.query('SELECT * FROM users WHERE phone = ? AND password = ?', [phone, password], function (err, result) {
+    db.query('SELECT * FROM users WHERE phone = ?', [phone], function (err, phone_query_result) {
         if (err) {
             console.log('<LOG> - POST /admin/login - ERROR');
             console.error(err);
             res.json(globals.messages.failure)
         } else {
-            if (result.length > 0) {
-                delete result[0].password;
-                var token = hat();
-                db.query('INSERT INTO user_sessions(user_id,session) VALUES (?,?)',[result[0].id,token],function (err, result){
+            if (phone_query_result.length > 0) {
+                const password = req.body.pass;
+                bcrypt.compare(password, phone_query_result[0].password, function (err, pass_compare) {
                     if (err) {
-                        console.log('<LOG> - POST /admin/login - Wrong Credentials');
-                        console.error(err);
-                        res.statusCode = 401
+                        console.log('<LOG> - POST /admin/login - ERROR');
+                        console.error(err)
                         res.json(globals.messages.failure)
                     } else {
-                        console.log('<LOG> - POST /admin/login - SUCCESS');
-                        res.json({
-                            status: true,
-                            token: token,
-                            user: result[0]
-                        })
+                        if (!pass_compare) {
+                            console.log('<LOG> - POST /admin/login - Wrong Credentials pass');
+                            res.statusCode = 401
+                            res.json(globals.messages.failure)
+                        } else {
+                            delete phone_query_result[0].password;
+                            var token = hat();
+                            db.query('INSERT INTO user_sessions(user_id,session) VALUES (?,?)',[phone_query_result[0].id,token],function (err, insert_query_result){
+                                if (err) {
+                                    console.log('<LOG> - POST /admin/login - Wrong Values inserted');
+                                    console.error(err);
+                                    res.statusCode = 401
+                                    res.json(globals.messages.failure)
+                                } else {
+                                    console.log('<LOG> - POST /admin/login - SUCCESS');
+                                    res.json({
+                                        status: true,
+                                        token: token,
+                                        user: phone_query_result[0]
+                                    })
+                                }
+                            });
+                        }
                     }
-                });
+                })
             } else {
-                console.log('<LOG> - Admin Login Wrong Credentials');
+                console.log('<LOG> - POST /admin/login - Wrong Credentials');
                 res.statusCode = 401
                 res.json(globals.messages.failure)
             }
