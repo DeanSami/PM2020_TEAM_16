@@ -69,7 +69,8 @@ export class DogParksComponent implements OnInit {
       data: null
     }).afterClosed().subscribe(result => {
       if (result && result.status) {
-        this.dataSource.data.push(result.place);
+        this.dataSource.data.push(result.places[0]);
+        this.dataSource.data = this.dataSource.data;
       }
     });
   }
