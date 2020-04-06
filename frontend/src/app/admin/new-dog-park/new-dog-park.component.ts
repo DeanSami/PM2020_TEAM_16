@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { DogParksService } from '../services/dog-parks.service';
-import { ConditionType, ConditionTypeTitles, PlacesType } from '../../models/places';
+import { ConditionType, Place, PlacesType } from '../../models/places';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-new-dog-park',
@@ -13,11 +14,17 @@ import { Router } from '@angular/router';
 export class NewDogParkComponent implements OnInit {
   conditionType = ConditionType;
   placesType = PlacesType;
-  constructor(private placeService: DogParksService, private router: Router, private toastr: ToastrService) { }
+  constructor(
+    private dogParkService: DogParksService,
+    private router: Router,
+    private toastr: ToastrService,
+    @Inject(MAT_DIALOG_DATA) public dialogData: Place
+  ) {
+  }
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    type_park: new FormControl('', [Validators.required, Validators.minLength(5)]),
+    type: new FormControl('', [Validators.required, Validators.minLength(5)]),
     SHAPE_Leng: new FormControl('', [Validators.required, Validators.minLength(5)]),
     SHAPE_Area: new FormControl('', [Validators.required, Validators.minLength(5)]),
     street: new FormControl('', []),
@@ -34,8 +41,8 @@ export class NewDogParkComponent implements OnInit {
     return this.form.get('name');
   }
 
-  get type_park() {
-    return this.form.get('type_park');
+  get type() {
+    return this.form.get('type');
   }
 
   get SHAPE_Leng() {
@@ -70,16 +77,32 @@ export class NewDogParkComponent implements OnInit {
     return this.form.get('condition');
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    if (this.dialogData) {
+      this.form.setValue({
+        name: this.dialogData.name,
+        type: this.dialogData.type,
+        SHAPE_Leng: this.dialogData.SHAPE_Leng,
+        SHAPE_Area: this.dialogData.SHAPE_Area,
+        street: this.dialogData.street,
+        house_number: this.dialogData.house_number,
+        neighborhood: this.dialogData.neighborhood,
+        operator: this.dialogData.operator,
+        handicapped: this.dialogData.handicapped,
+        condition: this.dialogData.condition
+      });
+      console.log(this.dialogData);
+    }
+  }
 
   addDogPark() {
     if (this.form.invalid) {
       this.toastr.error('חובה למלא את כל השדות המסומנים');
       return;
     }
-    this.placeService.saveDogPark({
+    this.dogParkService.saveDogPark({
       user_input: {
-        type: this.type_park.value,
+        type: this.type.value,
         name: this.name.value,
         SHAPE_Leng: this.SHAPE_Leng.value,
         SHAPE_Area: this.SHAPE_Area.value,

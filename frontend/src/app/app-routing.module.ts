@@ -6,7 +6,7 @@ import { LoginComponent } from './admin/login/login.component';
 import {NewDogParkComponent} from './admin/new-dog-park/new-dog-park.component';
 import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import { AdminGuard } from './admin.guard';
-import { DogParksComponent } from './dog-parks/dog-parks.component';
+import { DogParksComponent } from './admin/dog-parks/dog-parks.component';
 import { DogParksResolver } from './admin/resolvers/dogParksResolver.resolver';
 
 
