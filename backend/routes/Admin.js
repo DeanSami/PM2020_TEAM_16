@@ -42,12 +42,13 @@ router.post('/dog_parks/add', function (req, res) {
         operator,
         handicapped,
         condition
-    } = req.body.user_input
+    } = req.body.user_input;
     //לשאול את שושן לגבי שדה street
-    if (type !== Number || name !== String || SHAPE_Leng !== String || house_number !== String || neighborhood !== String || operator !== String || handicapped !== Boolean || condition !== Boolean)
+    console.log("check1");
+    if (type !== Number || name !== String || SHAPE_Leng !== String || SHAPE_Area !== String || house_number !== String || neighborhood !== String || operator !== String || handicapped !== Boolean || condition !== Boolean)
         console.error("typeof error");
 
-
+    console.log("check2");
     var values = {type:type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, street:street, house_number:house_number, neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition}
     
     db.query('INSERT INTO places SET ?', values, function (err, result) {
@@ -60,7 +61,52 @@ router.post('/dog_parks/add', function (req, res) {
             })
         }
     })
-    
+
+});
+
+router.get('/dog_parks/get' , function(req,res){
+    console.log('<LOG> - Admin GET Park Dog');
+    //if the clint want specific park dog
+    if (req.body.id)
+    {
+        var temp_id = req.body.id;
+        db.query('SELECT * FROM places WHERE id = ?',[temp_id] , function (err,result) {
+            if(err)
+                console.error(err);
+            if (result.length == 0){
+                res.statusCode = 401;
+                res.json(globals.messages.failure);
+            }
+            console.log(result);
+            res.json({
+                status:true,
+                place:result[0]
+            })
+        })
+    }
+    //if the clint want all the park dog that at the db
+    else{
+        db.query('SELECT * FROM places' ,[],function (err,result) {
+            if (err)
+                console.error(err);
+            if (result.length>0)
+            {
+                console.log(result);
+                res.json({
+                    status: true,
+
+                    place: result
+                })
+            }
+            else{
+                res.statusCode = 401;
+                res.json(globals.messages.failure);
+            }
+
+        })
+    }
+
+
 });
 
 router.post('/login', function (req, res) {
