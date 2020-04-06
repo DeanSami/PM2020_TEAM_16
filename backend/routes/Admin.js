@@ -129,7 +129,8 @@ router.get('/dog_parks/get' , function(req, res) {
     }
     //if the clint want all the park dog that at the db
     else{
-        db.query('SELECT * FROM places' ,[],function (err,result) {
+        //todo enum to set Places.dogPark and remove 0
+        db.query('SELECT * FROM places WHERE deleted = 0 AND type = ?' ,[0],function (err,result) {
             if (err)
                 console.error(err);
             if (result.length>0)
@@ -156,23 +157,23 @@ router.post('/dog_parks/delete',function (req,res) {
     if(req.body.id)
     {
         var temp_id = req.body.id;
-        db.query('UPDATE places SET deleted = 1 WHERE id = ? ', [temp_id],function (err,result) {
+        db.query('UPDATE places SET deleted = 1 WHERE id = ? ', [2],function (err,result) {
+            console.log(result);
             if (err) {
                 console.log('<LOG> - POST /admin/DELETE - ERROR');
                 console.error(err);
                 res.json(globals.messages.failure);
-            } if (result.length>0) {
+            } if (result.affectedRows > 0) {
                 res.statusCode = 200;
                 res.json({
                     status: true,
                     message: "delete action has been done",
                 })
+            } else {
+                console.log('<LOG> - POST /admin/Delete - Wrong Parameters');
+                res.statusCode = 400;
+                res.json(globals.messages.failure);
             }
-                else {
-                    console.log('<LOG> - POST /admin/Delete - Wrong Credentials pass');
-                    res.statusCode = 400;
-                    res.json(globals.messages.failure);
-                }
 
         });
     }
