@@ -10,21 +10,25 @@ router.use(function adminLog (req, res, next) {
 });
 
 router.use(function isAdmin (req, res, next) {
-    const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
-    if (incoming_token) {
-        db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ? AND user_type = ?', [incoming_token, globals.user_types.admin], function (err, result) {
-            if (err) console.error(err)
-            if (result.length > 0) {
-                next()
-            } else {
-                res.statusCode = 401
-                res.json(globals.messages.failure)
-            }
-        })
-    } else {
-        res.statusCode = 401
-        res.json(globals.messages.failure)
+    if (req.originalUrl == '/admin/login') next()
+    else {
+        const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
+        if (incoming_token) {
+            db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ? AND user_type = ?', [incoming_token, globals.user_types.admin], function (err, result) {
+                if (err) console.error(err)
+                if (result.length > 0) {
+                    next()
+                } else {
+                    res.statusCode = 401
+                    res.json(globals.messages.failure)
+                }
+            })
+        } else {
+            res.statusCode = 401
+            res.json(globals.messages.failure)
+        }
     }
+    
         
 });
 

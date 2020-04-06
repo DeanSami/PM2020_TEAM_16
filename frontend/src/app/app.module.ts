@@ -31,6 +31,9 @@ import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard
 import {MatSelectModule} from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { AdminSidebarComponent } from './admin/admin-sidebar/admin-sidebar.component';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   declarations: [
@@ -46,6 +49,9 @@ import { AdminSidebarComponent } from './admin/admin-sidebar/admin-sidebar.compo
   imports: [
     HttpClientModule,
     BrowserModule,
+    BsDropdownModule.forRoot(),
+    TooltipModule.forRoot(),
+    ModalModule.forRoot(),
     AppRoutingModule,
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
