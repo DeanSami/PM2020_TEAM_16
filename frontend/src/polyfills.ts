@@ -1,10 +1,14 @@
+/***************************************************************************************************
+ * Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
+ */
+import '@angular/localize/init';
 /**
  * This file includes polyfills needed by Angular and is loaded before the app.
  * You can add your own extra polyfills to this file.
  *
  * This file is divided into 2 sections:
  *   1. Browser polyfills. These are applied before loading ZoneJS and are sorted by browsers.
- *   2. Application imports. Files imported after ZoneJS that should be loaded before your main
+ *   2. Application imports. Files imported after ZoneJS that should be loaded before your userLayout
  *      file.
  *
  * The current setup is for so-called "evergreen" browsers; the last versions of browsers that

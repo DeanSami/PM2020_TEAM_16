@@ -54,12 +54,24 @@
               "src/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
-              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.scss",
-              "node_modules/ngx-toastr/toastr.css"
+              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
+              "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
+
+              "node_modules/sweetalert2/dist/sweetalert2.min.css",
+              "node_modules/nouislider/distribute/nouislider.min.css",
+              "node_modules/dragula/dist/dragula.css",
+              "src/assets/css/wizard.css",
+              "src/assets/css/quill.snow.css",
+              "src/assets/css/quill.bubble.css",
+              "src/assets/css/hopscotch.css",
+              "src/assets/css/demo.css",
+              "src/assets/sass/app.scss",
+              "node_modules/ngx-toastr/toastr.css",
+              "src/styles.scss"
             ],
             "scripts": [
+              "src/assets/vendor/pace/pace.min.js"
             ]
           },
           "configurations": {
@@ -122,12 +134,23 @@
               "src/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
-              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.scss",
-              "node_modules/ngx-toastr/toastr.css"
+              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
+              "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
+              "node_modules/sweetalert2/dist/sweetalert2.min.css",
+              "node_modules/nouislider/distribute/nouislider.min.css",
+              "node_modules/dragula/dist/dragula.css",
+              "src/assets/css/wizard.css",
+              "src/assets/css/quill.snow.css",
+              "src/assets/css/quill.bubble.css",
+              "src/assets/css/hopscotch.css",
+              "src/assets/css/demo.css",
+              "src/assets/sass/app.scss",
+              "node_modules/ngx-toastr/toastr.css",
+              "src/styles.scss"
             ],
             "scripts": [
+              "src/assets/vendor/pace/pace.min.js"
             ]
           }
         },

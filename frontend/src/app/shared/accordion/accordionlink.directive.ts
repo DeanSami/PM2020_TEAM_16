@@ -29,6 +29,7 @@ export class AccordionLinkDirective implements OnInit, OnDestroy {
     }
   }
 
+  // tslint:disable-next-line:variable-name
   protected _selected: boolean;
   protected nav: AccordionDirective;
 

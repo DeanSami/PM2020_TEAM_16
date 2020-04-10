@@ -1,6 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
-* {
-  direction: rtl!important;
+@font-face {
+  font-family: hussar;
+  src: url(assets/fonts/hussar/HussarBdObl.otf) format("opentype");
 }
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -1,0 +1,19 @@
+.dropdown-toggle {
+  padding: 0;
+  cursor: pointer;
+  &::after {
+    content: unset;
+  }
+  img {
+    max-height: 45px;
+  }
+}
+.logo {
+  h1 {
+    font-family: 'hussar', serif;
+  }
+  img {
+    height: 50px;
+    max-height: 60px;
+  }
+}

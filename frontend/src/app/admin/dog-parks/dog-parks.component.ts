@@ -7,6 +7,8 @@ import { AreYouSureDialogComponent } from '../../are-you-sure-dialog/are-you-sur
 import { NewDogParkComponent } from '../new-dog-park/new-dog-park.component';
 import { DogParksService } from '../services/dog-parks.service';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
+import { LayoutService } from '../shared/services/layout.service';
 
 @Component({
   selector: 'app-dog-parks',
