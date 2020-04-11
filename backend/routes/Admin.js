@@ -289,7 +289,7 @@ router.get('/interestpoint',function(req,res){
     {
         var temp_id = req.body.id;
         var temp_type = 0;
-        db.query('SELECT * FROM places WHERE id = ? AND type != ?',[temp_id,temp_type],function(err,result){
+        db.query('SELECT * FROM places WHERE id = ? AND type != ? AND deleted = 0',[temp_id,temp_type],function(err,result){
            if(err){
                console.log('<LOG> - GET /interest point - ERROR');
                console.error(err);
@@ -313,7 +313,7 @@ router.get('/interestpoint',function(req,res){
     //get all of the interest points
     else {
         var temp_type = 0;
-        db.query('SELECT * FROM places WHERE type != ?',[temp_type] , function (err,result) {
+        db.query('SELECT * FROM places WHERE type != ? AND deleted =0',[temp_type] , function (err,result) {
             if (err) {
                 console.log('<LOG> - GET /interest point - ERROR');
                 console.error(err);
@@ -336,6 +336,31 @@ router.get('/interestpoint',function(req,res){
         })
     }
 
+});
+//DELETE REQUEST INTEREST POINT   -> deleted only by ID!!!
+router.delete('/interestpoint',function (req,res) {
+    if(req.query.id) {
+        var temp_id = req.query.id;
+        console.log("id = ",temp_id);
+        db.query('UPDATE places SET deleted = 1 WHERE deleted = 0 AND id = ?',[temp_id],function (err,result) {
+        if(err){
+            console.log('<LOG> - DELETE /interest point - ERROR');
+            console.error(err);
+            res.json(globals.messages.failure)
+        } else {
+            if (result.affectedRows > 0) {
+                res.json({
+                    status: true,
+                    message: "delete action has been done",
+                })
+            } else {
+                console.log('<LOG> - DELETE /interestpoint - Wrong Parameters');
+                res.statusCode = 400;
+                res.json(globals.messages.failure);
+            }
+        }
+     })
+    }
 });
 // export enum PlacesType {
 //     Dog_garden = 0,
