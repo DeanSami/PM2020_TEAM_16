@@ -310,6 +310,31 @@ router.get('/interestpoint',function(req,res){
            }
         });
     }
+    //get all of the interest points
+    else {
+        var temp_type = 0;
+        db.query('SELECT * FROM places WHERE type != ?',[temp_type] , function (err,result) {
+            if (err) {
+                console.log('<LOG> - GET /interest point - ERROR');
+                console.error(err);
+                res.json(globals.messages.failure)
+            } else {
+                if(result.length > 0)
+                {
+                    console.log('<LOG> - GET /interest point - SUCCESS');
+                    res.json({
+                        status:true,
+                        place: result
+                    });
+                }
+                else{
+                    console.log('<LOG> - GET /interest point - Unauthorized Credentials');
+                    res.statusCode = 401;
+                    res.json(globals.messages.failure)
+                }
+            }
+        })
+    }
 
 });
 // export enum PlacesType {
