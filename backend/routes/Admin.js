@@ -75,7 +75,7 @@ router.post('/dog_parks/add', function (req, res) {
             || typeof(house_number) !== 'string'
             || typeof(neighborhood) !== 'string'
             || typeof(operator) !== 'string'
-            || typeof(handicapped) !== 'boolean'
+            || (typeof(handicapped) !== 'boolean' && typeof(handicapped) !== 'number')
             || typeof(condition) !== 'number')
         {
             console.log('<LOG> - POST /dog_parks/add - Error with type of at least 1 input field');
@@ -185,10 +185,18 @@ router.post('/dog_parks/delete',function (req,res) {
 });
 //REGISTER REQUEST
 router.post('/register', function(req, res) {
+    console.log("<LOG> - POST /admin/register")
     bcrypt.hash(req.body.pass, 10, function (err, hash) {
         const values = {phone: req.body.phone, password: hash, user_type: 0}
         db.query('INSERT INTO users SET ?', values, function (err, result) {
-            if (!err) res.json(globals.messages.success)
+            if (!err) {
+                console.log("<LOG> - POST /admin/register - ERROR")
+                res.json(globals.messages.success)
+            }
+            else {
+                console.log("<LOG> - POST /admin/register - SUCCESS")
+                res.json(globals.messages.success)
+            }
         })
     })
 });
