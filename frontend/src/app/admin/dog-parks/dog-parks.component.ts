@@ -4,7 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AreYouSureDialogComponent } from '../../are-you-sure-dialog/are-you-sure-dialog.component';
-import { NewDogParkComponent } from '../new-dog-park/new-dog-park.component';
+import { NewDogParkComponent } from './new-dog-park/new-dog-park.component';
 import { DogParksService } from '../services/dog-parks.service';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';

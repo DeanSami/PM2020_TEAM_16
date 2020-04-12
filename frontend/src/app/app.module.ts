@@ -33,7 +33,6 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
 import { AgmCoreModule } from '@agm/core';
 import { FullAdminComponent } from './layouts/full-admin/full-admin.component';
 import { LoginComponent } from './admin/login/login.component';
-import { NewDogParkComponent } from './admin/new-dog-park/new-dog-park.component';
 import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import { AdminSidebarComponent } from './admin/admin-sidebar/admin-sidebar.component';
 import { DogParksComponent } from './admin/dog-parks/dog-parks.component';
@@ -46,6 +45,9 @@ import { SharedModule } from './admin/shared/shared.module';
 import { AuthService } from './admin/services/auth.service';
 import { DogParksResolver } from './admin/resolvers/dogParksResolver.resolver';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { InterestingPointComponent } from './admin/interesting-point/interesting-point.component';
+import { NewInterestingPointComponent } from './admin/interesting-point/new-interesting-point/new-interesting-point.component';
+import { NewDogParkComponent } from './admin/dog-parks/new-dog-park/new-dog-park.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -70,7 +72,9 @@ export function createTranslateLoader(http: HttpClient) {
     NewDogParkComponent,
     AdminDashboardComponent,
     AdminSidebarComponent,
-    DogParksComponent
+    DogParksComponent,
+    InterestingPointComponent,
+    NewInterestingPointComponent
   ],
   imports: [
     HttpClientModule,

@@ -3,7 +3,7 @@
 <!--  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium">-->
 <!--</mat-form-field>-->
 
-<table mat-table fxFill [dataSource]="dataSource" class="mat-elevation-z8 text-right">
+<table mat-table fxFill [dataSource]="dataSource" class="mat-elevation-z8 text-left">
 
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>שם </th>
@@ -49,5 +49,5 @@
 </table>
 
 <div class="pt-4" fxLayout="row" fxLayoutAlign="start center" >
-  <button fxFill  class="btn btn-raised mr-1 btn-primary" (click)="addDogPark()" >הוסף חדש</button>
+  <button fxFill class="btn btn-raised mr-1 btn-primary" (click)="addDogPark()" >הוסף חדש</button>
 </div>
