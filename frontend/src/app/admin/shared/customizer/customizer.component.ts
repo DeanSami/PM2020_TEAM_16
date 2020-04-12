@@ -32,7 +32,7 @@ export class CustomizerComponent implements OnInit, AfterViewInit, OnDestroy {
     layout: 'Light'
   };
   size = 'sidebar-md';
-  isOpen = true;
+  isOpen = false;
   public config: any = {};
   layoutSub: Subscription;
   isBgImageDisplay = true;
@@ -64,7 +64,6 @@ export class CustomizerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.config = this.configService.templateConf;
-    this.isOpen = !this.config.layout.customizer.hidden;
 
     if (this.config.layout.sidebar.size) {
       this.options.sidebarSize = this.config.layout.sidebar.size;

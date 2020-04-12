@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import { DogParksService } from '../services/dog-parks.service';
-import { ConditionType, Place, PlacesType } from '../../models/places';
+import { DogParksService } from '../../services/dog-parks.service';
+import { ConditionType, Place, PlacesType } from '../../../models/places';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
