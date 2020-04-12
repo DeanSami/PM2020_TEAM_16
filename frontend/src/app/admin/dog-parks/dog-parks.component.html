@@ -3,7 +3,7 @@
 <!--  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium">-->
 <!--</mat-form-field>-->
 
-<table mat-table fxFill [dataSource]="dataSource" class="mat-elevation-z8 text-right">
+<table mat-table fxFill [dataSource]="dataSource" class="mat-elevation-z8 text-left">
 
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>שם </th>
@@ -38,12 +38,8 @@
   <ng-container matColumnDef="action">
     <th mat-header-cell *matHeaderCellDef>פעולות</th>
     <td mat-cell *matCellDef="let element">
-      <button (click)="removeDogPark(element.id)" mat-button>
-        <i class="material-icons">delete_forever</i>
-      </button>
-      <button (click)="editDogPark(element)" mat-button>
-        <i class="material-icons">edit</i>
-      </button>
+      <i class="ft-trash-2 cursor-pointer font-medium-3 danger ml-3" (click)="removeDogPark(element.id)"></i>
+      <i class="ft-edit-2 cursor-pointer font-medium-3 success ml-3" (click)="editDogPark(element)"></i>
     </td>
   </ng-container>
 
@@ -53,5 +49,5 @@
 </table>
 
 <div class="pt-4" fxLayout="row" fxLayoutAlign="start center" >
-  <button fxFill class="btn btn-primary" (click)="addDogPark()" >הוסף חדש</button>
+  <button fxFill class="btn btn-raised mr-1 btn-primary" (click)="addDogPark()" >הוסף חדש</button>
 </div>

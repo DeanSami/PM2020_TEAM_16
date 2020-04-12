@@ -1,0 +1,39 @@
+
+<!--<div class="userLayout-container">-->
+<!--  <mat-toolbar color="warn">-->
+
+<!--    <button mat-icon-button (click)="sidenav.toggle()">-->
+<!--      <mat-icon>menu</mat-icon>-->
+
+<!--    </button>-->
+<!--  </mat-toolbar>-->
+<!--  <mat-sidenav-container class="example-container"  >-->
+
+<!--    <mat-sidenav #sidenav class="dark-sidebar pl-xs" mode="side" [mode]="mode.value" [(opened)]="opened" >-->
+<!--      <app-sidebar></app-sidebar>-->
+<!--    </mat-sidenav>-->
+
+
+<!--    <mat-sidenav-content class="page-wrapper">-->
+<!--      <div class="page-content">-->
+<!--        asdfasdf-->
+<!--        <router-outlet></router-outlet>-->
+<!--      </div>-->
+<!--    </mat-sidenav-content>-->
+
+
+<!--  </mat-sidenav-container>-->
+
+<!--</div>-->
+
+
+<app-user-header dir="rtl"></app-user-header>
+
+<main id="main" dir="rtl">
+  <router-outlet></router-outlet>
+</main>
+
+<app-user-footer dir="rtl"></app-user-footer>
+
+
+
