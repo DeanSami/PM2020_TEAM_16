@@ -154,24 +154,26 @@ router.get('/dog_parks/get' , function(req, res) {
         }
     });
 //DELETE PARK REQUEST
-router.post('/dog_parks/delete',function (req,res) {
-    console.log('<LOG> - POST /dog_parks/delete - Invoke');
-    if(req.body.id)
+router.delete('/dog_parks',function (req,res) {
+    console.log('<LOG> - DELETE /PARK DOG - Invoke');
+    if(req.query.id)
     {
-        var temp_id = req.body.id;
-        db.query('UPDATE places SET deleted = 1 WHERE id = ? ', [req.body.id],function (err,result) {
+        var temp_id = req.query.id;
+        db.query('UPDATE places SET deleted = 1 WHERE id = ? AND deleted = 0 ', [temp_id],function (err,result) {
             console.log(result);
             if (err) {
-                console.log('<LOG> - POST /admin/DELETE - ERROR');
+                console.log('<LOG> - DELETE /PARK DOG - ERROR');
                 console.error(err);
                 res.json(globals.messages.failure);
             } if (result.affectedRows > 0) {
+                console.log("<LOG> - DELETE /PARK DOG - SUCCESS");
                 res.json({
+
                     status: true,
                     message: "delete action has been done",
                 })
             } else {
-                console.log('<LOG> - POST /admin/Delete - Wrong Parameters');
+                console.log('<LOG> - DELETE /PARK DOG - Wrong Parameters');
                 res.statusCode = 400;
                 res.json(globals.messages.failure);
             }
@@ -214,7 +216,6 @@ router.post('/login', function (req, res) {
                 const password = req.body.pass;
                 bcrypt.compare(password, phone_query_result[0].password, function (err, pass_compare) {
                     if (err) {
-                        console.log('<LOG> - POST /admin/login - ERROR');
                         console.error(err);
                         res.json(globals.messages.failure)
                     } else {
@@ -364,8 +365,8 @@ router.delete('/interestpoint',function (req,res) {
 });
 // export enum PlacesType {
 //     Dog_garden = 0,
-//         Historic_Parks = 1,
-//         Cafewithdog = 2,
-//         NationalParks = 3,
+//     Historic_Parks = 1,
+//     Cafewithdog = 2,
+//     NationalParks = 3
 // }
 module.exports = router;
