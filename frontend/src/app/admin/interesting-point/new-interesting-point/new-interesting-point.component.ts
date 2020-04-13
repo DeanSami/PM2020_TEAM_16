@@ -75,5 +75,10 @@ export class NewInterestingPointComponent implements OnInit {
   }
   ngOnInit(): void {
   }
-
+  addInterestingPoint() {
+    if (this.form.invalid) {
+      this.toastr.error('חובה למלא את כל השדות המסומנים');
+      return;
+    }
+  }
 }
