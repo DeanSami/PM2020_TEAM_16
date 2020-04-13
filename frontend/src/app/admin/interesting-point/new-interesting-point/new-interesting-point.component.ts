@@ -80,6 +80,9 @@ export class NewInterestingPointComponent implements OnInit {
         SHAPE_Leng: this.dialogData.SHAPE_Leng,
         SHAPE_Area: this.dialogData.SHAPE_Area,
         street: this.dialogData.street,
+        house_number: this.dialogData.house_number,
+        neighborhood: this.dialogData.neighborhood,
+        operator: this.dialogData.operator,
       });
       console.log(this.dialogData);
     }
