@@ -353,7 +353,7 @@ router.patch('/dog_parks',function (req,res) {
         }
     }
 });
-
+// ADD REQUEST INTEREST POINT
 
 
 //GET REQUEST INTEREST POINT
@@ -435,7 +435,76 @@ router.delete('/interesting_point',function (req,res) {
     }
 });
 //todo update for interesting points
+//UPDATE INTERESTING POINTS REQUEST
+router.patch('/interesting_point',function (req,res) {
+    console.log('<LOG> - UPDATE /interesting_point - Invoke');
+    if (!req.body.user_input) {
+        console.log('<LOG> - UPDATE /interesting_point - Wrong Payload Format');
+        res.json(globals.messages.failure)
+    } else {
+        const {
+            id,
+            name,
+            type,
+            SHAPE_Leng,
+            SHAPE_Area,
+            street,
+            house_number,
+            neighborhood,
+            operator,
+            handicapped,
+            condition
+        } = req.body.user_input;
 
+        if (name == undefined
+            || SHAPE_Leng == undefined
+            || SHAPE_Area == undefined
+            || house_number == undefined
+            || neighborhood == undefined
+            || operator == undefined
+            || handicapped == undefined
+            || condition == undefined)
+        {
+            console.log('<LOG> - UPDATE /dog_parks - At least 1 field is missing');
+            res.statusCode = 400;
+            res.json(globals.messages.failure)
+        }
+        else if (typeof(name) !== 'string'
+            || typeof(SHAPE_Leng) !== 'string'
+            || typeof(SHAPE_Area) !== 'string'
+            || typeof(house_number) !== 'string'
+            || typeof(neighborhood) !== 'string'
+            || typeof(operator) !== 'string'
+            || (typeof(handicapped) !== 'boolean' && typeof(handicapped) !== 'number')
+            || typeof(condition) !== 'number')
+        {
+            console.log('<LOG> - UPDATE /interesting_point - Error with type of at least 1 input field');
+            res.statusCode = 400;
+            res.json(globals.messages.failure)
+        } else {
+            var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,
+                    type:type,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
+            if (street !== undefined)
+                values.street = street;
+
+            var temp_id = values.id;
+            db.query('UPDATE places SET ? WHERE id = ?', [values, temp_id], function (err, result) {
+                if (err) {
+                    console.log('<LOG> - PATCH /interesting_point - ERROR');
+                    console.error(err);
+                    res.statusCode = 400;
+                    res.json(globals.messages.failure)
+                } else {
+                    console.log('<LOG> - PATCH /interesting_point - SUCCESS');
+                    res.json({
+                        status: true,
+                        places: result
+                    })
+                }
+            })
+        }
+    }
+});
 // export enum PlacesType {
 //     Dog_garden = 0,
 //     Historic_Parks = 1,
