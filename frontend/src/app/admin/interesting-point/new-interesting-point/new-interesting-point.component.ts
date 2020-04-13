@@ -28,7 +28,8 @@ export class NewInterestingPointComponent implements OnInit {
     SHAPE_Area: new FormControl('', [Validators.required, Validators.minLength(5)]),
     street: new FormControl('', []),
     house_number: new FormControl('', [Validators.required, Validators.maxLength(10)]),
-
+    neighborhood: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    operator: new FormControl('', [Validators.required, Validators.maxLength(10)]),
   });
   mode: any;
   get name() {
