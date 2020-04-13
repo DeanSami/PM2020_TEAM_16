@@ -18,6 +18,7 @@ export enum ReqType {
 @Injectable()
 export class ApiProviderService {
   token: string;
+  userToken: string;
 
   constructor(private http: HttpClient) {  }
 
@@ -63,6 +64,9 @@ export class ApiProviderService {
     console.log('auth token', this.token);
     if (this.token) {
       headers = headers.append('x-auth', this.token);
+    }
+    if (this.userToken) {
+      headers = headers.append('user-x-auth', this.token);
     }
 
     switch (type) {

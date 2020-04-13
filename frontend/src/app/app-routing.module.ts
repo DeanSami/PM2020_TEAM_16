@@ -7,6 +7,7 @@ import { DogParksResolver } from './admin/resolvers/dogParksResolver.resolver';
 import { UserMainComponent } from './layouts/userLayout/user-main/user-main.component';
 import { FullAdminComponent } from './layouts/full-admin/full-admin.component';
 import { ADMIN_FULL_ROUTES } from './admin/shared/routes/full-layout.routes';
+import { InterestingPointResolver } from './admin/resolvers/interestingPointResolver.resolver';
 
 
 const routes: Routes = [
@@ -34,7 +35,8 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
   providers: [
-    DogParksResolver
+    DogParksResolver,
+    InterestingPointResolver,
   ]
 })
 export class AppRoutingModule { }

@@ -48,6 +48,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { InterestingPointComponent } from './admin/interesting-point/interesting-point.component';
 import { NewInterestingPointComponent } from './admin/interesting-point/new-interesting-point/new-interesting-point.component';
 import { NewDogParkComponent } from './admin/dog-parks/new-dog-park/new-dog-park.component';
+import { InterestingPointResolver } from './admin/resolvers/interestingPointResolver.resolver';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -129,6 +130,7 @@ export function createTranslateLoader(http: HttpClient) {
   providers: [
     AuthService,
     DogParksResolver,
+    InterestingPointResolver,
     ApiProviderService,
     LoadingService,
   ],

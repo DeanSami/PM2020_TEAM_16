@@ -12,14 +12,18 @@ export class DogParksService {
   constructor(private api: ApiProviderService) { }
 
   getDogsPark(): Observable<Place[]> {
-    return this.api.get('admin/dog_parks/get');
+    return this.api.get('admin/dog_parks');
   }
 
   deleteDogPark(dogParkId: number): Observable<boolean> {
-    return this.api.post('admin/dog_parks/delete', {id: dogParkId});
+    return this.api.delete('admin/dog_parks', {id: dogParkId});
   }
 
   saveDogPark(park: {user_input: Place}): Observable<Place> {
-    return this.api.post('admin/dog_parks/add', park);
+    return this.api.post('admin/dog_parks', park);
+  }
+
+  updateDogPark(park: {user_input: Place}): Observable<Place> {
+    return this.api.patch('admin/dog_parks', park);
   }
 }

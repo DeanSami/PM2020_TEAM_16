@@ -13,3 +13,9 @@ export interface PlaceResponse {
   message?: string;
   Place?: Place | Place[];
 }
+
+export interface SmsResponse {
+  status: boolean;
+  message?: string;
+}
+

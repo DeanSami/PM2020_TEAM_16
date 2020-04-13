@@ -14,7 +14,17 @@ export const ROUTES: RouteInfo[] = [
     {
       path: '/admin/dogParks',
       title: 'Dog Parks',
-      icon: 'ft-home',
+      icon: 'ft-gitlab',
+      class: '',
+      badge: '',
+      badgeClass: '',
+      isExternalLink: false,
+      submenu: []
+    },
+    {
+      path: '/admin/interestingPoint',
+      title: 'Interesting Point',
+      icon: 'ft-map-pin',
       class: '',
       badge: '',
       badgeClass: '',
