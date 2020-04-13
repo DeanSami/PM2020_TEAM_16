@@ -74,6 +74,13 @@ export class NewInterestingPointComponent implements OnInit {
     return this.form.get('type');
   }
   ngOnInit(): void {
+    if (this.dialogData) {
+      this.form.setValue({
+        name: this.dialogData.name,
+        SHAPE_Leng: this.dialogData.SHAPE_Leng,
+      });
+      console.log(this.dialogData);
+    }
   }
   addInterestingPoint() {
     if (this.form.invalid) {
