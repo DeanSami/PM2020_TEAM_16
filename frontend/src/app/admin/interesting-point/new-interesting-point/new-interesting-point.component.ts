@@ -90,7 +90,8 @@ export class NewInterestingPointComponent implements OnInit {
         neighborhood: this.neighborhood.value,
         operator: this.operator.value,
         handicapped: !!this.handicapped.value,
-        condition: this.condition.value
+        condition: this.condition.value,
+        type: this.type.value
       }
     }).subscribe((res) => {
       this.toastr.success('הפעולה הסתיימה בהצלחה');
