@@ -290,6 +290,7 @@ router.patch('/dog_parks',function (req,res) {
         res.json(globals.messages.failure)
     } else {
         const {
+            id,
             name,
             SHAPE_Leng,
             SHAPE_Area,
@@ -327,35 +328,30 @@ router.patch('/dog_parks',function (req,res) {
             res.statusCode = 400;
             res.json(globals.messages.failure)
         } else {
-            var values = {type: globals.places_types.dog_park, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
+            var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
             if (street !== undefined)
                 values.street = street;
-            if(!req.body.id){
-                res.statusCode = 400;
-                res.message = "ID is missing";
-            }
-            else {
-                var temp_id = req.body.id;
-                db.query('UPDATE places SET ? WHERE id = ?', [values, temp_id], function (err, result) {
-                    if (err) {
-                        console.log('<LOG> - PATCH /admin/dog_parks - ERROR');
-                        console.error(err);
-                        res.statusCode = 400;
+
+            var temp_id = values.id;
+            db.query('UPDATE places SET ? WHERE id = ?', [values, temp_id], function (err, result) {
+                if (err) {
+                    console.log('<LOG> - PATCH /admin/dog_parks - ERROR');
+                    console.error(err);
+                    res.statusCode = 400;
                         res.json(globals.messages.failure)
-                    } else {
-                        console.log('<LOG> - PATCH /admin/dog_parks - SUCCESS');
-                        res.json({
-                            status: true,
-                            places: result
-                        })
-                    }
+                } else {
+                    console.log('<LOG> - PATCH /admin/dog_parks - SUCCESS');
+                    res.json({
+                        status: true,
+                        places: result
+                    })
+                }
 
 
-                })
-            }
+            })
+
         }
     }
-
 });
 
 
