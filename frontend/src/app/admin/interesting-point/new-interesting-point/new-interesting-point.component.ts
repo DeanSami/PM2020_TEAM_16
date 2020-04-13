@@ -30,6 +30,8 @@ export class NewInterestingPointComponent implements OnInit {
     house_number: new FormControl('', [Validators.required, Validators.maxLength(10)]),
     neighborhood: new FormControl('', [Validators.required, Validators.minLength(3)]),
     operator: new FormControl('', [Validators.required, Validators.maxLength(10)]),
+    handicapped: new FormControl('', []),
+    condition: new FormControl('', [Validators.required, Validators.maxLength(6)]),
   });
   mode: any;
   get name() {
