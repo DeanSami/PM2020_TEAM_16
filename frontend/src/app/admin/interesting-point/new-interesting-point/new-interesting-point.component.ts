@@ -70,7 +70,9 @@ export class NewInterestingPointComponent implements OnInit {
   get condition() {
     return this.form.get('condition');
   }
-
+  get type(){
+    return this.form.get('type');
+  }
   ngOnInit(): void {
   }
 
