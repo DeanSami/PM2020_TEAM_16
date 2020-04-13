@@ -84,7 +84,8 @@ export class NewInterestingPointComponent implements OnInit {
         neighborhood: this.dialogData.neighborhood,
         operator: this.dialogData.operator,
         handicapped: this.dialogData.handicapped,
-        condition: this.dialogData.condition
+        condition: this.dialogData.condition,
+        type: this.dialogData.condition
       });
       console.log(this.dialogData);
     }
