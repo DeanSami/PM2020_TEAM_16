@@ -94,10 +94,10 @@ export class NewInterestingPointComponent implements OnInit {
         type: this.type.value
       }
     }).subscribe((res) => {
-      this.toastr.success('הפעולה הסתיימה בהצלחה');
+      this.toastr.success('הפעולה הסתיימה בהצלחה!');
       this.dialogRef.close(res);
     }, err => {
-      this.toastr.error('הפעולה נכשלה');
+      this.toastr.error('הפעולה נכשלה!');
       console.log('err', err);
     });
   }
