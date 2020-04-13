@@ -78,6 +78,8 @@ export class NewInterestingPointComponent implements OnInit {
       this.form.setValue({
         name: this.dialogData.name,
         SHAPE_Leng: this.dialogData.SHAPE_Leng,
+        SHAPE_Area: this.dialogData.SHAPE_Area,
+        street: this.dialogData.street,
       });
       console.log(this.dialogData);
     }
