@@ -82,7 +82,7 @@ router.post('/dog_parks/add', function (req, res) {
             res.statusCode = 400;
             res.json(globals.messages.failure)
         } else {
-            var values = {type: 0, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
+            var values = {type: globals.places_types.dog_park, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
             if (street !== undefined)
                 values.street = street;
 
@@ -118,8 +118,7 @@ router.get('/dog_parks/get' , function(req, res) {
     //if the clint want specific park dog
     if (req.body.id) {
         var temp_id = req.body.id;
-        var temp_type = 0;
-        db.query('SELECT * FROM places WHERE id = ? AND type = ?', [temp_id, temp_type], function (err, result) {
+        db.query('SELECT * FROM places WHERE id = ? AND type = ?', [temp_id, globals.places_types.dog_park], function (err, result) {
             if (err) {
                 console.log('<LOG> - GET /admin/dog_parks/get - ERROR');
                 console.error(err);
@@ -136,8 +135,7 @@ router.get('/dog_parks/get' , function(req, res) {
         }
         //if the clint want all the park dog that at the db
         else {
-            //todo enum to set Places.dogPark and remove 0
-            db.query('SELECT * FROM places WHERE deleted = 0 AND type = 0', function (err, result) {
+            db.query('SELECT * FROM places WHERE deleted = 0 AND type = ?',[globals.places_types.dog_park], function (err, result) {
                 if (err) {
                     console.log('<LOG> - GET /admin/dog_parks/get - ERROR');
                     console.error(err);
@@ -160,7 +158,6 @@ router.delete('/dog_parks',function (req,res) {
     {
         var temp_id = req.query.id;
         db.query('UPDATE places SET deleted = 1 WHERE id = ? AND deleted = 0 ', [temp_id],function (err,result) {
-            console.log(result);
             if (err) {
                 console.log('<LOG> - DELETE /PARK DOG - ERROR');
                 console.error(err);
@@ -184,6 +181,31 @@ router.delete('/dog_parks',function (req,res) {
         console.error("not ID has been send");
         res.json(globals.messages.failure);
     }
+});
+//UPDATE PARK DOG REQUEST
+router.patch('/park_dog',function (req,res) {
+    console.log('<LOG> - UPDATE /PARK DOG - Invoke');
+    /*
+    park name
+    niborhood
+    length shape
+    area shape
+    street
+    num house
+    operator of facility
+    proprtiy
+    * */
+   if (req.data.id) {
+       var temp_id = req.data.id;
+       db.query('UPDATE * FROM places WHERE id = ?',[temp_id],function(err,result){
+           if(err) {
+               console.log('<LOG> - UPDATE /PARK DOG - ERROR');
+               console.error(err);
+               res.json(globals.messages.failure);
+           }
+       })
+
+   }
 });
 //REGISTER REQUEST
 router.post('/register', function(req, res) {
