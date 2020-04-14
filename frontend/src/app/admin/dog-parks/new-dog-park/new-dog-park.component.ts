@@ -86,7 +86,6 @@ export class NewDogParkComponent implements OnInit {
         handicapped: this.dialogData.handicapped,
         condition: this.dialogData.condition
       });
-      console.log(this.dialogData);
     }
   }
 
@@ -110,6 +109,33 @@ export class NewDogParkComponent implements OnInit {
     }).subscribe((res) => {
       this.toastr.success('הפעולה הסתיימה בהצלחה');
       this.dialogRef.close(res);
+    }, err => {
+      this.toastr.error('הפעולה נכשלה');
+      console.log('err', err);
+    });
+  }
+
+  updateDogPark() {
+    if (this.form.invalid || !this.dialogData || !this.dialogData.id) {
+      this.toastr.error('חובה למלא את כל השדות המסומנים');
+      return;
+    }
+    this.dogParkService.updateDogPark({
+      user_input: {
+        id: this.dialogData.id,
+        name: this.name.value,
+        SHAPE_Leng: this.SHAPE_Leng.value,
+        SHAPE_Area: this.SHAPE_Area.value,
+        street: this.street.value,
+        house_number: this.house_number.value,
+        neighborhood: this.neighborhood.value,
+        operator: this.operator.value,
+        handicapped: !!this.handicapped.value,
+        condition: this.condition.value
+      }
+    }).subscribe(() => {
+      this.toastr.success('הפעולה הסתיימה בהצלחה');
+      this.dialogRef.close(this.dialogData);
     }, err => {
       this.toastr.error('הפעולה נכשלה');
       console.log('err', err);

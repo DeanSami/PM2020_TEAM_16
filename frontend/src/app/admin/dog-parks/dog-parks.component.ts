@@ -61,7 +61,13 @@ export class DogParksComponent implements OnInit {
       width: '600px',
       data: dogPark
     }).afterClosed().subscribe(result => {
-        console.log(result);
+      if (result && result.status) {
+        const idx = this.dataSource.data.findIndex(park => park.id === result.places[0]);
+        if (idx >= 0) {
+          this.dataSource.data[idx] = result.places[0];
+        }
+        this.dataSource.data = this.dataSource.data;
+      }
     });
   }
 

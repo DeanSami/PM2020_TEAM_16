@@ -354,7 +354,82 @@ router.patch('/dog_parks',function (req,res) {
     }
 });
 // ADD REQUEST INTEREST POINT
+router.post('/interesting_point', function (req, res) {
+    console.log('<LOG> - POST /admin/interesting_point - Invoke');
 
+    if (!req.body.user_input) {
+        console.log('<LOG> - POST /interesting_point - Wrong Payload Format');
+        res.json(globals.messages.failure)
+    } else {
+        const {
+            type,
+            name,
+            SHAPE_Leng,
+            SHAPE_Area,
+            street,
+            house_number,
+            neighborhood,
+            operator,
+            handicapped,
+            condition
+        } = req.body.user_input;
+
+        if (name == undefined
+            || SHAPE_Leng == undefined
+            || SHAPE_Area == undefined
+            || house_number == undefined
+            || neighborhood == undefined
+            || operator == undefined
+            || handicapped == undefined
+            || condition == undefined)
+        {
+            console.log('<LOG> - POST /interesting_point - At least 1 field is missing');
+            res.statusCode = 400;
+            res.json(globals.messages.failure)
+        }
+        else if (typeof(name) !== 'string'
+            || typeof(SHAPE_Leng) !== 'string'
+            || typeof(SHAPE_Area) !== 'string'
+            || typeof(house_number) !== 'string'
+            || typeof(neighborhood) !== 'string'
+            || typeof(operator) !== 'string'
+            || (typeof(handicapped) !== 'boolean' && typeof(handicapped) !== 'number')
+            || typeof(condition) !== 'number')
+        {
+            console.log('<LOG> - POST /interesting_point - Error with type of at least 1 input field');
+            res.statusCode = 400;
+            res.json(globals.messages.failure)
+        } else {
+            var values = {type: type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
+            if (street !== undefined)
+                values.street = street;
+
+            db.query('INSERT INTO places SET ?', values, function (err, result) {
+                if (err) {
+                    console.log('<LOG> - POST /admin/interesting_point - ERROR');
+                    console.error(err)
+                    res.json(globals.messages.failure)
+                } else {
+                    db.query('SELECT * FROM places WHERE id = (?)', [result.insertId], function (err, result) {
+                        if (err) {
+                            console.log('<LOG> - POST /admin/interesting_point - ERROR');
+                            console.error(err);
+                            res.statusCode = 400;
+                            res.json(globals.messages.failure)
+                        } else {
+                            console.log('<LOG> - POST /admin/interesting_point - SUCCESS');
+                            res.json({
+                                status: true,
+                                places: result
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    }
+
+});
 
 //GET REQUEST INTEREST POINT
 router.get('/interesting_point',function(req,res){
