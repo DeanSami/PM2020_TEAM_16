@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {ConditionType, ConditionTypeTitles, Place} from '../../models/places';
 import {MatTableDataSource} from '@angular/material/table';
+import {ActivatedRoute} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
+import {ToastrService} from 'ngx-toastr';
+import {InterestingPointService} from '../services/interesting-point.service';
 
 @Component({
   selector: 'app-interesting-point',
@@ -13,7 +17,15 @@ export class InterestingPointComponent implements OnInit {
   displayedColumns: string[] = ['name', 'street', 'neighborhood', 'operator', 'handicapped', 'condition', 'action'];
   dataSource: MatTableDataSource<Place>;
   places: Place[];
-  constructor() { }
+  constructor(private rout: ActivatedRoute,
+              private dialog: MatDialog,
+              private toastr: ToastrService,
+              private interestingPointService: InterestingPointService) { }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 
   ngOnInit(): void {
   }
