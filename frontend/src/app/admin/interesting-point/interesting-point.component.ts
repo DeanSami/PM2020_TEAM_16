@@ -31,7 +31,7 @@ export class InterestingPointComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.places = this.rout.snapshot.data.InterestingPoint.places;
+    this.places = this.rout.snapshot.data.interestingPoint.place;
     this.dataSource = new MatTableDataSource<Place>(this.places);
   }
 
@@ -61,6 +61,17 @@ export class InterestingPointComponent implements OnInit {
         if (idx >= 0) {
           this.dataSource.data[idx] = result.places[0];
         }
+        this.dataSource.data = this.dataSource.data;
+      }
+    });
+  }
+  addInterestingPoint() {
+    this.dialog.open(NewInterestingPointComponent, {
+      width: '600px',
+      data: null
+    }).afterClosed().subscribe(result => {
+      if (result && result.status) {
+        this.dataSource.data.push(result.places[0]);
         this.dataSource.data = this.dataSource.data;
       }
     });

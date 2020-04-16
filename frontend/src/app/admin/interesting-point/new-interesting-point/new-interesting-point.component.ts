@@ -32,7 +32,6 @@ export class NewInterestingPointComponent implements OnInit {
     operator: new FormControl('', [Validators.required, Validators.maxLength(10)]),
     handicapped: new FormControl('', []),
     condition: new FormControl('', [Validators.required, Validators.maxLength(6)]),
-    type: new FormControl('', [Validators.required, Validators.maxLength(6)]),
   });
   mode: any;
   get name() {
@@ -70,9 +69,6 @@ export class NewInterestingPointComponent implements OnInit {
   get condition() {
     return this.form.get('condition');
   }
-  get type(){
-    return this.form.get('type');
-  }
   ngOnInit(): void {
     if (this.dialogData) {
       this.form.setValue({
@@ -106,7 +102,6 @@ export class NewInterestingPointComponent implements OnInit {
         operator: this.operator.value,
         handicapped: !!this.handicapped.value,
         condition: this.condition.value,
-        type: this.type.value
       }
     }).subscribe((res) => {
       this.toastr.success('הפעולה הסתיימה בהצלחה!');
