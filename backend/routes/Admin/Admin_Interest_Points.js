@@ -3,15 +3,13 @@ const globals = require('../../globals')
 const db = require('../../db-connect');
 const router = express.Router()
 
-router.use(globals.log_func);
-
 // ADD REQUEST INTEREST POINT
 router.post('/', function (req, res) {
     console.log('<LOG> - POST /admin/interesting_point - Invoke');
 
     if (!req.body.user_input) {
         console.log('<LOG> - POST /interesting_point - Wrong Payload Format');
-        res.json(globals.messages.failure)
+        res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
     } else {
         const {
             type,
@@ -36,8 +34,7 @@ router.post('/', function (req, res) {
             || condition == undefined)
         {
             console.log('<LOG> - POST /interesting_point - At least 1 field is missing');
-            res.statusCode = 400;
-            res.json(globals.messages.failure)
+            res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
         }
         else if (typeof(name) !== 'string'
             || typeof(SHAPE_Leng) !== 'string'
@@ -49,8 +46,7 @@ router.post('/', function (req, res) {
             || typeof(condition) !== 'number')
         {
             console.log('<LOG> - POST /interesting_point - Error with type of at least 1 input field');
-            res.statusCode = 400;
-            res.json(globals.messages.failure)
+            res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
         } else {
             var values = {type: type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
             if (street !== undefined)
@@ -60,17 +56,16 @@ router.post('/', function (req, res) {
                 if (err) {
                     console.log('<LOG> - POST /admin/interesting_point - ERROR');
                     console.error(err)
-                    res.json(globals.messages.failure)
+                    res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
                 } else {
                     db.query('SELECT * FROM places WHERE id = (?)', [result.insertId], function (err, result) {
                         if (err) {
                             console.log('<LOG> - POST /admin/interesting_point - ERROR');
                             console.error(err);
-                            res.statusCode = 400;
-                            res.json(globals.messages.failure)
+                            res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
                         } else {
                             console.log('<LOG> - POST /admin/interesting_point - SUCCESS');
-                            res.json({
+                            res.status(globals.status_codes.OK).json({
                                 status: true,
                                 places: result
                             })
@@ -93,18 +88,17 @@ router.get('/',function(req,res){
            if(err){
                console.log('<LOG> - GET /interest point - ERROR');
                console.error(err);
-               res.json(globals.messages.failure)
+               res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
            } else {
                if(result.length>0){
                    console.log('<LOG> - GET /interest point - SUCCESS');
-                   res.json({
+                   res.status(globals.status_codes.OK).json({
                        status:true,
                        place: result[0]
                    })
                } else {
                    console.log('<LOG> - GET /interest point - Unauthorized Credentials');
-                   res.statusCode = 401;
-                   res.json(globals.messages.failure)
+                   res.status(globals.status_codes.Unauthorized).json(globals.messages.failure)
                }
 
            }
@@ -116,20 +110,19 @@ router.get('/',function(req,res){
             if (err) {
                 console.log('<LOG> - GET /interest point - ERROR');
                 console.error(err);
-                res.json(globals.messages.failure)
+                res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
             } else {
                 if(result.length > 0)
                 {
                     console.log('<LOG> - GET /interest point - SUCCESS');
-                    res.json({
+                    res.status(globals.status_codes.OK).json({
                         status:true,
                         place: result
                     });
                 }
                 else{
                     console.log('<LOG> - GET /interest point - Unauthorized Credentials');
-                    res.statusCode = 401;
-                    res.json(globals.messages.failure)
+                    res.status(globals.status_codes.Unauthorized).json(globals.messages.failure)
                 }
             }
         })
@@ -145,17 +138,16 @@ router.delete('/',function (req,res) {
         if(err){
             console.log('<LOG> - DELETE /interest point - ERROR');
             console.error(err);
-            res.json(globals.messages.failure)
+            res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
         } else {
             if (result.affectedRows > 0) {
-                res.json({
+                res.status(globals.status_codes.OK).json({
                     status: true,
                     message: "delete action has been done",
                 })
             } else {
                 console.log('<LOG> - DELETE /interestpoint - Wrong Parameters');
-                res.statusCode = 400;
-                res.json(globals.messages.failure);
+                res.status(globals.status_codes.Bad_Request).json(globals.messages.failure);
             }
         }
      })
@@ -167,7 +159,7 @@ router.patch('/',function (req,res) {
     console.log('<LOG> - UPDATE /interesting_point - Invoke');
     if (!req.body.user_input) {
         console.log('<LOG> - UPDATE /interesting_point - Wrong Payload Format');
-        res.json(globals.messages.failure)
+        res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
     } else {
         const {
             id,
@@ -193,8 +185,7 @@ router.patch('/',function (req,res) {
             || condition == undefined)
         {
             console.log('<LOG> - UPDATE /dog_parks - At least 1 field is missing');
-            res.statusCode = 400;
-            res.json(globals.messages.failure)
+            res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
         }
         else if (typeof(name) !== 'string'
             || typeof(SHAPE_Leng) !== 'string'
@@ -206,8 +197,7 @@ router.patch('/',function (req,res) {
             || typeof(condition) !== 'number')
         {
             console.log('<LOG> - UPDATE /interesting_point - Error with type of at least 1 input field');
-            res.statusCode = 400;
-            res.json(globals.messages.failure)
+            res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
         } else {
             var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,
                     type:type,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
@@ -219,11 +209,10 @@ router.patch('/',function (req,res) {
                 if (err) {
                     console.log('<LOG> - PATCH /interesting_point - ERROR');
                     console.error(err);
-                    res.statusCode = 400;
-                    res.json(globals.messages.failure)
+                    res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
                 } else {
                     console.log('<LOG> - PATCH /interesting_point - SUCCESS');
-                    res.json({
+                    res.status(globals.status_codes.OK).json({
                         status: true,
                         places: result
                     })

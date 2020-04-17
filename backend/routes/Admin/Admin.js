@@ -8,9 +8,6 @@ const bcrypt = require('bcrypt')
 const A_InterestPoints = require('./Admin_Interest_Points')
 const A_DogParks = require('./Admin_Dog_Parks')
 
-router.use('/interesting_point', A_InterestPoints)
-router.use('/dog_parks', A_DogParks)
-
 router.use(function isAdmin (req, res, next) {
     if (req.originalUrl == '/admin/login' || req.originalUrl == '/admin/register') next();
     else {
@@ -33,13 +30,15 @@ router.use(function isAdmin (req, res, next) {
             })
         } else {
             console.log('<LOG> - POST /admin/* - Missing Credentials');
-            res.statusCode = 401;
-            res.json(globals.messages.failure)
+            res.status(globals.status_codes.Forbidden).json(globals.messages.failure)
         }
     }
 });
 
 router.use(globals.log_func);
+
+router.use('/interesting_point', A_InterestPoints)
+router.use('/dog_parks', A_DogParks)
 
 //REGISTER REQUEST
 router.post('/register', function(req, res) {
@@ -49,11 +48,11 @@ router.post('/register', function(req, res) {
         db.query('INSERT INTO users SET ?', values, function (err, result) {
             if (!err) {
                 console.log("<LOG> - POST /admin/register - ERROR")
-                res.json(globals.messages.success)
+                res.status(globals.status_codes.Server_Error).json(globals.messages.success)
             }
             else {
                 console.log("<LOG> - POST /admin/register - SUCCESS")
-                res.json(globals.messages.success)
+                res.status(globals.status_codes.OK).json(globals.messages.success)
             }
         })
     })
@@ -66,19 +65,18 @@ router.post('/login', function (req, res) {
         if (err) {
             console.log('<LOG> - POST /admin/login - ERROR');
             console.error(err);
-            res.json(globals.messages.failure)
+            res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
         } else {
             if (phone_query_result.length > 0) {
                 const password = req.body.pass;
                 bcrypt.compare(password, phone_query_result[0].password, function (err, pass_compare) {
                     if (err) {
                         console.error(err);
-                        res.json(globals.messages.failure)
+                        res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
                     } else {
                         if (!pass_compare) {
                             console.log('<LOG> - POST /admin/login - Wrong Credentials pass');
-                            res.statusCode = 401;
-                            res.json(globals.messages.failure)
+                            res.status(globals.status_codes.Unauthorized).json(globals.messages.failure)
                         } else {
                             delete phone_query_result[0].password;
                             var token = hat();
@@ -86,11 +84,10 @@ router.post('/login', function (req, res) {
                                 if (err) {
                                     console.log('<LOG> - POST /admin/login - Wrong Values inserted');
                                     console.error(err);
-                                    res.statusCode = 400
-                                    res.json(globals.messages.failure)
+                                    res.status(globals.status_codes.Unauthorized).json(globals.messages.failure)
                                 } else {
                                     console.log('<LOG> - POST /admin/login - SUCCESS');
-                                    res.json({
+                                    res.status(globals.status_codes.OK).json({
                                         status: true,
                                         token: token,
                                         user: phone_query_result[0]
@@ -102,8 +99,7 @@ router.post('/login', function (req, res) {
                 })
             } else {
                 console.log('<LOG> - POST /admin/login - Wrong Credentials');
-                res.statusCode = 401;
-                res.json(globals.messages.failure)
+                res.status(globals.status_codes.Unauthorized).json(globals.messages.failure)
             }
         }
     })
@@ -117,26 +113,24 @@ router.get('/login', function (req, res) {
             if (err) {
                 console.log('<LOG> - GET /admin/login - ERROR');
                 console.error(err);
-                res.json(globals.messages.failure)
+                res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
             } else {
                 if (result.length > 0) {
                     delete result[0].password;
                     console.log('<LOG> - GET /admin/login - SUCCESS');
-                    res.json({
+                    res.status(globals.status_codes.OK).json({
                         status: true,
                         user: result[0]
                     })
                 } else {
                     console.log('<LOG> - GET /admin/login - Unauthorized Credentials');
-                    res.statusCode = 401;
-                    res.json(globals.messages.failure)
+                    res.status(globals.status_codes.Unauthorized).json(globals.messages.failure)
                 }
             }
         })
     } else {
         console.log('<LOG> - GET /admin/login - Credentials Missing');
-        res.statusCode = 401;
-        res.json(globals.messages.failure)
+        res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
     }
 });
 

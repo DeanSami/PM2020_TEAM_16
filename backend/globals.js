@@ -29,6 +29,7 @@ module.exports = {
         Bad_Request: 400,
         Unauthorized: 401,
         Forbidden: 403,
-        Not_Found: 404
+        Not_Found: 404,
+        Server_Error: 500
     }
 }
