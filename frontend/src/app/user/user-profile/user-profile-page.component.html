@@ -1,0 +1,204 @@
+<!--User Profile Starts-->
+<!--Basic User Details Starts-->
+<section id="user-profile">
+    <div class="row">
+        <div class="col-12">
+            <div class="card profile-with-cover">
+                <div class="card-img-top img-fluid bg-cover height-300" style="background: url('../../../assets/img/photos/14.jpg') 50%;"></div>
+                <div class="text-left user-name">
+                  <h3 class="card-title white">{{currentUser.name}}</h3>
+                </div>
+                <a class="profile-image">
+                  <input type="file" (change)="selectFile($event)" #avatar class="d-none">
+                  <img src="assets/img/portrait/avatars/avatar-08.png" (click)="edit ? avatar.click() : null" class="rounded-circle img-border gradient-summer width-100" alt="Card image">
+                </a>
+                <div class="profile-section">
+                  <ul class="profile-menu no-list-style">
+                    <li>
+                        <a (click)="showPage('About')" [ngClass]="currentPage === 'About' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">פרטים אישיים</a>
+                    </li>
+                    <li>
+                        <a (click)="showPage('TimeLine')" [ngClass]="currentPage === 'TimeLine' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">המשחקים שלי</a>
+                    </li>
+                    <li>
+                      <a (click)="showPage('Friends')" [ngClass]="currentPage === 'Friends' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">משחקי עבר</a>
+                    </li>
+                    <li>
+                      <a (click)="showPage('Photos')" [ngClass]="currentPage === 'Photos' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">כפתור</a>
+                    </li>
+                  </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Basic User Details Ends-->
+
+<!--About section starts-->
+<section id="about" *ngIf="currentPage === 'About'">
+<!--  <button class="btn btn-success" [disabled]="!selectedFiles" (click)="upload()">Upload</button>-->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-body">
+                      <div class="mb-2">
+                        <span class="text-bold-500 primary h5">פרטים אישיים:</span>
+                      </div>
+                      <div class="row">
+
+                          <div class="col-6">
+                              <ul class="no-list-style">
+                                  <li class="mb-2">
+                                      <span class="text-bold-500 primary"><a><i class="icon-present font-small-3"></i> תאריך לידה:</a></span>
+                                      <span class="d-block overflow-hidden">3/12/1993</span>
+                                  </li>
+                                  <li class="mb-2">
+                                    <span class="text-bold-500 primary"><a><i class="ft-user font-small-3"></i> גבר/אישה:</a></span>
+                                    <span class="d-block overflow-hidden">גבר</span>
+                                  </li>
+                                  <li class="mb-2">
+                                    <span class="text-bold-500 primary"><a><i class="ft-smartphone font-small-3"></i> מספר טלפון:</a></span>
+                                    <span class="d-block overflow-hidden">054-6484372</span>
+                                  </li>
+                              </ul>
+                          </div>
+                          <div class="col-6">
+                              <ul class="no-list-style">
+                                  <li class="mb-2">
+                                      <span class="text-bold-500 primary"><a><i class="ft-mail font-small-3"></i> כתובת דוא"ל:</a></span>
+                                      <a class="d-block overflow-hidden">dorsh3@ac.sce.ac.il</a>
+                                  </li>
+                                  <li class="mb-2">
+                                    <span class="text-bold-500 primary"><a><i class="ft-book font-small-3"></i> תאריך הצטרפות:</a></span>
+                                    <span class="d-block overflow-hidden">10/01/2020</span>
+                                  </li>
+                              </ul>
+                          </div>
+                      </div>
+                      <hr>
+                      <div class="mt-3 mb-2">
+                          <span class="text-bold-500 primary h5">תחביבים:</span>
+                          <span class="d-block overflow-hidden">
+                            אנו ממליצים לציין מה הם התחביבים שלך על מנת שנוכל למקד אותך טוב יותר למשחקים שמתאימים עבורך.
+                          </span>
+                      </div>
+                        <div class="mt-2 overflow-hidden">
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.Travelling)">
+                              <i class="icon-plane danger font-large-2"></i>
+                              <div class="mt-2">Travelling</div>
+                            </span>
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.Driving)">
+                              <i class="icon-speedometer danger font-large-2"></i>
+                              <div class="mt-2">Driving</div>
+                            </span>
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.Photography)">
+                              <i class="icon-camera danger font-large-2"></i>
+                              <div class="mt-2">Photography</div>
+                            </span>
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.Gaming)">
+                              <i class="icon-game-controller danger font-large-2"></i>
+                              <div class="mt-2">Gaming</div>
+                            </span>
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.Music)">
+                              <i class="icon-music-tone-alt danger font-large-2"></i>
+                              <div class="mt-2">Music</div>
+                            </span>
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.Surfing)">
+                              <i class="ft-monitor danger font-large-2"></i>
+                              <div class="mt-2">Surfing</div>
+                            </span>
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.Foodie)">
+                              <i class="ft-pie-chart danger font-large-2"></i>
+                              <div class="mt-2">Foodie</div>
+                            </span>
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.TV)">
+                              <i class="ft-tv danger font-large-2"></i>
+                              <div class="mt-2">TV</div>
+                            </span>
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.Shopping)">
+                              <i class="icon-basket-loaded danger font-large-2"></i>
+                              <div class="mt-2">Shopping</div>
+                            </span>
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.Social)">
+                              <i class="icon-like danger font-large-2"></i>
+                              <div class="mt-2">Social</div>
+                            </span>
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.Reading)">
+                              <i class="icon-book-open danger font-large-2"></i>
+                              <div class="mt-2">Reading</div>
+                            </span>
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.Sport)">
+                              <i class="icon-social-dribbble danger font-large-2"></i>
+                              <div class="mt-2">Sport</div>
+                            </span>
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.Computers)">
+                              <i class="icon-mouse danger font-large-2"></i>
+                              <div class="mt-2">Computers</div>
+                            </span>
+                            <span class="mr-3 mt-2 text-center float-left width-100"
+                                  *ngIf="checkHobbies(userHobbies.Camping)">
+                              <i class="icon-fire danger font-large-2"></i>
+                              <div class="mt-2">Camping</div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--About section ends-->
+
+<!--User Timeline section starts-->
+<section *ngIf="currentPage === 'TimeLine'">
+    <div class="row">
+        <div class="col-12">
+            <div class="content-header">המשחקים שלי</div>
+        </div>
+    </div>
+    <div id="timeline" class="timeline-center timeline-wrapper">
+
+    </div>
+</section>
+<!--User Timeline section ends-->
+
+<!--User's friend section starts-->
+<section id="friends" *ngIf="currentPage === 'Friends'">
+    <div class="row">
+        <div class="col-12">
+            <div class="content-header">משחקי עבר</div>
+        </div>
+    </div>
+    <div class="row">
+
+    </div>
+</section>
+<!--User's friend section starts-->
+
+<!--User's uploaded photos section starts-->
+<section id="photos" *ngIf="currentPage === 'Photos'">
+    <div class="row">
+        <div class="col-12">
+            <div class="content-header">Photos</div>
+        </div>
+    </div>
+    <div class="row">
+
+    </div>
+</section>
+<!--User's uploaded photos section starts-->
+<!--User Profile Starts-->

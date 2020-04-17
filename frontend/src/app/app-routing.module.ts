@@ -4,21 +4,17 @@ import { UserLayoutComponent } from './layouts/userLayout/userLayout.component';
 import { LoginComponent } from './admin/login/login.component';
 import { AdminGuard } from './admin.guard';
 import { DogParksResolver } from './admin/resolvers/dogParksResolver.resolver';
-import { UserMainComponent } from './layouts/userLayout/user-main/user-main.component';
 import { FullAdminComponent } from './layouts/full-admin/full-admin.component';
 import { ADMIN_FULL_ROUTES } from './admin/shared/routes/full-layout.routes';
 import { InterestingPointResolver } from './admin/resolvers/interestingPointResolver.resolver';
+import { USER_FULL_ROUTES } from './admin/shared/routes/user-layout.routes';
 
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: '/main/home' },
   {
-    path: 'main',
+    path: '',
     component: UserLayoutComponent,
-    children: [
-      { path: '', pathMatch: 'full', redirectTo: '/main/home' },
-      { path: 'home', component: UserMainComponent },
-    ]
+    children: USER_FULL_ROUTES
   },
   { path: 'login', component: LoginComponent },
   {
@@ -28,7 +24,7 @@ const routes: Routes = [
     canActivate: [AdminGuard],
     children: ADMIN_FULL_ROUTES
   },
-  { path: '**', redirectTo: '/main/home'}
+  { path: '**', redirectTo: '/home'}
 ];
 
 @NgModule({

@@ -49,6 +49,7 @@ import { InterestingPointComponent } from './admin/interesting-point/interesting
 import { NewInterestingPointComponent } from './admin/interesting-point/new-interesting-point/new-interesting-point.component';
 import { NewDogParkComponent } from './admin/dog-parks/new-dog-park/new-dog-park.component';
 import { InterestingPointResolver } from './admin/resolvers/interestingPointResolver.resolver';
+import { UserProfilePageComponent } from './user/user-profile/user-profile-page.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -75,7 +76,8 @@ export function createTranslateLoader(http: HttpClient) {
     AdminSidebarComponent,
     DogParksComponent,
     InterestingPointComponent,
-    NewInterestingPointComponent
+    NewInterestingPointComponent,
+    UserProfilePageComponent
   ],
   imports: [
     HttpClientModule,

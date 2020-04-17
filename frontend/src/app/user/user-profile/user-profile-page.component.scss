@@ -1,0 +1,50 @@
+.profile-menu{
+    .active{
+        border-bottom: 2px solid;
+        margin-bottom: -2px;
+    }
+}
+section {
+  min-height: 35vh;
+  padding: 0;
+  .card {
+    margin: 0;
+  }
+}
+#user-profile {
+  margin-top: 72px;
+  .user-name {
+    position: absolute;
+    bottom: 50px;
+    right: 10px;
+  }
+
+  .profile-image {
+    position: absolute;
+    bottom: 0;
+    left: calc(50% - 50px);
+
+    @media (max-width: 1100px) {
+      & {
+        bottom: 50px;
+      }
+    }
+    & img{
+      margin-left: 0;
+    }
+  }
+  .profile-section {
+    .no-list-style {
+      position: unset;
+    }
+  }
+}
+.card {
+  .card-content {
+    .card-body {
+      .h5 {
+        text-decoration: underline;
+      }
+    }
+  }
+}
