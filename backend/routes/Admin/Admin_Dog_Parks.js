@@ -66,7 +66,7 @@ router.post('/', function (req, res) {
                             console.log('<LOG> - POST /admin/dog_parks/add - SUCCESS');
                             res.status(globals.status_codes.OK).json({
                                 status: true,
-                                places: select_dog_park_result
+                                place: select_dog_park_result[0]
                             })
                         }
                     })
@@ -127,7 +127,6 @@ router.delete('/',function (req,res) {
             } if (result.affectedRows > 0) {
                 console.log("<LOG> - DELETE /PARK DOG - SUCCESS");
                 res.status(globals.status_codes.OK).json({
-
                     status: true,
                     message: "delete action has been done",
                 })
@@ -160,7 +159,8 @@ router.patch('/',function (req,res) {
             neighborhood,
             operator,
             handicapped,
-            condition
+            condition,
+            active
         } = req.body.user_input;
 
         if (name == undefined
@@ -170,7 +170,8 @@ router.patch('/',function (req,res) {
             || neighborhood == undefined
             || operator == undefined
             || handicapped == undefined
-            || condition == undefined)
+            || condition == undefined
+            || active == undefined)
         {
             console.log('<LOG> - UPDATE /dog_parks - At least 1 field is missing');
             res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
@@ -182,7 +183,8 @@ router.patch('/',function (req,res) {
             || typeof(neighborhood) !== 'string'
             || typeof(operator) !== 'string'
             || (typeof(handicapped) !== 'boolean' && typeof(handicapped) !== 'number')
-            || typeof(condition) !== 'number')
+            || typeof(condition) !== 'number'
+            || (typeof(active) !== 'boolean' && typeof(active) !== 'number'))
         {
             console.log('<LOG> - UPDATE /dog_parks - Error with type of at least 1 input field');
             res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
@@ -192,16 +194,23 @@ router.patch('/',function (req,res) {
                 values.street = street;
 
             var temp_id = values.id;
-            db.query('UPDATE places SET ? WHERE id = ?', [values, temp_id], function (err, result) {
+            db.query('UPDATE places SET ? WHERE id = ?', [values, temp_id], function (err, update_result) {
                 if (err) {
                     console.log('<LOG> - PATCH /admin/dog_parks - ERROR');
                     console.error(err);
                     res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
                 } else {
-                    console.log('<LOG> - PATCH /admin/dog_parks - SUCCESS');
-                    res.status(globals.status_codes.OK).json({
-                        status: true,
-                        places: result
+                    db.query('SELECT * FROM places WHERE id = ?', [temp_id], function (err, select_result) {
+                        if (err) {
+                            console.log('<LOG> - PATCH /admin/dog_parks - ERROR');
+                    console.error(err);
+                    res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+                        }
+                        console.log('<LOG> - PATCH /admin/dog_parks - SUCCESS');
+                        res.status(globals.status_codes.OK).json({
+                            status: true,
+                            place: select_result[0]
+                        })
                     })
                 }
 
