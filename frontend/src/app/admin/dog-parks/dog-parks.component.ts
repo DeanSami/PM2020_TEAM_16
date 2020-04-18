@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConditionType, ConditionTypeTitles, Place } from '../../models/places';
+import { ConditionType, ConditionTypeTitles, Place, PlaceActiveType } from '../../models/places';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,8 +7,6 @@ import { AreYouSureDialogComponent } from '../../are-you-sure-dialog/are-you-sur
 import { NewDogParkComponent } from './new-dog-park/new-dog-park.component';
 import { DogParksService } from '../services/dog-parks.service';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription } from 'rxjs';
-import { LayoutService } from '../shared/services/layout.service';
 
 @Component({
   selector: 'app-dog-parks',
@@ -17,6 +15,7 @@ import { LayoutService } from '../shared/services/layout.service';
 })
 export class DogParksComponent implements OnInit {
   conditionType = ConditionType;
+  placeActiveType = PlaceActiveType;
   conditionTypeTitle = ConditionTypeTitles;
   displayedColumns: string[] = ['name', 'street', 'neighborhood', 'operator', 'handicapped', 'condition', 'action'];
   dataSource: MatTableDataSource<Place>;
@@ -35,7 +34,7 @@ export class DogParksComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.places = this.rout.snapshot.data.dogParks.places;
+    this.places = this.rout.snapshot.data.dogParks;
     this.dataSource = new MatTableDataSource<Place>(this.places);
   }
 
@@ -44,8 +43,7 @@ export class DogParksComponent implements OnInit {
       width: '250px',
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.dogParkService.deleteDogPark(dogParkId).subscribe(res => {
-          console.log(res);
+        this.dogParkService.deleteDogPark(dogParkId).subscribe(() => {
           this.dataSource.data = this.dataSource.data.filter(park => park.id !== dogParkId);
           this.toastr.success('נמחק בהצלחה');
         }, err =>  {
@@ -61,12 +59,37 @@ export class DogParksComponent implements OnInit {
       width: '600px',
       data: dogPark
     }).afterClosed().subscribe(result => {
-      if (result && result.status) {
-        const idx = this.dataSource.data.findIndex(park => park.id === result.places[0]);
+      if (result) {
+        const idx = this.dataSource.data.findIndex(park => park.id === result.id);
         if (idx >= 0) {
-          this.dataSource.data[idx] = result.places[0];
+          this.dataSource.data[idx] = result;
         }
         this.dataSource.data = this.dataSource.data;
+      }
+    });
+  }
+
+  shutdown(dogPark: Place) {
+    this.dialog.open(AreYouSureDialogComponent, {
+      width: '250px',
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        dogPark.active = dogPark.active === PlaceActiveType.Active ? PlaceActiveType.InActive : PlaceActiveType.Active;
+        this.dogParkService.updateDogPark(dogPark).subscribe(res => {
+          const idx = this.dataSource.data.findIndex(park => park.id === res.id);
+          if (res.active === PlaceActiveType.Active) {
+            this.toastr.success('נקודת העניין נפתחה בהצלחה');
+          } else {
+            this.toastr.success('נקודת העניין נסגרה בהצלחה');
+          }
+          if (idx > 0) {
+            this.dataSource.data[idx].active = res.active;
+            this.dataSource.data = this.dataSource.data;
+          }
+        }, err => {
+          console.log(err);
+          this.toastr.error('ארעה שגיאה בעדכון נקודת העניין');
+        });
       }
     });
   }
@@ -76,8 +99,8 @@ export class DogParksComponent implements OnInit {
       width: '600px',
       data: null
     }).afterClosed().subscribe(result => {
-      if (result && result.status) {
-        this.dataSource.data.push(result.places[0]);
+      if (result) {
+        this.dataSource.data.push(result);
         this.dataSource.data = this.dataSource.data;
       }
     });

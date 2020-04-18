@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DogParksService } from '../../services/dog-parks.service';
-import { ConditionType, Place, PlacesType } from '../../../models/places';
+import { ConditionType, ConditionTypeTitles, Place, PlaceActiveType, PlacesType } from '../../../models/places';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -14,6 +14,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 export class NewDogParkComponent implements OnInit {
   conditionType = ConditionType;
   placesType = PlacesType;
+  conditionTypeTitles = ConditionTypeTitles;
+
   constructor(
     private dogParkService: DogParksService,
     private router: Router,
@@ -32,7 +34,7 @@ export class NewDogParkComponent implements OnInit {
     neighborhood: new FormControl('', [Validators.required, Validators.minLength(3)]),
     operator: new FormControl('', [Validators.required, Validators.maxLength(10)]),
     handicapped: new FormControl('', []),
-    condition: new FormControl('', [Validators.required, Validators.maxLength(6)]),
+    condition: new FormControl('', [Validators.required]),
   });
   mode: any;
 
@@ -95,17 +97,16 @@ export class NewDogParkComponent implements OnInit {
       return;
     }
     this.dogParkService.saveDogPark({
-      user_input: {
-        name: this.name.value,
-        SHAPE_Leng: this.SHAPE_Leng.value,
-        SHAPE_Area: this.SHAPE_Area.value,
-        street: this.street.value,
-        house_number: this.house_number.value,
-        neighborhood: this.neighborhood.value,
-        operator: this.operator.value,
-        handicapped: !!this.handicapped.value,
-        condition: this.condition.value
-      }
+      name: this.name.value,
+      SHAPE_Leng: this.SHAPE_Leng.value,
+      SHAPE_Area: this.SHAPE_Area.value,
+      street: this.street.value,
+      house_number: this.house_number.value,
+      neighborhood: this.neighborhood.value,
+      operator: this.operator.value,
+      handicapped: !!this.handicapped.value,
+      condition: this.condition.value,
+      active: PlaceActiveType.Active
     }).subscribe((res) => {
       this.toastr.success('הפעולה הסתיימה בהצלחה');
       this.dialogRef.close(res);
@@ -121,21 +122,20 @@ export class NewDogParkComponent implements OnInit {
       return;
     }
     this.dogParkService.updateDogPark({
-      user_input: {
-        id: this.dialogData.id,
-        name: this.name.value,
-        SHAPE_Leng: this.SHAPE_Leng.value,
-        SHAPE_Area: this.SHAPE_Area.value,
-        street: this.street.value,
-        house_number: this.house_number.value,
-        neighborhood: this.neighborhood.value,
-        operator: this.operator.value,
-        handicapped: !!this.handicapped.value,
-        condition: this.condition.value
-      }
-    }).subscribe(() => {
+      id: this.dialogData.id,
+      name: this.name.value,
+      SHAPE_Leng: this.SHAPE_Leng.value,
+      SHAPE_Area: this.SHAPE_Area.value,
+      street: this.street.value,
+      house_number: this.house_number.value,
+      neighborhood: this.neighborhood.value,
+      operator: this.operator.value,
+      handicapped: !!this.handicapped.value,
+      condition: this.condition.value,
+      active: this.dialogData.active
+    }).subscribe((res) => {
       this.toastr.success('הפעולה הסתיימה בהצלחה');
-      this.dialogRef.close(this.dialogData);
+      this.dialogRef.close(res);
     }, err => {
       this.toastr.error('הפעולה נכשלה');
       console.log('err', err);

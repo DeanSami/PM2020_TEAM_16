@@ -15,7 +15,7 @@ export class UserProfilePageComponent implements OnInit {
   currentUser: User;
   userHobbies = UserHobbies;
   currentPage = 'About';
-  edit = false;
+  edit = true;
   selectedFiles: FileList;
 
   constructor(
@@ -35,7 +35,7 @@ export class UserProfilePageComponent implements OnInit {
       deleted: false,
       birthday: '03/12/1993',
       gender: UserGender.Mail,
-      hobbies: 4863,
+      hobbies: 3267,
       created_at: '01/01/2020'
     };
   }

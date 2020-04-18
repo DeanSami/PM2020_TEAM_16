@@ -31,12 +31,21 @@
       </mat-form-field>
 
       <mat-form-field appearance="fill">
+        <mat-label>סוג המתקן</mat-label>
+        <mat-select formControlName="type" required>
+          <mat-option [value]="placesType.Historic_Parks">{{placeTypeTitles[placesType.Historic_Parks]}}</mat-option>
+          <mat-option [value]="placesType.Cafewithdog">{{placeTypeTitles[placesType.Cafewithdog]}}</mat-option>
+          <mat-option [value]="placesType.NationalParks">{{placeTypeTitles[placesType.NationalParks]}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
         <mat-label>תקינות המקום</mat-label>
         <mat-select formControlName="condition" required>
-          <mat-option [value]="conditionType.Working_Active">תקין ופעיל</mat-option>
-          <mat-option [value]="conditionType.Working_Not_Active">תקין ולא פעיל</mat-option>
-          <mat-option [value]="conditionType.Not_Working_Active">לא תקין ופעיל</mat-option>
-          <mat-option [value]="conditionType.Not_Working_Not_Active">לא תקין ולא פעיל</mat-option>
+          <mat-option [value]="conditionType.Working_Active">{{conditionTypeTitles[conditionType.Working_Active]}}</mat-option>
+          <mat-option [value]="conditionType.Working_Not_Active">{{conditionTypeTitles[conditionType.Working_Not_Active]}}</mat-option>
+          <mat-option [value]="conditionType.Not_Working_Active">{{conditionTypeTitles[conditionType.Not_Working_Active]}}</mat-option>
+          <mat-option [value]="conditionType.Not_Working_Not_Active">{{conditionTypeTitles[conditionType.Not_Working_Not_Active]}}</mat-option>
         </mat-select>
       </mat-form-field>
 
@@ -46,7 +55,7 @@
         <mat-slide-toggle formControlName="handicapped" color="primary"></mat-slide-toggle>
       </div>
       <button *ngIf="!dialogData" class="btn btn-raised mr-1 btn-primary" (click)="addInterestingPoint()">הוסף נקודה</button>
-      <button *ngIf="dialogData" class="btn btn-raised mr-1 btn-primary" (click)="addInterestingPoint()">ערוך נקודה</button>
+      <button *ngIf="dialogData" class="btn btn-raised mr-1 btn-primary" (click)="updateInterestingPoint()">ערוך נקודה</button>
     </form>
   </div>
 </div>

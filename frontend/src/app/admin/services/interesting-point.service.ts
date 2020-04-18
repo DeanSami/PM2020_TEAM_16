@@ -15,15 +15,15 @@ export class InterestingPointService {
     return this.api.get('admin/interesting_point');
   }
 
-  deleteInterestingPoint(dogParkId: number): Observable<boolean> {
+  deleteInterestingPoint(dogParkId: number) {
     return this.api.delete('admin/interesting_point', {id: dogParkId});
   }
 
-  saveInterestingPoint(park: {user_input: Place}): Observable<Place> {
+  saveInterestingPoint(park: Place): Observable<Place> {
     return this.api.post('admin/interesting_point', park);
   }
 
-  updateInterestingPoint(park: {user_input: Place}): Observable<Place> {
+  updateInterestingPoint(park: Place): Observable<Place> {
     return this.api.patch('admin/interesting_point', park);
   }
 }
