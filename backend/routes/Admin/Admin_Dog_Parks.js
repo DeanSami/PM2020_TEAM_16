@@ -29,7 +29,7 @@ router.post('/', function (req, res) {
             || condition == undefined)
         {
             console.log('<LOG> - POST /dog_parks/add - At least 1 field is missing');
-            res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
+            res.status(globals.status_codes.Bad_Request).json()
         }
         else if (typeof(name) !== 'string'
             || typeof(SHAPE_Leng) !== 'string'
@@ -41,7 +41,7 @@ router.post('/', function (req, res) {
             || typeof(condition) !== 'number')
         {
             console.log('<LOG> - POST /dog_parks/add - Error with type of at least 1 input field');
-            res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
+            res.status(globals.status_codes.Bad_Request).json()
         } else {
             var values = {type: globals.places_types.dog_park, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
             if (street !== undefined)
@@ -51,19 +51,16 @@ router.post('/', function (req, res) {
                 if (err) {
                     console.log('<LOG> - POST /admin/dog_parks/add - ERROR');
                     console.error(err)
-                    res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+                    res.status(globals.status_codes.Server_Error).json()
                 } else {
                     db.query('SELECT * FROM places WHERE id = (?)', [insert_dog_park_result.insertId], function (err, select_dog_park_result) {
                         if (err) {
                             console.log('<LOG> - POST /admin/dog_parks/add - ERROR');
                             console.error(err);
-                            res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+                            res.status(globals.status_codes.Server_Error).json()
                         } else {
                             console.log('<LOG> - POST /admin/dog_parks/add - SUCCESS');
-                            res.status(globals.status_codes.OK).json({
-                                status: true,
-                                place: select_dog_park_result[0]
-                            })
+                            res.status(globals.status_codes.OK).json(select_dog_park_result[0])
                         }
                     })
                 }
@@ -81,13 +78,10 @@ router.get('/' , function(req, res) {
             if (err) {
                 console.log('<LOG> - GET /admin/dog_parks/get - ERROR');
                 console.error(err);
-                res.status(globals.status_codes.Server_Error).json(globals.messages.failure);
+                res.status(globals.status_codes.Server_Error).json();
             } else {
                 console.log('<LOG> - GET /admin/dog_parks/get - SUCCESS');
-                res.status(globals.status_codes.OK).json({
-                    status: true,
-                    places: result
-                    })
+                res.status(globals.status_codes.OK).json(result)
                 }
             })
         }
@@ -97,13 +91,10 @@ router.get('/' , function(req, res) {
                 if (err) {
                     console.log('<LOG> - GET /admin/dog_parks/get - ERROR');
                     console.error(err);
-                    res.status(globals.status_codes.Server_Error).json(globals.messages.failure);
+                    res.status(globals.status_codes.Server_Error).json();
                 } else {
                     console.log('<LOG> - GET /admin/dog_parks/get - SUCCESS');
-                    res.status(globals.status_codes.OK).json({
-                        status: true,
-                        places: result
-                    })
+                    res.status(globals.status_codes.OK).json(result)
                 }
             })
         }
@@ -118,23 +109,20 @@ router.delete('/',function (req,res) {
             if (err) {
                 console.log('<LOG> - DELETE /PARK DOG - ERROR');
                 console.error(err);
-                res.status(globals.status_codes.Server_Error).json(globals.messages.failure);
+                res.status(globals.status_codes.Server_Error).json();
             } if (result.affectedRows > 0) {
                 console.log("<LOG> - DELETE /PARK DOG - SUCCESS");
-                res.status(globals.status_codes.OK).json({
-                    status: true,
-                    message: "delete action has been done",
-                })
+                res.status(globals.status_codes.OK).json()
             } else {
                 console.log('<LOG> - DELETE /PARK DOG - Wrong Parameters');
-                res.status(globals.status_codes.Bad_Request).json(globals.messages.failure);
+                res.status(globals.status_codes.Bad_Request).json();
             }
 
         });
     }
     else{
         console.error("not ID has been send");
-        res.status(globals.status_codes.Bad_Request).json(globals.messages.failure);
+        res.status(globals.status_codes.Bad_Request).json();
     }
 });
 //UPDATE PARK DOG REQUEST
@@ -165,7 +153,7 @@ router.patch('/',function (req,res) {
             || active == undefined)
         {
             console.log('<LOG> - UPDATE /dog_parks - At least 1 field is missing');
-            res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
+            res.status(globals.status_codes.Bad_Request).json()
         }
         else if (typeof(name) !== 'string'
             || typeof(SHAPE_Leng) !== 'string'
@@ -178,7 +166,7 @@ router.patch('/',function (req,res) {
             || (typeof(active) !== 'boolean' && typeof(active) !== 'number'))
         {
             console.log('<LOG> - UPDATE /dog_parks - Error with type of at least 1 input field');
-            res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
+            res.status(globals.status_codes.Bad_Request).json()
         } else {
             var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition, active:active};
             if (street !== undefined)
@@ -189,19 +177,16 @@ router.patch('/',function (req,res) {
                 if (err) {
                     console.log('<LOG> - PATCH /admin/dog_parks - ERROR');
                     console.error(err);
-                    res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+                    res.status(globals.status_codes.Server_Error).json()
                 } else {
                     db.query('SELECT * FROM places WHERE id = ?', [temp_id], function (err, select_result) {
                         if (err) {
                             console.log('<LOG> - PATCH /admin/dog_parks - ERROR');
                     console.error(err);
-                    res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+                    res.status(globals.status_codes.Server_Error).json()
                         }
                         console.log('<LOG> - PATCH /admin/dog_parks - SUCCESS');
-                        res.status(globals.status_codes.OK).json({
-                            status: true,
-                            place: select_result[0]
-                        })
+                        res.status(globals.status_codes.OK).json(select_result[0])
                     })
                 }
 

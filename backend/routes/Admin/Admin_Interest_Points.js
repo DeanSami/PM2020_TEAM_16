@@ -30,7 +30,7 @@ router.post('/', function (req, res) {
             || condition == undefined)
         {
             console.log('<LOG> - POST /interesting_point - At least 1 field is missing');
-            res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
+            res.status(globals.status_codes.Bad_Request).json()
         }
         else if (typeof(name) !== 'string'
             || typeof(SHAPE_Leng) !== 'string'
@@ -42,7 +42,7 @@ router.post('/', function (req, res) {
             || typeof(condition) !== 'number')
         {
             console.log('<LOG> - POST /interesting_point - Error with type of at least 1 input field');
-            res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
+            res.status(globals.status_codes.Bad_Request).json()
         } else {
             var values = {type: type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
             if (street !== undefined)
@@ -52,19 +52,16 @@ router.post('/', function (req, res) {
                 if (err) {
                     console.log('<LOG> - POST /admin/interesting_point - ERROR');
                     console.error(err)
-                    res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+                    res.status(globals.status_codes.Server_Error).json()
                 } else {
                     db.query('SELECT * FROM places WHERE id = (?)', [result.insertId], function (err, result) {
                         if (err) {
                             console.log('<LOG> - POST /admin/interesting_point - ERROR');
                             console.error(err);
-                            res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+                            res.status(globals.status_codes.Server_Error).json()
                         } else {
                             console.log('<LOG> - POST /admin/interesting_point - SUCCESS');
-                            res.status(globals.status_codes.OK).json({
-                                status: true,
-                                place: result[0]
-                            })
+                            res.status(globals.status_codes.OK).json(result[0])
                         }
                     })
                 }
@@ -83,13 +80,10 @@ router.get('/',function(req,res){
            if(err){
                console.log('<LOG> - GET /interest point - ERROR');
                console.error(err);
-               res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+               res.status(globals.status_codes.Server_Error).json()
            } else {
                 console.log('<LOG> - GET /interest point - SUCCESS');
-                res.status(globals.status_codes.OK).json({
-                    status:true,
-                    place: result[0]
-                })
+                res.status(globals.status_codes.OK).json(result[0])
            }
         });
     }
@@ -99,19 +93,16 @@ router.get('/',function(req,res){
             if (err) {
                 console.log('<LOG> - GET /interest point - ERROR');
                 console.error(err);
-                res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+                res.status(globals.status_codes.Server_Error).json()
             } else {
                 if(result.length > 0)
                 {
-                    console.log('<LOG> - GET /interest point - SUCCESS');
-                    res.status(globals.status_codes.OK).json({
-                        status:true,
-                        place: result
-                    });
+                    console.log('<LOG> - GET /interest point - SUCCESS')
+                    res.status(globals.status_codes.OK).json(result)
                 }
                 else{
                     console.log('<LOG> - GET /interest point - Unauthorized Credentials');
-                    res.status(globals.status_codes.Unauthorized).json(globals.messages.failure)
+                    res.status(globals.status_codes.Unauthorized).json()
                 }
             }
         })
@@ -127,16 +118,13 @@ router.delete('/',function (req,res) {
         if(err){
             console.log('<LOG> - DELETE /interest point - ERROR');
             console.error(err);
-            res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+            res.status(globals.status_codes.Server_Error).json()
         } else {
             if (result.affectedRows > 0) {
-                res.status(globals.status_codes.OK).json({
-                    status: true,
-                    message: "delete action has been done",
-                })
+                res.status(globals.status_codes.OK).json()
             } else {
                 console.log('<LOG> - DELETE /interestpoint - Wrong Parameters');
-                res.status(globals.status_codes.Bad_Request).json(globals.messages.failure);
+                res.status(globals.status_codes.Bad_Request).json();
             }
         }
      })
@@ -172,7 +160,7 @@ router.patch('/',function (req,res) {
             || active == undefined)
         {
             console.log('<LOG> - UPDATE /dog_parks - At least 1 field is missing');
-            res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
+            res.status(globals.status_codes.Bad_Request).json()
         }
         else if (typeof(name) !== 'string'
             || typeof(SHAPE_Leng) !== 'string'
@@ -185,7 +173,7 @@ router.patch('/',function (req,res) {
             || (typeof(active) !== 'boolean' && typeof(active) !== 'number'))
         {
             console.log('<LOG> - UPDATE /interesting_point - Error with type of at least 1 input field');
-            res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
+            res.status(globals.status_codes.Bad_Request).json()
         } else {
             var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,
                     type:type,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition, active:active};
@@ -197,19 +185,16 @@ router.patch('/',function (req,res) {
                 if (err) {
                     console.log('<LOG> - PATCH /interesting_point - ERROR');
                     console.error(err);
-                    res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+                    res.status(globals.status_codes.Server_Error).json()
                 } else {
                     db.query('SELECT * FROM places WHERE id = ?', [temp_id], function (err, select_result) {
                         if (err) {
                             console.log('<LOG> - PATCH /interesting_point - ERROR');
                     console.error(err);
-                    res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+                    res.status(globals.status_codes.Server_Error).json()
                         }
                         console.log('<LOG> - PATCH /interesting_point - SUCCESS');
-                        res.status(globals.status_codes.OK).json({
-                            status: true,
-                            place: select_result[0]
-                        })
+                        res.status(globals.status_codes.OK).json(select_result[0])
                     })
                 }
             })
