@@ -189,7 +189,7 @@ router.patch('/',function (req,res) {
             console.log('<LOG> - UPDATE /dog_parks - Error with type of at least 1 input field');
             res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
         } else {
-            var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
+            var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition, action:action};
             if (street !== undefined)
                 values.street = street;
 
