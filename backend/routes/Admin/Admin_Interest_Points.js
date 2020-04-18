@@ -7,10 +7,6 @@ const router = express.Router()
 router.post('/', function (req, res) {
     console.log('<LOG> - POST /admin/interesting_point - Invoke');
 
-    if (!req.body.user_input) {
-        console.log('<LOG> - POST /interesting_point - Wrong Payload Format');
-        res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
-    } else {
         const {
             type,
             name,
@@ -22,7 +18,7 @@ router.post('/', function (req, res) {
             operator,
             handicapped,
             condition
-        } = req.body.user_input;
+        } = req.body;
 
         if (name == undefined
             || SHAPE_Leng == undefined
@@ -74,7 +70,6 @@ router.post('/', function (req, res) {
                 }
             })
         }
-    }
 
 });
 
@@ -151,10 +146,6 @@ router.delete('/',function (req,res) {
 //UPDATE INTERESTING POINTS REQUEST
 router.patch('/',function (req,res) {
     console.log('<LOG> - UPDATE /interesting_point - Invoke');
-    if (!req.body.user_input) {
-        console.log('<LOG> - UPDATE /interesting_point - Wrong Payload Format');
-        res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
-    } else {
         const {
             id,
             name,
@@ -168,7 +159,7 @@ router.patch('/',function (req,res) {
             handicapped,
             condition,
             active
-        } = req.body.user_input;
+        } = req.body;
 
         if (name == undefined
             || SHAPE_Leng == undefined
@@ -223,7 +214,6 @@ router.patch('/',function (req,res) {
                 }
             })
         }
-    }
 });
 
 module.exports = router;
