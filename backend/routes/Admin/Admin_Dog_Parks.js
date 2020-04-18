@@ -7,10 +7,6 @@ const router = express.Router()
 router.post('/', function (req, res) {
     console.log('<LOG> - POST /admin/dog_parks/add - Invoke');
 
-    if (!req.body.user_input) {
-        console.log('<LOG> - POST /dog_parks/add - Wrong Payload Format');
-        res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
-    } else {
         const {
             name,
             SHAPE_Leng,
@@ -21,7 +17,7 @@ router.post('/', function (req, res) {
             operator,
             handicapped,
             condition
-        } = req.body.user_input;
+        } = req.body;
 
         if (name == undefined
             || SHAPE_Leng == undefined
@@ -72,7 +68,6 @@ router.post('/', function (req, res) {
                     })
                 }
             })
-        }
     }
 
 });
@@ -145,10 +140,6 @@ router.delete('/',function (req,res) {
 //UPDATE PARK DOG REQUEST
 router.patch('/',function (req,res) {
     console.log('<LOG> - UPDATE /dog_parks - Invoke');
-    if (!req.body.user_input) {
-        console.log('<LOG> - UPDATE /dog_parks - Wrong Payload Format');
-        res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
-    } else {
         const {
             id,
             name,
@@ -161,7 +152,7 @@ router.patch('/',function (req,res) {
             handicapped,
             condition,
             active
-        } = req.body.user_input;
+        } = req.body;
 
         if (name == undefined
             || SHAPE_Leng == undefined
@@ -189,7 +180,7 @@ router.patch('/',function (req,res) {
             console.log('<LOG> - UPDATE /dog_parks - Error with type of at least 1 input field');
             res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
         } else {
-            var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition, action:action};
+            var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition, active:active};
             if (street !== undefined)
                 values.street = street;
 
@@ -218,7 +209,6 @@ router.patch('/',function (req,res) {
             })
 
         }
-    }
 });
 
 module.exports = router;
