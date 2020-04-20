@@ -18,19 +18,19 @@ router.use(function isAdmin (req, res, next) {
                 if (err) {
                     console.log('<LOG> - POST /admin/* - ERROR');
                     console.error(err);
-                    res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+                    res.status(globals.status_codes.Server_Error).json()
                 }
                 else if (result.length > 0) {
                     console.log('<LOG> - POST /admin/* - SUCCESS');
                     next()
                 } else {
                     console.log('<LOG> - POST /admin/* - Unauthorized Access Attempt');
-                    res.status(globals.status_codes.Forbidden).json(globals.messages.failure)
+                    res.status(globals.status_codes.Forbidden).json()
                 }
             })
         } else {
             console.log('<LOG> - POST /admin/* - Missing Credentials');
-            res.status(globals.status_codes.Forbidden).json(globals.messages.failure)
+            res.status(globals.status_codes.Forbidden).json()
         }
     }
 });
@@ -44,15 +44,16 @@ router.use('/dog_parks', A_DogParks)
 router.post('/register', function(req, res) {
     console.log("<LOG> - POST /admin/register")
     bcrypt.hash(req.body.pass, 10, function (err, hash) {
-        const values = {phone: req.body.phone, password: hash, user_type: 0}
+        const values = {name: req.body.phone, phone: req.body.phone, password: hash, user_type: 0}
         db.query('INSERT INTO users SET ?', values, function (err, result) {
-            if (!err) {
+            if (err) {
                 console.log("<LOG> - POST /admin/register - ERROR")
-                res.status(globals.status_codes.Server_Error).json(globals.messages.success)
+                console.error(err);
+                res.status(globals.status_codes.Server_Error).json()
             }
             else {
                 console.log("<LOG> - POST /admin/register - SUCCESS")
-                res.status(globals.status_codes.OK).json(globals.messages.success)
+                res.status(globals.status_codes.OK).json()
             }
         })
     })
@@ -65,18 +66,18 @@ router.post('/login', function (req, res) {
         if (err) {
             console.log('<LOG> - POST /admin/login - ERROR');
             console.error(err);
-            res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+            res.status(globals.status_codes.Server_Error).json()
         } else {
             if (phone_query_result.length > 0) {
                 const password = req.body.pass;
                 bcrypt.compare(password, phone_query_result[0].password, function (err, pass_compare) {
                     if (err) {
                         console.error(err);
-                        res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+                        res.status(globals.status_codes.Server_Error).json()
                     } else {
                         if (!pass_compare) {
                             console.log('<LOG> - POST /admin/login - Wrong Credentials pass');
-                            res.status(globals.status_codes.Unauthorized).json(globals.messages.failure)
+                            res.status(globals.status_codes.Unauthorized).json()
                         } else {
                             delete phone_query_result[0].password;
                             var token = hat();
@@ -84,11 +85,10 @@ router.post('/login', function (req, res) {
                                 if (err) {
                                     console.log('<LOG> - POST /admin/login - Wrong Values inserted');
                                     console.error(err);
-                                    res.status(globals.status_codes.Unauthorized).json(globals.messages.failure)
+                                    res.status(globals.status_codes.Unauthorized).json()
                                 } else {
                                     console.log('<LOG> - POST /admin/login - SUCCESS');
                                     res.status(globals.status_codes.OK).json({
-                                        status: true,
                                         token: token,
                                         user: phone_query_result[0]
                                     })
@@ -99,7 +99,7 @@ router.post('/login', function (req, res) {
                 })
             } else {
                 console.log('<LOG> - POST /admin/login - Wrong Credentials');
-                res.status(globals.status_codes.Unauthorized).json(globals.messages.failure)
+                res.status(globals.status_codes.Unauthorized).json()
             }
         }
     })
@@ -113,24 +113,21 @@ router.get('/login', function (req, res) {
             if (err) {
                 console.log('<LOG> - GET /admin/login - ERROR');
                 console.error(err);
-                res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+                res.status(globals.status_codes.Server_Error).json()
             } else {
                 if (result.length > 0) {
                     delete result[0].password;
                     console.log('<LOG> - GET /admin/login - SUCCESS');
-                    res.status(globals.status_codes.OK).json({
-                        status: true,
-                        user: result[0]
-                    })
+                    res.status(globals.status_codes.OK).json(result[0])
                 } else {
                     console.log('<LOG> - GET /admin/login - Unauthorized Credentials');
-                    res.status(globals.status_codes.Unauthorized).json(globals.messages.failure)
+                    res.status(globals.status_codes.Unauthorized).json()
                 }
             }
         })
     } else {
         console.log('<LOG> - GET /admin/login - Credentials Missing');
-        res.status(globals.status_codes.Bad_Request).json(globals.messages.failure)
+        res.status(globals.status_codes.Bad_Request).json()
     }
 });
 
