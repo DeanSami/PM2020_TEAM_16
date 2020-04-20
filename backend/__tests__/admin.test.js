@@ -32,7 +32,7 @@ describe('Admin Login With Wrong Credentials', () => {
 })
 
 describe('Admin Login With Correct Credentials', () => {
-    it('Should return unsuccessfull', done => {
+    it('Should return successfull', done => {
         request(app)
         .post('/admin/login')
         .send({phone: '0524222916', pass: '1234'})
