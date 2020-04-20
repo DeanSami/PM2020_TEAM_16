@@ -11,9 +11,16 @@ export interface Place {
   handicapped: boolean;
   condition: ConditionType;
   deleted?: boolean;
+  active: PlaceActiveType;
   created_at?: string;
   update_at?: string;
 }
+
+export enum PlaceActiveType {
+  InActive,
+  Active
+}
+
 
 export enum PlacesType {
   Dog_garden = 0,
@@ -28,6 +35,12 @@ export enum ConditionType {
   Not_Working_Active = 2,
   Not_Working_Not_Active = 3,
 }
+
+export let PlaceTypeTitles = { };
+PlaceTypeTitles[PlacesType.Dog_garden] = 'פארק כלבים';
+PlaceTypeTitles[PlacesType.Historic_Parks] = 'פארק היסטורי';
+PlaceTypeTitles[PlacesType.Cafewithdog] = 'בית קפה המקבלים כלבים';
+PlaceTypeTitles[PlacesType.NationalParks] = 'פארק לאומי';
 
 export let ConditionTypeTitles = { };
 ConditionTypeTitles[ConditionType.Working_Active] = 'פעיל ותקין';

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ConditionType, ConditionTypeTitles, Place} from '../../models/places';
+import { ConditionType, ConditionTypeTitles, Place, PlaceActiveType } from '../../models/places';
 import {MatTableDataSource} from '@angular/material/table';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
@@ -16,6 +16,7 @@ import {NewInterestingPointComponent} from './new-interesting-point/new-interest
 })
 export class InterestingPointComponent implements OnInit {
   conditionType = ConditionType;
+  placeActiveType = PlaceActiveType;
   conditionTypeTitle = ConditionTypeTitles;
   displayedColumns: string[] = ['name', 'street', 'neighborhood', 'operator', 'handicapped', 'condition', 'action'];
   dataSource: MatTableDataSource<Place>;
@@ -31,7 +32,7 @@ export class InterestingPointComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.places = this.rout.snapshot.data.interestingPoint.place;
+    this.places = this.rout.snapshot.data.interestingPoint;
     this.dataSource = new MatTableDataSource<Place>(this.places);
   }
 
@@ -40,8 +41,7 @@ export class InterestingPointComponent implements OnInit {
       width: '250px',
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.interestingPointService.deleteInterestingPoint(interestingPointId).subscribe(res => {
-          console.log(res);
+        this.interestingPointService.deleteInterestingPoint(interestingPointId).subscribe(() => {
           this.dataSource.data = this.dataSource.data.filter(park => park.id !== interestingPointId);
           this.toastr.success('נמחק בהצלחה');
         }, err =>  {
@@ -51,27 +51,54 @@ export class InterestingPointComponent implements OnInit {
       }
     });
   }
+
   editInterestingPoint(interestingPoint: Place) {
     this.dialog.open(NewInterestingPointComponent, {
       width: '600px',
       data: interestingPoint
     }).afterClosed().subscribe(result => {
-      if (result && result.status) {
-        const idx = this.dataSource.data.findIndex(park => park.id === result.places[0]);
+      if (result) {
+        const idx = this.dataSource.data.findIndex(park => park.id === result.id);
         if (idx >= 0) {
-          this.dataSource.data[idx] = result.places[0];
+          this.dataSource.data[idx] = result;
         }
         this.dataSource.data = this.dataSource.data;
       }
     });
   }
+
+  shutdown(interestingPoint: Place) {
+    this.dialog.open(AreYouSureDialogComponent, {
+      width: '250px',
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        interestingPoint.active = interestingPoint.active === PlaceActiveType.Active ? PlaceActiveType.InActive : PlaceActiveType.Active;
+        this.interestingPointService.updateInterestingPoint(interestingPoint).subscribe(res => {
+          const idx = this.dataSource.data.findIndex(park => park.id === res.id);
+          if (res.active === PlaceActiveType.Active) {
+            this.toastr.success('נקודת העניין נפתחה בהצלחה');
+          } else {
+            this.toastr.success('נקודת העניין נסגרה בהצלחה');
+          }
+          if (idx > 0) {
+            this.dataSource.data[idx].active = res.active;
+            this.dataSource.data = this.dataSource.data;
+          }
+        }, err => {
+          console.log(err);
+          this.toastr.error('ארעה שגיאה בסגירת נקודת העניין');
+        });
+      }
+    });
+  }
+
   addInterestingPoint() {
     this.dialog.open(NewInterestingPointComponent, {
       width: '600px',
       data: null
     }).afterClosed().subscribe(result => {
-      if (result && result.status) {
-        this.dataSource.data.push(result.places[0]);
+      if (result) {
+        this.dataSource.data.push(result);
         this.dataSource.data = this.dataSource.data;
       }
     });

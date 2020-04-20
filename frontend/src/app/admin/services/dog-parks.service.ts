@@ -15,15 +15,15 @@ export class DogParksService {
     return this.api.get('admin/dog_parks');
   }
 
-  deleteDogPark(dogParkId: number): Observable<boolean> {
+  deleteDogPark(dogParkId: number) {
     return this.api.delete('admin/dog_parks', {id: dogParkId});
   }
 
-  saveDogPark(park: {user_input: Place}): Observable<Place> {
+  saveDogPark(park: Place): Observable<Place> {
     return this.api.post('admin/dog_parks', park);
   }
 
-  updateDogPark(park: {user_input: Place}): Observable<Place> {
+  updateDogPark(park: Place): Observable<Place> {
     return this.api.patch('admin/dog_parks', park);
   }
 }

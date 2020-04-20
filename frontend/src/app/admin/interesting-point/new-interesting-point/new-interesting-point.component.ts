@@ -1,10 +1,10 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
-import {ToastrService} from 'ngx-toastr';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {ConditionType, Place, PlacesType} from '../../../models/places';
-import {InterestingPointService} from '../../services/interesting-point.service';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ConditionType, ConditionTypeTitles, Place, PlaceActiveType, PlacesType, PlaceTypeTitles } from '../../../models/places';
+import { InterestingPointService } from '../../services/interesting-point.service';
 
 @Component({
   selector: 'app-new-interesting-point',
@@ -14,6 +14,9 @@ import {InterestingPointService} from '../../services/interesting-point.service'
 export class NewInterestingPointComponent implements OnInit {
   conditionType = ConditionType;
   placesType = PlacesType;
+  placeTypeTitles = PlaceTypeTitles;
+  conditionTypeTitles = ConditionTypeTitles;
+
   constructor(
     private interestingPointService: InterestingPointService,
     private router: Router,
@@ -31,7 +34,8 @@ export class NewInterestingPointComponent implements OnInit {
     neighborhood: new FormControl('', [Validators.required, Validators.minLength(3)]),
     operator: new FormControl('', [Validators.required, Validators.maxLength(10)]),
     handicapped: new FormControl('', []),
-    condition: new FormControl('', [Validators.required, Validators.maxLength(6)]),
+    condition: new FormControl('', [Validators.required]),
+    type: new FormControl('', [Validators.required])
   });
   mode: any;
   get name() {
@@ -69,6 +73,10 @@ export class NewInterestingPointComponent implements OnInit {
   get condition() {
     return this.form.get('condition');
   }
+
+  get type() {
+    return this.form.get('type');
+  }
   ngOnInit(): void {
     if (this.dialogData) {
       this.form.setValue({
@@ -81,7 +89,7 @@ export class NewInterestingPointComponent implements OnInit {
         operator: this.dialogData.operator,
         handicapped: this.dialogData.handicapped,
         condition: this.dialogData.condition,
-        type: this.dialogData.condition
+        type: this.dialogData.type
       });
       console.log(this.dialogData);
     }
@@ -92,7 +100,6 @@ export class NewInterestingPointComponent implements OnInit {
       return;
     }
     this.interestingPointService.saveInterestingPoint({
-      user_input: {
         name: this.name.value,
         SHAPE_Leng: this.SHAPE_Leng.value,
         SHAPE_Area: this.SHAPE_Area.value,
@@ -102,12 +109,41 @@ export class NewInterestingPointComponent implements OnInit {
         operator: this.operator.value,
         handicapped: !!this.handicapped.value,
         condition: this.condition.value,
-      }
+        type: this.type.value,
+        active: PlaceActiveType.Active
     }).subscribe((res) => {
       this.toastr.success('הפעולה הסתיימה בהצלחה!');
       this.dialogRef.close(res);
     }, err => {
       this.toastr.error('הפעולה נכשלה!');
+      console.log('err', err);
+    });
+  }
+
+
+  updateInterestingPoint() {
+    if (this.form.invalid || !this.dialogData || !this.dialogData.id) {
+      this.toastr.error('חובה למלא את כל השדות המסומנים');
+      return;
+    }
+    this.interestingPointService.updateInterestingPoint({
+      id: this.dialogData.id,
+      name: this.name.value,
+      SHAPE_Leng: this.SHAPE_Leng.value,
+      SHAPE_Area: this.SHAPE_Area.value,
+      street: this.street.value,
+      house_number: this.house_number.value,
+      neighborhood: this.neighborhood.value,
+      operator: this.operator.value,
+      handicapped: !!this.handicapped.value,
+      condition: this.condition.value,
+      type: this.type.value,
+      active: this.dialogData.active
+    }).subscribe((res) => {
+      this.toastr.success('הפעולה הסתיימה בהצלחה');
+      this.dialogRef.close(res);
+    }, err => {
+      this.toastr.error('הפעולה נכשלה');
       console.log('err', err);
     });
   }

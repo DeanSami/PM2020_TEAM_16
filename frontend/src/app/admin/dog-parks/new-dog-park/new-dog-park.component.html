@@ -33,10 +33,10 @@
       <mat-form-field appearance="fill">
         <mat-label>תקינות המקום</mat-label>
         <mat-select formControlName="condition" required>
-          <mat-option [value]="conditionType.Working_Active">תקין ופעיל</mat-option>
-          <mat-option [value]="conditionType.Working_Not_Active">תקין ולא פעיל</mat-option>
-          <mat-option [value]="conditionType.Not_Working_Active">לא תקין ופעיל</mat-option>
-          <mat-option [value]="conditionType.Not_Working_Not_Active">לא תקין ולא פעיל</mat-option>
+          <mat-option [value]="conditionType.Working_Active">{{conditionTypeTitles[conditionType.Working_Active]}}</mat-option>
+          <mat-option [value]="conditionType.Working_Not_Active">{{conditionTypeTitles[conditionType.Working_Not_Active]}}</mat-option>
+          <mat-option [value]="conditionType.Not_Working_Active">{{conditionTypeTitles[conditionType.Not_Working_Active]}}</mat-option>
+          <mat-option [value]="conditionType.Not_Working_Not_Active">{{conditionTypeTitles[conditionType.Not_Working_Not_Active]}}</mat-option>
         </mat-select>
       </mat-form-field>
 
