@@ -1,0 +1,39 @@
+.login {
+  position: relative;
+  direction: rtl;
+  text-align: right;
+
+  .loading-background {
+    position: absolute;
+    z-index: 2;
+    background: #fff;
+    opacity: 0.6;
+
+    mat-progress-spinner {
+      opacity: 1;
+      ::ng-deep circle {
+        stroke: #5777ba!important;
+      }
+    }
+  }
+
+  button.btn.btn-primary {
+    color: #fff !important;
+  }
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #5777ba!important;
+  border-color: #5777ba!important;
+}
+
+::ng-deep.mat-form-field.mat-focused .mat-form-field-label {
+  color: #5777ba!important;
+}
+::ng-deep.mat-form-field.mat-focused .mat-form-field-ripple {
+  background-color: #5777ba!important;
+}
+::ng-deep.mat-slide-toggle.mat-primary.mat-checked .mat-slide-toggle-thumb {
+  background-color: #5777ba!important;
+}

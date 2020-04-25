@@ -1,0 +1,11 @@
+<div class="loading-background" fxLayout="column" fxLayoutAlign="center center" fxFill *ngIf="loading">
+  <mat-progress-spinner
+    class="example-margin"
+    [color]="color"
+    [mode]="mode"
+    [value]="value">
+  </mat-progress-spinner>
+</div>
+<div class="content-wrapper p-0" [dir]="direction">
+  <router-outlet></router-outlet>
+</div>

@@ -1,0 +1,30 @@
+
+<div class="login" fxFill fxLayout="column" fxLayoutAlign="center center">
+  <div class="loading-background" fxLayout="column" fxLayoutAlign="center center" fxFill *ngIf="loading">
+    <mat-progress-spinner
+      class="example-margin"
+      [color]="color"
+      [mode]="mode"
+      [value]="value">
+    </mat-progress-spinner>
+  </div>
+  <h4 class="card-title mb-2">{{ isRegister ? 'הרשמה' : 'התחברות'}}</h4>
+  <form [formGroup]="form" fxLayout="column">
+    <mat-form-field *ngIf="!setValidationCode" appearance="fill">
+      <mat-label>טלפון</mat-label>
+      <input matInput formControlName="phone">
+    </mat-form-field>
+    <mat-form-field *ngIf="setValidationCode" appearance="fill">
+      <mat-label>קוד אימות</mat-label>
+      <input matInput formControlName="code">
+    </mat-form-field>
+  </form>
+
+  <div *ngIf="isRegister" fxFill class="custom-control custom-checkbox custom-control-inline mb-1" >
+    <input type="checkbox" id="rememberCheckBox" class="custom-control-input" />
+    <label class="custom-control-label" for="rememberCheckBox" > בעל עסק</label>
+  </div>
+  <button *ngIf="!setValidationCode" fxFill class="btn btn-primary" (click)="sendSms()">שלח לי קוד אימות</button>
+  <button *ngIf="setValidationCode" fxFill class="btn btn-primary" (click)="checkCode()">התחבר</button>
+
+</div>
