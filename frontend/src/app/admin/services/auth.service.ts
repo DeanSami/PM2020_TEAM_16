@@ -27,13 +27,14 @@ export class AuthService {
     this.api.token = this._token;
   }
 
-  login(phone?: string, pass?: string) {
+  login(phone?: string, pass?: string, remember?: boolean) {
     return new Promise((resolve, reject) => {
       if (phone && pass) {
         console.log('auth');
         this.api.post('admin/login', { phone, pass }).subscribe((response: LoginResponse) => {
           if (response.status) {
             this.loggedIn = response.status;
+            // todo remember me;
             this.token = response.token;
             this.currentUser.next(response.user);
             resolve(this.loggedIn);
@@ -67,6 +68,6 @@ export class AuthService {
     this.loggedIn = false;
     this.token = null;
     this.currentUser.next(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['admin/login']);
   }
 }

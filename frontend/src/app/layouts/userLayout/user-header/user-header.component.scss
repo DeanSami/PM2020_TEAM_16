@@ -1,11 +1,25 @@
-.dropdown-toggle {
-  padding: 0;
-  cursor: pointer;
-  &::after {
-    content: unset;
+.dropdown {
+  .dropdown-item.active,
+  .dropdown-item:active {
+    background-color: #5777ba;
   }
-  img {
-    max-height: 45px;
+  .dropdown-toggle {
+    padding: 0;
+    cursor: pointer;
+    &::after {
+      content: unset;
+    }
+    img {
+      max-height: 45px;
+    }
+  }
+
+  .dropdown-menu {
+    text-align: center;
+  }
+
+  a {
+    text-align: right;
   }
 }
 .logo {
@@ -17,3 +31,4 @@
     max-height: 60px;
   }
 }
+

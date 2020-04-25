@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { User, UserType } from './models/users';
+import { UserType } from './models/users';
 import { AuthService } from './admin/services/auth.service';
 import { LoginResponse } from './models/Responses';
 
@@ -10,29 +10,27 @@ import { LoginResponse } from './models/Responses';
 })
 
 export class AdminGuard implements CanActivate {
-  currentUser: User;
-  userType = UserType;
   close = true;
 
-  constructor(private userService: AuthService, private router: Router) { }
+  constructor(private adminService: AuthService, private router: Router) { }
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      if (!this.userService.loggedIn) {
+      if (!this.adminService.loggedIn) {
         return new Promise<boolean>((resolve, reject) => {
-          this.userService.login().then((res: LoginResponse) => {
+          this.adminService.login().then((res: LoginResponse) => {
             res ? resolve(true) : reject(false);
           }, () => {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/admin/login']);
           });
         });
       }
-      console.log('this.userService.loggedIn', this.userService.loggedIn);
-      if (this.userService.loggedIn && this.userService.currentUser.getValue().user_type === UserType.Admin) {
+      console.log('this.adminService.loggedIn', this.adminService.loggedIn);
+      if (this.adminService.loggedIn && this.adminService.currentUser.getValue().user_type === UserType.Admin) {
         return true;
       }
-      this.router.navigate(['/login']);
+      this.router.navigate(['admin/login']);
   }
 
 }

@@ -1,26 +1,55 @@
-<div fxLayout="column" fxLayoutAlign="center center" fxFill *ngIf="loading">
-  <mat-progress-spinner
-    class="example-margin"
-    [color]="color"
-    [mode]="mode"
-    [value]="value">
-  </mat-progress-spinner>
-</div>
-<div fxFill *ngIf="!loading" class="container" fxLayout="row" fxLayoutAlign="space-around center" >
-  <div>
-      <mat-card fxLayout="column" >
-        <form [formGroup]="form" fxLayout="column">
-          <mat-form-field appearance="fill">
-            <mat-label>phone</mat-label>
-            <input matInput formControlName="phone">
-          </mat-form-field>
-          <mat-form-field appearance="fill">
-            <mat-label>password</mat-label>
-            <input type="password" matInput formControlName="pass">
-          </mat-form-field>
-          <button mat-button (click)="setLogin()">התחבר</button>
-        </form>
-      </mat-card>
+<!--Login Page Starts-->
+<section id="login">
+  <div class="container-fluid">
+    <div class="row full-height-vh m-0">
+      <div class="col-12 d-flex align-items-center justify-content-center">
+        <div class="card">
+          <div class="card-content">
+            <div class="card-body login-img">
+              <div class="row m-0">
+                <div class="col-lg-6 d-lg-block d-none py-2 px-3 text-center align-middle" >
+                  <img src="../../../assets/img/gallery/login.png" alt="" class="img-fluid mt-5" width="400" height="230" />
+                </div>
+                <div class="col-lg-6 col-md-12 bg-white px-4 pt-3">
+                  <h4 class="card-title mb-2">התחברות</h4>
+                  <p class="card-text mb-3">
+                    ברוך הבא לממשק ניהול, התחבר כדי להמשיך
+                  </p>
+                  <form [formGroup]="form" fxLayout="column">
+                    <mat-form-field appearance="fill">
+                      <mat-label>טלפון</mat-label>
+                      <input matInput formControlName="phone">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                      <mat-label>סיסמה</mat-label>
+                      <input type="password" matInput formControlName="pass">
+                    </mat-form-field>
+                  </form>
 
+                  <div class="d-flex justify-content-between mt-2">
+                    <div class="remember-me">
+                      <div class="custom-control custom-checkbox custom-control-inline mb-3" >
+                        <input type="checkbox"
+                          id="rememberCheckBox"
+                          class="custom-control-input"
+                           [(ngModel)]="rememberMe"
+                        />
+                        <label class="custom-control-label" for="rememberCheckBox" > זכור אותי</label>
+                      </div>
+                    </div>
+                    <div class="recover-pass">
+                      <button class="btn btn-primary" (click)="setLogin()">התחבר</button>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
+<!--Login Page Ends-->

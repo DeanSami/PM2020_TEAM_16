@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { UserAuthService } from '../../user/user-auth.service';
 
 @Component({
   selector: 'app-main',
@@ -10,7 +11,9 @@ export class UserLayoutComponent implements OnInit {
   opened = true;
   mode = new FormControl('push');
 
-  constructor() { }
+  constructor(private userAuth: UserAuthService) {
+    this.userAuth.login();
+  }
 
   ngOnInit(): void {
   }
