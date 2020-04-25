@@ -3,6 +3,13 @@ module.exports = {
         admin: 0,
     },
     server_port: process.env.PORT || 3000,
+    DB: {
+        HOST: '104.248.25.246',
+        PORT: 3306,
+        USER: 'admin',
+        PASS: '588c9a1d776ecba6e99f97c8793f0552c2ffd7cd7fb469f0',
+        NAME: 'pm2020_team16'
+    },
     log_func: function Log (req, res, next) {
         console.log('<LOG> -', new Date().toUTCString());
         next();

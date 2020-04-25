@@ -1,17 +1,17 @@
 const request = require('supertest');
 const app = require('../index');
 
+const globals = require('../globals');
+
 describe('Admin Login With Empty Info', () => {
     it('Should return unsuccessfull', done => {
         request(app)
         .post('/admin/login')
         .send({phone: '', pass: ''})
-        .expect(401)
+        .expect(globals.status_codes.Unauthorized)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .end((err, res) => {
             if (err) return done(err);
-            expect(res.body).toHaveProperty('status');
-            expect(res.body.status).toEqual(false);
             done();
         });
     })
@@ -22,29 +22,26 @@ describe('Admin Login With Wrong Credentials', () => {
         request(app)
         .post('/admin/login')
         .send({phone: '01', pass: '01'})
-        .expect(401)
+        .expect(globals.status_codes.Unauthorized)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .end((err, res) => {
             if (err) return done(err);
-            expect(res.body).toHaveProperty('status');
-            expect(res.body.status).toEqual(false);
             done();
         });
     })
 })
 
 describe('Admin Login With Correct Credentials', () => {
-    it('Should return unsuccessfull', done => {
+    it('Should return successfull', done => {
         request(app)
         .post('/admin/login')
-        .send({phone: '0666', pass: 'admin'})
-        .expect(200)
+        .send({phone: '0524222916', pass: '1234'})
+        .expect(globals.status_codes.OK)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .end((err, res) => {
             if (err) return done(err);
-            expect(res.body).toHaveProperty('status');
-            expect(res.body.status).toEqual(true);
-            expect(res.body).toHaveProperty('token')
+            expect(res.body).toHaveProperty('token');
+            expect(res.body).toHaveProperty('user');
             done();
         });
     })
