@@ -3,7 +3,18 @@ const db = require('../../db-connect');
 const globals = require('../../globals');
 var router = express.Router();
 var hat = require('hat');
+const AWS = require('aws-sdk');
+AWS.config.update({
+    accessKeyId: 'AKIAYNRPTGKU3FKSABHK',
+    secretAccessKey: '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',
+    region: 'eu-west-1'
+});
 
+const sns = new AWS.SNS();
+
+router.use(globals.log_func);
+
+/*
 router.use(function isLogged (req, res, next) {
     if (req.originalUrl == '/user/login') next()
     else {
@@ -26,7 +37,7 @@ router.use(function isLogged (req, res, next) {
             })
         } else {
             console.log('<LOG> - POST /user/* - Missing Credentials');
-            res.json.status(globals.status_codes.Unauthorized).(globals.messages.failure);
+            // res.json.status(globals.status_codes.Unauthorized).(globals.messages.failure);
         }
     }
 });
@@ -68,3 +79,29 @@ router.post('/login', function (req, res) {
         }
     })
 });
+*/
+
+router.post('/sendSms', function (req, res) {
+    console.log('<LOG> - POST /user/sendSms');
+    if (req && req.body && req.body.phone) {
+
+        // todo check if user exist and create one if needed
+        // todo add to db row with userId and session key and 6 digit random validation code
+        let code = '123123';
+        sendSms(req.body.phone, 'your validation code: ' + code, (err, result) => {
+            console.log('error: ', err);
+            console.log('result: ', result);
+            res.status(globals.status_codes.OK).json();
+        });
+    }
+});
+
+function sendSms(phone, message, callback) {
+    console.log('got param: ', phone, message);
+    sns.publish({
+        Message: message,
+        PhoneNumber: phone
+    }, callback);
+}
+
+module.exports = router;

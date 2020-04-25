@@ -30,5 +30,8 @@ module.exports = {
         Forbidden: 403,
         Not_Found: 404,
         Server_Error: 500
+    },
+    aws: {
+
     }
 }

@@ -4,6 +4,7 @@ const cors = require('cors')
 const globals = require('./globals')
 
 const Admin = require('./routes/Admin/Admin')
+const User = require('./routes/User/Users')
 
 const app = express()
 const port = globals.server_port
@@ -13,6 +14,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
 app.use('/admin', Admin)
+
+app.use('/user', User)
 
 app.all('*', function (req, res) {
     res.status(globals.status_codes.Not_Found).send(globals.messages.failure)
