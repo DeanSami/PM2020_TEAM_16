@@ -10,9 +10,11 @@ AWS.config.update({
     region: 'eu-west-1'
 });
 
+const GAMES = require('./Games')
 const sns = new AWS.SNS();
 
 router.use(globals.log_func);
+router.use('/games', GAMES);
 
 //LOGIN REQUEST
 router.post('/login', function (req, res) {
