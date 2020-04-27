@@ -29,12 +29,9 @@ export class UserAuthService {
     return new Promise((resolve, reject) => {
       if (this.token) {
         this.api.get('user/login').subscribe((response: LoginResponse) => {
-          if (response.status) {
-            this.loggedIn = response.status;
-            this.currentUser.next(response.user);
-            resolve(this.loggedIn);
-          }
-          reject(false);
+          this.loggedIn = true;
+          this.currentUser.next(response.user);
+          resolve(this.loggedIn);
         }, err => {
           this.loggedIn = false;
           this.currentUser.next(null);
