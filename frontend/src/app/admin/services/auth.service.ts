@@ -32,8 +32,8 @@ export class AuthService {
       if (phone && pass) {
         console.log('auth');
         this.api.post('admin/login', { phone, pass }).subscribe((response: LoginResponse) => {
-          if (response.status) {
-            this.loggedIn = response.status;
+          if (response.token) {
+            this.loggedIn = true;
             // todo remember me;
             this.token = response.token;
             this.currentUser.next(response.user);
@@ -46,8 +46,8 @@ export class AuthService {
         });
       } else if (this.token) {
         this.api.get('admin/login').subscribe((response: LoginResponse) => {
-          if (response.status) {
-            this.loggedIn = response.status;
+          if (response.token) {
+            this.loggedIn = true;
             this.currentUser.next(response.user);
             resolve(this.loggedIn);
           }

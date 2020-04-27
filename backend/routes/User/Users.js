@@ -1,8 +1,8 @@
-var express = require('express');
+const express = require('express');
 const db = require('../../db-connect');
 const globals = require('../../globals');
-var router = express.Router();
-var hat = require('hat');
+const router = express.Router();
+const hat = require('hat');
 const AWS = require('aws-sdk');
 AWS.config.update({
     accessKeyId: 'AKIAYNRPTGKU3FKSABHK',
@@ -14,72 +14,78 @@ const sns = new AWS.SNS();
 
 router.use(globals.log_func);
 
-/*
-router.use(function isLogged (req, res, next) {
-    if (req.originalUrl == '/user/login') next()
-    else {
-        console.log('<LOG> - POST /admin/*')
-        const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth'];
-        if (incoming_token) {
-            db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ? AND user_type = ?', [incoming_token, globals.user_types.user], function (err, result) {
-                if (err) {
-                    console.log('<LOG> - POST /user/* - ERROR');
-                    console.error(err);
-                    res.status(globals.status_codes.Server_Error).json(globals.messages.failure);
-                }
-                else if (result.length > 0) {
-                    console.log('<LOG> - POST /user/* - SUCCESS');
-                    next();
-                } else {
-                    console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
-                    res.status(globals.status_codes.Unauthorized).json(globals.messages.failure);
-                }
-            })
-        } else {
-            console.log('<LOG> - POST /user/* - Missing Credentials');
-            // res.json.status(globals.status_codes.Unauthorized).(globals.messages.failure);
-        }
-    }
-});
-
-router.use(globals.log_func);
-
+//LOGIN REQUEST
 router.post('/login', function (req, res) {
-    console.log('<LOG> - POST /user/login');
+    console.log('<LOG> - POST /user/login - Invoke');
     const phone = req.body.phone;
-    const password = req.body.pass;
-    db.query('SELECT * FROM users WHERE phone = ? AND password = ?', [phone, password], function (err, result) {
+    db.query('SELECT * FROM users WHERE phone = ?', [phone], function (err, phone_query_result) {
         if (err) {
-            console.log('<LOG> - POST /user/login - ERROR');
+            console.log('<LOG> - POST /admin/login - ERROR');
             console.error(err);
-            res.status(globals.status_codes.Server_Error).json(globals.messages.failure)
+            res.status(globals.status_codes.Server_Error).json()
         } else {
-            if (result.length > 0) {
-                delete result[0].password;
-                var token = hat();
-                db.query('INSERT INTO user_sessions(user_id,session) VALUES (?,?)',[result[0].id,token],function (err, result){
+            if (phone_query_result.length > 0) {
+                const password = req.body.pass;
+                bcrypt.compare(password, phone_query_result[0].password, function (err, pass_compare) {
                     if (err) {
-                        console.log('<LOG> - POST /user/login - Wrong Credentials');
                         console.error(err);
-                        res.status(globals.status_codes.Unauthorized).json(globals.messages.failure)
+                        res.status(globals.status_codes.Server_Error).json()
                     } else {
-                        console.log('<LOG> - POST /user/login - SUCCESS');
-                        res.status(globals.status_codes.OK).json({
-                            status: true,
-                            token: token,
-                            user: result[0]
-                        })
+                        if (!pass_compare) {
+                            console.log('<LOG> - POST /admin/login - Wrong Credentials pass');
+                            res.status(globals.status_codes.Unauthorized).json()
+                        } else {
+                            delete phone_query_result[0].password;
+                            var token = hat();
+                            db.query('INSERT INTO user_sessions(user_id,session) VALUES (?,?)',[phone_query_result[0].id,token],function (err, insert_query_result){
+                                if (err) {
+                                    console.log('<LOG> - POST /admin/login - Wrong Values inserted');
+                                    console.error(err);
+                                    res.status(globals.status_codes.Unauthorized).json()
+                                } else {
+                                    console.log('<LOG> - POST /admin/login - SUCCESS');
+                                    res.status(globals.status_codes.OK).json({
+                                        token: token,
+                                        user: phone_query_result[0]
+                                    })
+                                }
+                            });
+                        }
                     }
-                });
+                })
             } else {
-                console.log('<LOG> - user Login Wrong Credentials');
-                res.statusCode = 401
-                res.status(globals.status_codes.Unauthorized).json(globals.messages.failure)
+                console.log('<LOG> - POST /admin/login - Wrong Credentials');
+                res.status(globals.status_codes.Unauthorized).json()
             }
         }
     })
 });
-*/
+//ADMIN LOGIN
+router.get('/login', function (req, res) {
+    console.log('<LOG> - GET /admin/login - Invoke');
+    const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
+    if (incoming_token) {
+        db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ?', [incoming_token], function(err, result) {
+            if (err) {
+                console.log('<LOG> - GET /admin/login - ERROR');
+                console.error(err);
+                res.status(globals.status_codes.Server_Error).json()
+            } else {
+                if (result.length > 0) {
+                    delete result[0].password;
+                    console.log('<LOG> - GET /admin/login - SUCCESS');
+                    res.status(globals.status_codes.OK).json(result[0])
+                } else {
+                    console.log('<LOG> - GET /admin/login - Unauthorized Credentials');
+                    res.status(globals.status_codes.Unauthorized).json()
+                }
+            }
+        })
+    } else {
+        console.log('<LOG> - GET /admin/login - Credentials Missing');
+        res.status(globals.status_codes.Bad_Request).json()
+    }
+});
 
 router.post('/sendSms', function (req, res) {
     console.log('<LOG> - POST /user/sendSms');
