@@ -1,0 +1,35 @@
+<div class="container">
+  <form [formGroup]="form" fxLayout="column">
+    <mat-form-field appearance="fill">
+      <mat-label>כותרת</mat-label>
+      <input matInput placeholder="כותרת" formControlName="name" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>בחר תאריך התחלה</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="start" />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>בחר תאריך סיום</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="end" />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>מיקום התחלת המשחק</mat-label>
+      <mat-select formControlName="start_location" required>
+        <mat-option [value]="conditionType.Working_Active">{{conditionTypeTitles[conditionType.Working_Active]}}</mat-option>
+        <mat-option [value]="conditionType.Working_Not_Active">{{conditionTypeTitles[conditionType.Working_Not_Active]}}</mat-option>
+        <mat-option [value]="conditionType.Not_Working_Active">{{conditionTypeTitles[conditionType.Not_Working_Active]}}</mat-option>
+        <mat-option [value]="conditionType.Not_Working_Not_Active">{{conditionTypeTitles[conditionType.Not_Working_Not_Active]}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button *ngIf="" class="btn btn-raised mr-1 btn-primary">
+      הוסף פארק
+    </button>
+    <!-- <button *ngIf="dialogData" class="btn btn-raised mr-1 btn-primary">
+      ערוך פארק
+    </button> -->
+  </form>
+</div>

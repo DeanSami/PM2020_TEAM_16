@@ -14,7 +14,7 @@ module.exports = {
         console.log('<LOG> -', new Date().toUTCString());
         next();
     },
-    places_types:{
+    places_types: {
         dog_park: 0,
         Historic_Parks: 1,
         Cafewithdog: 2,

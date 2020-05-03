@@ -5,17 +5,15 @@ import { UserAuthService } from '../../user/user-auth.service';
 @Component({
   selector: 'app-main',
   templateUrl: './userLayout.component.html',
-  styleUrls: ['./userLayout.component.scss']
+  styleUrls: ['./userLayout.component.scss'],
 })
 export class UserLayoutComponent implements OnInit {
   opened = true;
   mode = new FormControl('push');
 
   constructor(private userAuth: UserAuthService) {
-    this.userAuth.login();
+    // this.userAuth.login();
   }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }
