@@ -6,9 +6,15 @@ import { InterestingPointComponent } from '../../interesting-point/interesting-p
 import { InterestingPointResolver } from '../../resolvers/interestingPointResolver.resolver';
 import { UserMainComponent } from '../../../layouts/userLayout/user-main/user-main.component';
 import { UserProfilePageComponent } from '../../../user/user-profile/user-profile-page.component';
+import { NewTreasureHuntComponent } from 'src/app/user/businessOwner/new-treasure-hunt/new-treasure-hunt.component';
 
 export const USER_FULL_ROUTES: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/home' },
   { path: 'home', component: UserMainComponent },
-  { path: 'profile', component: UserProfilePageComponent }
+  { path: 'profile', component: UserProfilePageComponent },
+  {
+    path: 'newTH',
+    component: NewTreasureHuntComponent,
+    resolve: { dogParks: DogParksResolver },
+  },
 ];

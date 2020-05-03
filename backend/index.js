@@ -18,7 +18,7 @@ app.use('/admin', Admin)
 app.use('/user', User)
 
 app.all('*', function (req, res) {
-    res.status(globals.status_codes.Not_Found).send(globals.messages.failure)
+    res.status(globals.status_codes.Not_Found).send()
 })
 
 module.exports = app.listen(port, () => console.log(`Doggie Hunt Server Side listening at http://localhost:${port}`))

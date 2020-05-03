@@ -44,7 +44,7 @@ router.use('/dog_parks', A_DogParks)
 router.post('/register', function(req, res) {
     console.log("<LOG> - POST /admin/register")
     bcrypt.hash(req.body.pass, 10, function (err, hash) {
-        const values = {name: req.body.phone, phone: req.body.phone, password: hash, user_type: 0}
+        const values = {name: req.body.phone, email: req.body.phone, avatar: req.body.phone, deleted: 0, phone: req.body.phone, password: hash, user_type: 0}
         db.query('INSERT INTO users SET ?', values, function (err, result) {
             if (err) {
                 console.log("<LOG> - POST /admin/register - ERROR")

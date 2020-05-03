@@ -87,7 +87,7 @@ router.get('/login', function (req, res) {
     }
 });
 
-router.post('/sendSms', function (req, res) {
+router.get('/sendSms', function (req, res) {
     console.log('<LOG> - POST /user/sendSms');
     if (req && req.body && req.body.phone) {
 
