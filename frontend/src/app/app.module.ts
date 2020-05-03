@@ -53,6 +53,7 @@ import { UserProfilePageComponent } from './user/user-profile/user-profile-page.
 import { ContentAdminComponent } from './layouts/content-admin/content-admin.component';
 import { LoginModalComponent } from './user/login-modal/login-modal.component';
 import { RegisterModalComponent } from './user/register-modal/register-modal.component';
+import { MyGamesComponent } from './user/my-games/my-games.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -83,7 +84,8 @@ export function createTranslateLoader(http: HttpClient) {
     UserProfilePageComponent,
     ContentAdminComponent,
     LoginModalComponent,
-    RegisterModalComponent
+    RegisterModalComponent,
+    MyGamesComponent
   ],
   imports: [
     HttpClientModule,
