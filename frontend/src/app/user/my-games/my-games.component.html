@@ -11,18 +11,18 @@
   </ng-container>
 
   <ng-container matColumnDef="street">
-    <th mat-header-cell *matHeaderCellDef> רחוב </th>
-    <td mat-cell *matCellDef="let element"> {{element.street}} </td>
+    <th mat-header-cell *matHeaderCellDef> התחלה </th>
+    <td mat-cell *matCellDef="let element"> {{element.start}} </td>
   </ng-container>
 
   <ng-container matColumnDef="neighborhood">
-    <th mat-header-cell *matHeaderCellDef> שכונה </th>
-    <td mat-cell *matCellDef="let element"> {{element.neighborhood}} </td>
+    <th mat-header-cell *matHeaderCellDef> סיום </th>
+    <td mat-cell *matCellDef="let element"> {{element.end}} </td>
   </ng-container>
 
   <ng-container matColumnDef="operator">
-    <th mat-header-cell *matHeaderCellDef> גורם אחראי </th>
-    <td mat-cell *matCellDef="let element"> {{element.operator}} </td>
+    <th mat-header-cell *matHeaderCellDef> מיקום התחלתי </th>
+    <td mat-cell *matCellDef="let element"> {{element.start_location}} </td>
   </ng-container>
 
   <ng-container matColumnDef="condition">
