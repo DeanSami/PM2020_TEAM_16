@@ -11,10 +11,12 @@ AWS.config.update({
 });
 
 const GAMES = require('./Games')
+const PLACES = require('./Places')
 const sns = new AWS.SNS();
 
 router.use(globals.log_func);
 router.use('/games', GAMES);
+router.use('/places', PLACES);
 
 //LOGIN REQUEST
 router.post('/login', function (req, res) {
