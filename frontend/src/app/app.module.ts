@@ -56,6 +56,7 @@ import { UserProfilePageComponent } from './user/user-profile/user-profile-page.
 import { ContentAdminComponent } from './layouts/content-admin/content-admin.component';
 import { LoginModalComponent } from './user/login-modal/login-modal.component';
 import { RegisterModalComponent } from './user/register-modal/register-modal.component';
+import { MyGamesComponent } from './user/my-games/my-games.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { NewTreasureHuntComponent } from './user/businessOwner/new-treasure-hunt/new-treasure-hunt.component';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -92,7 +93,8 @@ export function createTranslateLoader(http: HttpClient) {
     ContentAdminComponent,
     LoginModalComponent,
     RegisterModalComponent,
-    NewTreasureHuntComponent,
+    MyGamesComponent,
+    NewTreasureHuntComponent
   ],
   imports: [
     HttpClientModule,
