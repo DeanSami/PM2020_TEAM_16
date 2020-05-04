@@ -7,6 +7,7 @@ import { InterestingPointResolver } from '../../resolvers/interestingPointResolv
 import { UserMainComponent } from '../../../layouts/userLayout/user-main/user-main.component';
 import { UserProfilePageComponent } from '../../../user/user-profile/user-profile-page.component';
 import { NewTreasureHuntComponent } from 'src/app/user/businessOwner/new-treasure-hunt/new-treasure-hunt.component';
+import {UserDogParksResolver} from '../../../user/resolvers/userDogParksResolver.resolver';
 
 export const USER_FULL_ROUTES: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/home' },
@@ -15,6 +16,6 @@ export const USER_FULL_ROUTES: Routes = [
   {
     path: 'newTH',
     component: NewTreasureHuntComponent,
-    resolve: { dogParks: DogParksResolver },
+    resolve: { dogParks: UserDogParksResolver },
   },
 ];

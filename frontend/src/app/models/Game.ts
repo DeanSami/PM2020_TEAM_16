@@ -6,15 +6,17 @@ export interface Games {
   end: string;
   start_location: number;
   finish_location: number;
+  steps: Gamestep[];
   deleted?: boolean;
   created_at?: string;
   update_at?: string;
 }
 
 export interface Gamestep {
-  id: number;
-  game_id: number;
-  name: string;
+  id?: number;
+  game_id?: number;
+  step_num: number;
+  name?: string;
   secret_key: number;
   start_location: number;
   finish_location: number;

@@ -59,6 +59,8 @@ import { RegisterModalComponent } from './user/register-modal/register-modal.com
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { NewTreasureHuntComponent } from './user/businessOwner/new-treasure-hunt/new-treasure-hunt.component';
 import { MatNativeDateModule } from '@angular/material/core';
+import {UserDogParksResolver} from './user/resolvers/userDogParksResolver.resolver';
+import {MatStepperModule} from '@angular/material/stepper';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -134,6 +136,7 @@ export function createTranslateLoader(http: HttpClient) {
     SharedModule,
     MatNativeDateModule,
     MatDatepickerModule,
+    MatStepperModule,
   ],
   exports: [
     MatSidenavModule,
@@ -150,6 +153,7 @@ export function createTranslateLoader(http: HttpClient) {
     InterestingPointResolver,
     ApiProviderService,
     LoadingService,
+    UserDogParksResolver
   ],
   bootstrap: [AppComponent],
 })
