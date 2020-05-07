@@ -5,8 +5,8 @@ const router = express.Router();
 const hat = require('hat');
 const AWS = require('aws-sdk');
 AWS.config.update({
-    accessKeyId: 'AKIAYNRPTGKU3FKSABHK',
-    secretAccessKey: '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',
+    accessKeyId: '',
+    secretAccessKey: '',
     region: 'eu-west-1'
 });
 
@@ -94,7 +94,48 @@ router.get('/login', function (req, res) {
 router.get('/sendSms', function (req, res) {
     console.log('<LOG> - POST /user/sendSms');
     if (req && req.body && req.body.phone) {
+        let phone = req.body.phone.replace(/\D/g,'');
+        if (phone.search('972') >= 0) {
+            phone = '+' + phone;
+        } else {
+            phone = '+972' + phone;
+        }
 
+        db.query('SELECT * FROM users WHERE phone = ? AND user_type != 0 LIMIT 1', [phone.split('+972')[1]], function(err, result) {
+            if (err) {
+                console.log('<LOG> - GET user/sendSms - ERROR get user');
+                console.error(err);
+                res.status(globals.status_codes.Bad_Request).json()
+            } else {
+                let user = result[0];
+                let token = hat();
+                let code = Math.floor(Math.random() * 1000000) + 1;
+                if (result.length == 0) {
+                    db.query('INSERT INTO users (name, user_type, email, phone, password, avatar) VALUES (?,?,?,?,?,?)',[user.id, token, code],function (err, result){
+                        if (err) {
+                            console.log('<LOG> - GET user/sendSms - fail insert session');
+                            console.error(err);
+                            res.status(globals.status_codes.Bad_Request).json();
+                        } else {
+                            sendSms(phone, 'קוד האימות שלך הוא: ' + code, (err, result) => {
+                                if (err) {
+                                    console.log('<LOG> - GET user/sendSms - fail send sms');
+                                    res.status(globals.status_codes.Bad_Request).json();
+                                } else {
+                                    res.status(globals.status_codes.OK).json();
+                                }
+                            });
+                            console.log('<LOG> - GET user/sendSms - SUCCESS');
+                            res.status(globals.status_codes.OK).json();
+                        }
+                    });
+                }
+
+
+
+
+            }
+        })
         // todo check if user exist and create one if needed
         // todo add to db row with userId and session key and 6 digit random validation code
         let code = '123123';
@@ -103,8 +144,32 @@ router.get('/sendSms', function (req, res) {
             console.log('result: ', result);
             res.status(globals.status_codes.OK).json();
         });
+    } else {
+        res.status(globals.status_codes.Bad_Request).json();
     }
+
 });
+
+function insertSessionAndSendSms(user, token, code) {
+    db.query('INSERT INTO user_sessions(user_id, session, validation_code) VALUES (?,?,?)',[user.id, token, code],function (err, result){
+        if (err) {
+            console.log('<LOG> - GET user/sendSms - fail insert session');
+            console.error(err);
+            res.status(globals.status_codes.Bad_Request).json();
+        } else {
+            sendSms(phone, 'קוד האימות שלך הוא: ' + code, (err, result) => {
+                if (err) {
+                    console.log('<LOG> - GET user/sendSms - fail send sms');
+                    res.status(globals.status_codes.Bad_Request).json();
+                } else {
+                    res.status(globals.status_codes.OK).json();
+                }
+            });
+            console.log('<LOG> - GET user/sendSms - SUCCESS');
+            res.status(globals.status_codes.OK).json();
+        }
+    });
+}
 
 function sendSms(phone, message, callback) {
     console.log('got param: ', phone, message);

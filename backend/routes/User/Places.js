@@ -93,29 +93,29 @@ router.get('/' , function(req, res) {
                 console.log('<LOG> - GET /user/places/get - SUCCESS');
                 res.status(globals.status_codes.OK).json(return_row)
                 }
-            })
-        } else {
-            let query = '';
-            let query_array = [];
-            if (req.body.type && !isNaN(req.body.type)) {
-                query = 'AND type = ?'
-                query_array.push(req.body.type);
-            }
-            db.query('SELECT * FROM places WHERE deleted = 0 ' + query, query_array, function (err, result) {
-                if (err) {
-                    console.log('<LOG> - GET /user/places/get - ERROR');
-                    console.error(err);
-                    res.status(globals.status_codes.Server_Error).json();
-                } else {
-                    console.log('<LOG> - GET /user/places/get - SUCCESS');
-                    res.status(globals.status_codes.OK).json(result)
-                }
-            })
+        })
+    } else {
+        let query = '';
+        let query_array = [];
+        if (req.body.type && !isNaN(req.body.type)) {
+            query = 'AND type = ?'
+            query_array.push(req.body.type);
         }
-    });
+        db.query('SELECT * FROM places WHERE deleted = 0 ' + query, query_array, function (err, result) {
+            if (err) {
+                console.log('<LOG> - GET /user/places/get - ERROR');
+                console.error(err);
+                res.status(globals.status_codes.Server_Error).json();
+            } else {
+                console.log('<LOG> - GET /user/places/get - SUCCESS');
+                res.status(globals.status_codes.OK).json(result)
+            }
+        })
+    }
+});
 
 router.delete('/',function (req,res) {
-    console.log('<LOG> - DELETE /user/places DOG - Invoke');
+    console.log('<LOG> - DELETE /user/places - Invoke');
     if(req.query.id && !isNaN(req.query.id)) {
         db.query('UPDATE places SET deleted = 1 WHERE id = ?', [req.query.id],function (err, result) {
             if (err) {
