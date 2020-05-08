@@ -4,10 +4,11 @@ const globals = require('../../globals');
 const router = express.Router();
 const hat = require('hat');
 const AWS = require('aws-sdk');
+const config = require('./configs/config.js')
 AWS.config.update({
-    accessKeyId: '',
-    secretAccessKey: '',
-    region: 'eu-west-1'
+    accessKeyId: config.AWS.accessKeyId,
+    secretAccessKey: config.AWS.secretAccessKey,
+    region: config.AWS.region
 });
 
 const GAMES = require('./Games')
@@ -18,66 +19,19 @@ router.use(globals.log_func);
 router.use('/games', GAMES);
 router.use('/places', PLACES);
 
-//LOGIN REQUEST
-router.post('/login', function (req, res) {
-    console.log('<LOG> - POST /user/login - Invoke');
-    const phone = req.body.phone;
-    db.query('SELECT * FROM users WHERE phone = ?', [phone], function (err, phone_query_result) {
-        if (err) {
-            console.log('<LOG> - POST /admin/login - ERROR');
-            console.error(err);
-            res.status(globals.status_codes.Server_Error).json()
-        } else {
-            if (phone_query_result.length > 0) {
-                const password = req.body.pass;
-                bcrypt.compare(password, phone_query_result[0].password, function (err, pass_compare) {
-                    if (err) {
-                        console.error(err);
-                        res.status(globals.status_codes.Server_Error).json()
-                    } else {
-                        if (!pass_compare) {
-                            console.log('<LOG> - POST /admin/login - Wrong Credentials pass');
-                            res.status(globals.status_codes.Unauthorized).json()
-                        } else {
-                            delete phone_query_result[0].password;
-                            var token = hat();
-                            db.query('INSERT INTO user_sessions(user_id,session) VALUES (?,?)',[phone_query_result[0].id,token],function (err, insert_query_result){
-                                if (err) {
-                                    console.log('<LOG> - POST /admin/login - Wrong Values inserted');
-                                    console.error(err);
-                                    res.status(globals.status_codes.Unauthorized).json()
-                                } else {
-                                    console.log('<LOG> - POST /admin/login - SUCCESS');
-                                    res.status(globals.status_codes.OK).json({
-                                        token: token,
-                                        user: phone_query_result[0]
-                                    })
-                                }
-                            });
-                        }
-                    }
-                })
-            } else {
-                console.log('<LOG> - POST /admin/login - Wrong Credentials');
-                res.status(globals.status_codes.Unauthorized).json()
-            }
-        }
-    })
-});
-//ADMIN LOGIN
 router.get('/login', function (req, res) {
-    console.log('<LOG> - GET /admin/login - Invoke');
+    console.log('<LOG> - GET /user/login - Invoke');
     const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
     if (incoming_token) {
         db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ?', [incoming_token], function(err, result) {
             if (err) {
-                console.log('<LOG> - GET /admin/login - ERROR');
+                console.log('<LOG> - GET /user/login - ERROR');
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json()
             } else {
                 if (result.length > 0) {
                     delete result[0].password;
-                    console.log('<LOG> - GET /admin/login - SUCCESS');
+                    console.log('<LOG> - GET /user/login - SUCCESS');
                     res.status(globals.status_codes.OK).json(result[0])
                 } else {
                     console.log('<LOG> - GET /admin/login - Unauthorized Credentials');
@@ -94,6 +48,8 @@ router.get('/login', function (req, res) {
 router.get('/sendSms', function (req, res) {
     console.log('<LOG> - POST /user/sendSms');
     if (req && req.body && req.body.phone) {
+        let name = req.body.name ? req.body.name : '';
+        let user_type = req.body.user_type ? req.body.user_type : '';
         let phone = req.body.phone.replace(/\D/g,'');
         if (phone.search('972') >= 0) {
             phone = '+' + phone;
@@ -109,40 +65,22 @@ router.get('/sendSms', function (req, res) {
             } else {
                 let user = result[0];
                 let token = hat();
-                let code = Math.floor(Math.random() * 1000000) + 1;
-                if (result.length == 0) {
-                    db.query('INSERT INTO users (name, user_type, email, phone, password, avatar) VALUES (?,?,?,?,?,?)',[user.id, token, code],function (err, result){
+                let code = Math.floor(100000 + Math.random() * 900000);
+                if (result.length === 0) {
+                    db.query('INSERT INTO users (name, user_type, email, phone, password, avatar) VALUES (?,?,?,?,?,?)',
+                        [name, user_type, '', phone.split('+972')[1], '', ''],function (err, result){
                         if (err) {
-                            console.log('<LOG> - GET user/sendSms - fail insert session');
+                            console.log('<LOG> - GET user/sendSms - fail insert user');
                             console.error(err);
                             res.status(globals.status_codes.Bad_Request).json();
                         } else {
-                            sendSms(phone, 'קוד האימות שלך הוא: ' + code, (err, result) => {
-                                if (err) {
-                                    console.log('<LOG> - GET user/sendSms - fail send sms');
-                                    res.status(globals.status_codes.Bad_Request).json();
-                                } else {
-                                    res.status(globals.status_codes.OK).json();
-                                }
-                            });
-                            console.log('<LOG> - GET user/sendSms - SUCCESS');
-                            res.status(globals.status_codes.OK).json();
+                            insertSessionAndSendSms(user, token, code, phone, res);
                         }
                     });
+                } else {
+                    insertSessionAndSendSms(user, token, code, phone, res);
                 }
-
-
-
-
             }
-        })
-        // todo check if user exist and create one if needed
-        // todo add to db row with userId and session key and 6 digit random validation code
-        let code = '123123';
-        sendSms(req.body.phone, 'your validation code: ' + code, (err, result) => {
-            console.log('error: ', err);
-            console.log('result: ', result);
-            res.status(globals.status_codes.OK).json();
         });
     } else {
         res.status(globals.status_codes.Bad_Request).json();
@@ -150,24 +88,29 @@ router.get('/sendSms', function (req, res) {
 
 });
 
-function insertSessionAndSendSms(user, token, code) {
-    db.query('INSERT INTO user_sessions(user_id, session, validation_code) VALUES (?,?,?)',[user.id, token, code],function (err, result){
-        if (err) {
-            console.log('<LOG> - GET user/sendSms - fail insert session');
-            console.error(err);
-            res.status(globals.status_codes.Bad_Request).json();
-        } else {
-            sendSms(phone, 'קוד האימות שלך הוא: ' + code, (err, result) => {
-                if (err) {
-                    console.log('<LOG> - GET user/sendSms - fail send sms');
-                    res.status(globals.status_codes.Bad_Request).json();
-                } else {
-                    res.status(globals.status_codes.OK).json();
-                }
-            });
-            console.log('<LOG> - GET user/sendSms - SUCCESS');
-            res.status(globals.status_codes.OK).json();
+function insertSessionAndSendSms(user, token, code, phone, res) {
+    db.query('UPDATE user_sessions SET deleted = 1 WHERE user_id = ?',[user.id],function (err, result){
+        if (err){
+            console.log('error deleted old sessions', err);
         }
+        db.query('INSERT INTO user_sessions(user_id, session, validation_code) VALUES (?,?,?)',[user.id, token, code],function (err, result){
+            let user_session = result.user
+            if (err) {
+                console.log('<LOG> - GET user/sendSms - fail insert session');
+                console.error(err);
+                res.status(globals.status_codes.Bad_Request).json();
+            } else {
+                sendSms(phone, 'קוד האימות שלך הוא: ' + code, (err, result) => {
+                    if (err) {
+                        console.log('<LOG> - GET user/sendSms - fail send sms');
+                        res.status(globals.status_codes.Bad_Request).json({token});
+                    } else {
+                        console.log('<LOG> - GET user/sendSms - SUCCESS');
+                        res.status(globals.status_codes.OK).json({token});
+                    }
+                });
+            }
+        });
     });
 }
 
