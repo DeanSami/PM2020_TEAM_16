@@ -40,7 +40,10 @@ import { CommonModule } from '@angular/common';
 import { StoreModule } from '@ngrx/store';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { PerfectScrollbarConfigInterface, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import {
+  PerfectScrollbarConfigInterface,
+  PerfectScrollbarModule,
+} from 'ngx-perfect-scrollbar';
 import { SharedModule } from './admin/shared/shared.module';
 import { AuthService } from './admin/services/auth.service';
 import { DogParksResolver } from './admin/resolvers/dogParksResolver.resolver';
@@ -53,10 +56,16 @@ import { UserProfilePageComponent } from './user/user-profile/user-profile-page.
 import { ContentAdminComponent } from './layouts/content-admin/content-admin.component';
 import { LoginModalComponent } from './user/login-modal/login-modal.component';
 import { RegisterModalComponent } from './user/register-modal/register-modal.component';
+import { MyGamesComponent } from './user/my-games/my-games.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { NewTreasureHuntComponent } from './user/businessOwner/new-treasure-hunt/new-treasure-hunt.component';
+import { MatNativeDateModule } from '@angular/material/core';
+import {UserDogParksResolver} from './user/resolvers/userDogParksResolver.resolver';
+import {MatStepperModule} from '@angular/material/stepper';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
-  wheelPropagation: false
+  wheelPropagation: false,
 };
 
 export function createTranslateLoader(http: HttpClient) {
@@ -83,7 +92,9 @@ export function createTranslateLoader(http: HttpClient) {
     UserProfilePageComponent,
     ContentAdminComponent,
     LoginModalComponent,
-    RegisterModalComponent
+    RegisterModalComponent,
+    MyGamesComponent,
+    NewTreasureHuntComponent
   ],
   imports: [
     HttpClientModule,
@@ -110,7 +121,7 @@ export function createTranslateLoader(http: HttpClient) {
     FormsModule,
     CarouselModule,
     AgmCoreModule.forRoot({
-      apiKey: 'YOUR KEY'
+      apiKey: 'YOUR KEY',
     }),
     SharedModule,
     CommonModule,
@@ -120,11 +131,14 @@ export function createTranslateLoader(http: HttpClient) {
       loader: {
         provide: TranslateLoader,
         useFactory: createTranslateLoader,
-        deps: [HttpClient]
-      }
+        deps: [HttpClient],
+      },
     }),
     PerfectScrollbarModule,
     SharedModule,
+    MatNativeDateModule,
+    MatDatepickerModule,
+    MatStepperModule,
   ],
   exports: [
     MatSidenavModule,
@@ -133,7 +147,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatMenuModule,
     MatListModule,
     MatToolbarModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [
     AuthService,
@@ -141,7 +155,8 @@ export function createTranslateLoader(http: HttpClient) {
     InterestingPointResolver,
     ApiProviderService,
     LoadingService,
+    UserDogParksResolver
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

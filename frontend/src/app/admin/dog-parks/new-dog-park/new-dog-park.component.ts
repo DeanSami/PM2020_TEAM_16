@@ -1,7 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DogParksService } from '../../services/dog-parks.service';
-import { ConditionType, ConditionTypeTitles, Place, PlaceActiveType, PlacesType } from '../../../models/places';
+import {
+  ConditionType,
+  ConditionTypeTitles,
+  Place,
+  PlaceActiveType,
+  PlacesType,
+} from '../../../models/places';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -9,7 +15,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 @Component({
   selector: 'app-new-dog-park',
   templateUrl: './new-dog-park.component.html',
-  styleUrls: ['./new-dog-park.component.scss']
+  styleUrls: ['./new-dog-park.component.scss'],
 })
 export class NewDogParkComponent implements OnInit {
   conditionType = ConditionType;
@@ -22,22 +28,35 @@ export class NewDogParkComponent implements OnInit {
     private toastr: ToastrService,
     public dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public dialogData: Place
-  ) {
-  }
+  ) {}
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    SHAPE_Leng: new FormControl('', [Validators.required, Validators.minLength(5)]),
-    SHAPE_Area: new FormControl('', [Validators.required, Validators.minLength(5)]),
+    SHAPE_Leng: new FormControl('', [
+      Validators.required,
+      Validators.minLength(5),
+    ]),
+    SHAPE_Area: new FormControl('', [
+      Validators.required,
+      Validators.minLength(5),
+    ]),
     street: new FormControl('', []),
-    house_number: new FormControl('', [Validators.required, Validators.maxLength(10)]),
-    neighborhood: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    operator: new FormControl('', [Validators.required, Validators.maxLength(10)]),
+    house_number: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(10),
+    ]),
+    neighborhood: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+    ]),
+    operator: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(10),
+    ]),
     handicapped: new FormControl('', []),
     condition: new FormControl('', [Validators.required]),
   });
   mode: any;
-
 
   get name() {
     return this.form.get('name');
@@ -86,7 +105,7 @@ export class NewDogParkComponent implements OnInit {
         neighborhood: this.dialogData.neighborhood,
         operator: this.dialogData.operator,
         handicapped: this.dialogData.handicapped,
-        condition: this.dialogData.condition
+        condition: this.dialogData.condition,
       });
     }
   }
@@ -96,24 +115,29 @@ export class NewDogParkComponent implements OnInit {
       this.toastr.error('חובה למלא את כל השדות המסומנים');
       return;
     }
-    this.dogParkService.saveDogPark({
-      name: this.name.value,
-      SHAPE_Leng: this.SHAPE_Leng.value,
-      SHAPE_Area: this.SHAPE_Area.value,
-      street: this.street.value,
-      house_number: this.house_number.value,
-      neighborhood: this.neighborhood.value,
-      operator: this.operator.value,
-      handicapped: !!this.handicapped.value,
-      condition: this.condition.value,
-      active: PlaceActiveType.Active
-    }).subscribe((res) => {
-      this.toastr.success('הפעולה הסתיימה בהצלחה');
-      this.dialogRef.close(res);
-    }, err => {
-      this.toastr.error('הפעולה נכשלה');
-      console.log('err', err);
-    });
+    this.dogParkService
+      .saveDogPark({
+        name: this.name.value,
+        SHAPE_Leng: this.SHAPE_Leng.value,
+        SHAPE_Area: this.SHAPE_Area.value,
+        street: this.street.value,
+        house_number: this.house_number.value,
+        neighborhood: this.neighborhood.value,
+        operator: this.operator.value,
+        handicapped: !!this.handicapped.value,
+        condition: this.condition.value,
+        active: PlaceActiveType.Active,
+      })
+      .subscribe(
+        (res) => {
+          this.toastr.success('הפעולה הסתיימה בהצלחה');
+          this.dialogRef.close(res);
+        },
+        (err) => {
+          this.toastr.error('הפעולה נכשלה');
+          console.log('err', err);
+        }
+      );
   }
 
   updateDogPark() {
@@ -121,24 +145,29 @@ export class NewDogParkComponent implements OnInit {
       this.toastr.error('חובה למלא את כל השדות המסומנים');
       return;
     }
-    this.dogParkService.updateDogPark({
-      id: this.dialogData.id,
-      name: this.name.value,
-      SHAPE_Leng: this.SHAPE_Leng.value,
-      SHAPE_Area: this.SHAPE_Area.value,
-      street: this.street.value,
-      house_number: this.house_number.value,
-      neighborhood: this.neighborhood.value,
-      operator: this.operator.value,
-      handicapped: !!this.handicapped.value,
-      condition: this.condition.value,
-      active: this.dialogData.active
-    }).subscribe((res) => {
-      this.toastr.success('הפעולה הסתיימה בהצלחה');
-      this.dialogRef.close(res);
-    }, err => {
-      this.toastr.error('הפעולה נכשלה');
-      console.log('err', err);
-    });
+    this.dogParkService
+      .updateDogPark({
+        id: this.dialogData.id,
+        name: this.name.value,
+        SHAPE_Leng: this.SHAPE_Leng.value,
+        SHAPE_Area: this.SHAPE_Area.value,
+        street: this.street.value,
+        house_number: this.house_number.value,
+        neighborhood: this.neighborhood.value,
+        operator: this.operator.value,
+        handicapped: !!this.handicapped.value,
+        condition: this.condition.value,
+        active: this.dialogData.active,
+      })
+      .subscribe(
+        (res) => {
+          this.toastr.success('הפעולה הסתיימה בהצלחה');
+          this.dialogRef.close(res);
+        },
+        (err) => {
+          this.toastr.error('הפעולה נכשלה');
+          console.log('err', err);
+        }
+      );
   }
 }
