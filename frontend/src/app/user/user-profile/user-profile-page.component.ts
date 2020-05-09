@@ -21,6 +21,7 @@ export class UserProfilePageComponent implements OnInit {
   currentPage = 'About';
   edit = false;
   selectedFiles: FileList;
+  imageSrc: string | ArrayBuffer;
 
   constructor(
     private uploadService: AwsS3Service,
@@ -100,7 +101,8 @@ export class UserProfilePageComponent implements OnInit {
       this.editTmpCurrentUser.birthday = this.birthday.value ? this.birthday.value.toISOString().split('T')[0] : '';
 
       this.userService.editUser(this.editTmpCurrentUser).subscribe(result => {
-        this.editTmpCurrentUser.avatar = this.editTmpCurrentUser.avatar !== '' ? this.editTmpCurrentUser.avatar : this.currentUser.avatar;
+        this.editTmpCurrentUser.avatar = this.editTmpCurrentUser.avatar !== '' ?
+          'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/userImages/' + this.editTmpCurrentUser.avatar : this.currentUser.avatar;
         this.userService.currentUser.next(this.editTmpCurrentUser);
         this.toastr.success('משתמש עודכן בהצלחה');
         this.edit = false;
@@ -114,6 +116,12 @@ export class UserProfilePageComponent implements OnInit {
 
   selectFile(event) {
     this.selectedFiles = event.target.files;
+    if (this.selectedFiles.item(0)) {
+      const file = this.selectedFiles.item(0);
+      const reader = new FileReader();
+      reader.onload = e => this.imageSrc = reader.result;
+      reader.readAsDataURL(file);
+    }
   }
 
   showPage(page: string) {

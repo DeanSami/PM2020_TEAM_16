@@ -13,13 +13,13 @@
                 <div class="text-right d-lg-block">
                   <button *ngIf="!edit" (click)="startEdit()" type="button" class="btn btn-primary btn-raise"><i class="ft-edit-2"></i>ערוך</button>
                   <button *ngIf="edit" (click)="save()" type="button" class="btn btn-success btn-raised"><i class="ft-save"></i>שמור</button>
-                  <button *ngIf="edit" (click)="edit = !edit" type="button" class="btn btn-danger btn-raised"><i class="ft-delete"></i>בטל</button>
+                  <button *ngIf="edit" (click)="edit = !edit; imageSrc = null" type="button" class="btn btn-danger btn-raised"><i class="ft-delete"></i>בטל</button>
                 </div>
               </div>
 
                 <a class="profile-image">
-                  <input type="file" (change)="selectFile($event)" #avatar class="d-none">
-                  <img [src]="currentUser.avatar"
+                  <input type="file" (change)="selectFile($event)" #avatar class="d-none" >
+                  <img [src]="imageSrc || currentUser.avatar"
                        (click)="edit ? avatar.click() : null"
                        class="rounded-circle img-border gradient-summer width-100 height-100" alt="Card image">
                 </a>
