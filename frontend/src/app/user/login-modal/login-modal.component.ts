@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Place } from '../../models/places';
 import { ToastrService } from 'ngx-toastr';
 import { UserAuthService } from '../user-auth.service';
+import { User } from '../../models/users';
 
 @Component({
   selector: 'app-login-modal',
@@ -18,6 +19,7 @@ export class LoginModalComponent implements OnInit {
   value = 50;
   loading = false;
   setValidationCode = false;
+  currentUser: User;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public isRegister: boolean,
@@ -48,19 +50,16 @@ export class LoginModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userService.currentUser.subscribe(user => this.currentUser = user);
   }
 
   sendSms() {
     this.loading = true;
     if (this.phone.valid) {
-      this.userService.sendSms(this.phone.value).then(response => {
-        if (response) {
-          this.loading = false;
-          this.setValidationCode = true;
-        } else {
-          this.toastr.error('לא היית אפשרות לשלוח קוד אימות');
-          this.loading = false;
-        }
+      this.userService.sendSms(this.phone.value).then(() => {
+        this.loading = false;
+        this.toastr.success('קוד אימות נשלח לנייד');
+        this.setValidationCode = true;
       }, err => {
         this.toastr.error('לא היית אפשרות לשלוח קוד אימות');
         this.loading = false;
@@ -74,14 +73,15 @@ export class LoginModalComponent implements OnInit {
   checkCode() {
     this.loading = true;
     if (this.code.valid) {
-      this.userService.checkSms(this.phone.value, this.code.value).then(response => {
-        if (response) {
+      this.userService.checkSms(this.phone.value, this.code.value).then(() => {
+        this.userService.login().then(() => {
           this.loading = false;
-          this.dialogRef.close(response);
-        } else {
-          this.toastr.error('קוד אימות לא תקין');
+          this.toastr.success('ברוך הבא ' + this.currentUser.name);
+          this.dialogRef.close(true);
+        }, err => {
+          this.toastr.error('התחברות נכשלה');
           this.loading = false;
-        }
+        });
       }, err => {
         this.toastr.error('קוד אימות לא תקין');
         this.loading = false;

@@ -13,7 +13,7 @@ export interface PlaceResponse {
 }
 
 export interface SmsResponse {
-  status: boolean;
+  token: string;
   message?: string;
 }
 

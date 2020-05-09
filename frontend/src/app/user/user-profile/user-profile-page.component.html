@@ -4,10 +4,17 @@
     <div class="row">
         <div class="col-12">
             <div class="card profile-with-cover">
-                <div class="card-img-top img-fluid bg-cover height-300" style="background: url('../../../assets/img/photos/14.jpg') 50%;"></div>
-                <div class="text-left user-name">
+              <div class="card-img-top img-fluid bg-cover height-300" style="background: url('../../../assets/img/photos/14.jpg') 50%;"></div>
+              <div class="text-left user-name">
                   <h3 class="card-title white">{{currentUser.name}}</h3>
+              </div>
+              <div class="cover-fixed-buttons">
+                <div class="text-right d-lg-block">
+                  <button *ngIf="!edit" (click)="edit = !edit" type="button" class="btn btn-primary btn-raised mr-2"><i class="ft-edit-2"></i>ערוך</button>
+                  <button *ngIf="edit" type="button" class="btn btn-success btn-raised mr-3"><i class="ft-save"></i>שמור</button>
                 </div>
+              </div>
+
                 <a class="profile-image">
                   <input type="file" (change)="selectFile($event)" #avatar class="d-none">
                   <img src="assets/img/portrait/avatars/avatar-08.png" (click)="edit ? avatar.click() : null" class="rounded-circle img-border gradient-summer width-100" alt="Card image">

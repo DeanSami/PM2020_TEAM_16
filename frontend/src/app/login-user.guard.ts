@@ -8,10 +8,10 @@ import { User } from './models/users';
   providedIn: 'root'
 })
 
-export class UserGuard implements CanActivate {
+export class LoginUserGuard implements CanActivate {
   close = true;
 
-  constructor(private userService: UserAuthService, private router: Router) { }
+  constructor(private userService: UserAuthService) { }
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -21,7 +21,7 @@ export class UserGuard implements CanActivate {
         this.userService.login().then(() => {
           resolve(true);
         }, () => {
-          reject(false);
+          resolve(true);
         });
       });
     } else {

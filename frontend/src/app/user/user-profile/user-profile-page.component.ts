@@ -15,7 +15,7 @@ export class UserProfilePageComponent implements OnInit {
   currentUser: User;
   userHobbies = UserHobbies;
   currentPage = 'About';
-  edit = true;
+  edit = false;
   selectedFiles: FileList;
 
   constructor(

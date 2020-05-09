@@ -31,7 +31,6 @@ export class MyGamesComponent implements OnInit {
     private rout: ActivatedRoute,
     private dialog: MatDialog,
     private toastr: ToastrService
-    //private MyGamesService: MyGamesService
   ) { }
 
   ngOnInit(): void {

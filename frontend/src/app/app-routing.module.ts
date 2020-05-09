@@ -10,14 +10,14 @@ import { InterestingPointResolver } from './admin/resolvers/interestingPointReso
 import { USER_FULL_ROUTES } from './admin/shared/routes/user-layout.routes';
 import { ContentAdminComponent } from './layouts/content-admin/content-admin.component';
 import { ADMIN_CONTENT_ROUTES } from './admin/shared/routes/content-layout.routes';
-import { UserGuard } from './user.guard';
+import { LoginUserGuard } from './login-user.guard';
 
 
 const routes: Routes = [
   {
     path: '',
     component: UserLayoutComponent,
-    canActivate: [UserGuard],
+    canActivate: [LoginUserGuard],
     children: USER_FULL_ROUTES
   },
   {

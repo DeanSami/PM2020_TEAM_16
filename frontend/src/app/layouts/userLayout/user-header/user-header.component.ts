@@ -21,6 +21,7 @@ import { RegisterModalComponent } from '../../../user/register-modal/register-mo
   ) {
     this.userAuth.currentUser.subscribe(user => {
       this.currentUser = user;
+      console.log('user', this.currentUser);
     });
   }
 
@@ -36,6 +37,7 @@ import { RegisterModalComponent } from '../../../user/register-modal/register-mo
       width: '250px',
     }).afterClosed().subscribe(result => {
       if (result) {
+        console.log(result);
       }
     });
   }

@@ -117,13 +117,11 @@ router.get('/login', function (req, res) {
 
 router.get('/sendSms', function (req, res) {
     console.log('<LOG> - POST /user/sendSms');
-    if (req && req.body && req.body.phone) {
-        let name = req.body.name ? req.body.name : '';
-        let user_type = req.body.user_type ? req.body.user_type : '';
-        let phone = req.body.phone.replace(/\D/g,'');
-        if (phone.search('972') >= 0) {
-            phone = '+' + phone;
-        } else {
+    if (req && req.query && req.query.phone) {
+        let name = req.query.name ? req.query.name : '';
+        let user_type = req.query.user_type ? req.query.user_type : '';
+        let phone = req.query.phone.replace(/\D/g,'');
+        if (phone.indexOf('+972') !== 0) {
             phone = '+972' + phone;
         }
 
@@ -155,7 +153,35 @@ router.get('/sendSms', function (req, res) {
     } else {
         res.status(globals.status_codes.Bad_Request).json();
     }
+});
 
+router.get('/checkValidationCode', function (req, res) {
+    console.log('<LOG> - POST /user/check code');
+    if (req && req.query && req.query.phone && req.query.code && req.query.phone && !isNaN(req.query.code)) {
+        let phone = req.query.phone.replace(/\D/g,'');
+        let code = req.query.code;
+        if (phone.indexOf('+972') === 0) {
+            phone = phone.split('+972')[1];
+        }
+
+        db.query('SELECT * FROM users, user_sessions WHERE users.id = user_sessions.user_id AND phone = ? AND validation_code = ? AND user_sessions.deleted = 0', [phone, code], function(err, result) {
+            if (err) {
+                console.log('<LOG> - GET user/sendSms - ERROR check validation code');
+                console.error(err);
+                res.status(globals.status_codes.Bad_Request).json()
+            } else {
+                if (result.length > 0) {
+                    let user = result[0];
+                    console.log('<LOG> - GET user/sendSms - SUCCESS');
+                    res.status(globals.status_codes.OK).json({token: user.session});
+                } else {
+                    res.status(globals.status_codes.Bad_Request).json({message: 'incorrect validation code'});
+                }
+            }
+        });
+    } else {
+        res.status(globals.status_codes.Bad_Request).json({message: 'missing arguments'});
+    }
 });
 
 function insertSessionAndSendSms(user, token, code, phone, res) {
@@ -173,10 +199,10 @@ function insertSessionAndSendSms(user, token, code, phone, res) {
                 sendSms(phone, 'קוד האימות שלך הוא: ' + code, (err, result) => {
                     if (err) {
                         console.log('<LOG> - GET user/sendSms - fail send sms');
-                        res.status(globals.status_codes.Bad_Request).json({token});
+                        res.status(globals.status_codes.Bad_Request).json(err);
                     } else {
                         console.log('<LOG> - GET user/sendSms - SUCCESS');
-                        res.status(globals.status_codes.OK).json({token});
+                        res.status(globals.status_codes.OK).json();
                     }
                 });
             }

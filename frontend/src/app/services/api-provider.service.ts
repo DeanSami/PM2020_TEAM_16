@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { LoadingService } from '../loading.service';
 
 export class UnhandledException { }
 
@@ -62,11 +61,14 @@ export class ApiProviderService {
 
     const url = environment.apiUrl + path;
     console.log('auth token', this.token);
-    if (this.token) {
-      headers = headers.append('x-auth', this.token);
-    }
-    if (this.userToken) {
-      headers = headers.append('user-x-auth', this.token);
+    if (path.indexOf('user') >= 0) {
+      if (this.userToken) {
+        headers = headers.append('x-auth', this.userToken);
+      }
+    } else {
+      if (this.token) {
+        headers = headers.append('x-auth', this.token);
+      }
     }
 
     switch (type) {

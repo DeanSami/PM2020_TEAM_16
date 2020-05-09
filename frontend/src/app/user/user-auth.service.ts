@@ -4,7 +4,7 @@ import { User } from '../models/users';
 import { LocalStorage } from 'ngx-store';
 import { ApiProviderService } from '../services/api-provider.service';
 import { Router } from '@angular/router';
-import { LoginResponse, SmsResponse } from '../models/Responses';
+import { SmsResponse } from '../models/Responses';
 
 @Injectable({
   providedIn: 'root'
@@ -14,23 +14,26 @@ export class UserAuthService {
   currentUser = new BehaviorSubject<User>(null);
 
   // tslint:disable-next-line:variable-name
-  @LocalStorage() _token: string = null;
+  @LocalStorage() userToken: string = null;
 
   get token() {
-    return this._token;
+    return this.userToken;
   }
   set token(token) {
-    this.api.token = token;
-    this._token = token;
+    this.api.userToken = token;
+    this.userToken = token;
   }
-  constructor(private api: ApiProviderService, private router: Router) { }
+  constructor(private api: ApiProviderService, private router: Router) {
+    this.api.userToken = this.userToken;
+  }
 
   login() {
     return new Promise((resolve, reject) => {
       if (this.token) {
-        this.api.get('user/login').subscribe((response: LoginResponse) => {
+        this.api.get('user/login').subscribe((response: User) => {
           this.loggedIn = true;
-          this.currentUser.next(response.user);
+          console.log('this.currentUser.next(response', response);
+          this.currentUser.next(response);
           resolve(this.loggedIn);
         }, err => {
           this.loggedIn = false;
@@ -38,7 +41,9 @@ export class UserAuthService {
           reject(err);
         });
       } else {
-        this.logout();
+        if (this.loggedIn) {
+          this.logout();
+        }
         reject('err');
       }
     });
@@ -46,11 +51,8 @@ export class UserAuthService {
 
   sendSms(phone: string) {
     return new Promise((resolve, reject) => {
-        this.api.get('user/sendSms').subscribe((response: SmsResponse) => {
-          if (response.status) {
-            resolve();
-          }
-          reject();
+        this.api.get('user/sendSms', {phone}).subscribe((response: SmsResponse) => {
+          resolve();
         }, err => {
           reject(err);
         });
@@ -59,8 +61,9 @@ export class UserAuthService {
 
   checkSms(phone: string, code: string) {
     return new Promise((resolve, reject) => {
-      this.api.get('user/checkSms').subscribe((response: SmsResponse) => {
-        if (response.status) {
+      this.api.get('user/checkValidationCode', {phone, code}).subscribe((response: SmsResponse) => {
+        if (response.token) {
+          this.token = response.token;
           resolve();
         }
         reject();

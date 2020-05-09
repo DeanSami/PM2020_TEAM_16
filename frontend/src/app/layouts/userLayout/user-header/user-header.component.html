@@ -12,9 +12,9 @@
         <li class="nav-item avatar dropdown">
           <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown"
              aria-haspopup="true" aria-expanded="false">
-            <img *ngIf="!currentUser" src="https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg" class="rounded-circle z-depth-0"
+            <img *ngIf="!currentUser || (currentUser && currentUser.avatar === '')" src="https://s3-eu-west-1.amazonaws.com/files.doggiehunt/defaultAvater.jpg" class="rounded-circle z-depth-0"
                  alt="avatar image">
-            <img *ngIf="currentUser" src="https://s3-eu-west-1.amazonaws.com/files.doggiehunts/userImages/{{currentUser.avatar}}" class="rounded-circle z-depth-0"
+            <img *ngIf="currentUser && currentUser.avatar.length" src="https://s3-eu-west-1.amazonaws.com/files.doggiehunt/userImages/{{currentUser.avatar}}" class="rounded-circle z-depth-0"
                  alt="avatar image">
           </a>
           <div *ngIf="!currentUser" class="dropdown-menu dropdown-menu-lg-right dropdown-secondary"
