@@ -17,7 +17,6 @@ router.get('/' , function(req, res) {
             } else {
                 if (result && result.length > 0) {
                     let game = result[0];
-                    console.log(game);
                     db.query('SELECT * FROM game_steps WHERE game_id = ?', [game.id], function (err, result) {
                         if (err) {
                             console.log('<LOG> - GET /user/games/get - ERROR');
@@ -50,76 +49,28 @@ router.get('/' , function(req, res) {
 });
 
 router.post('/create', function (req, res) {
-    console.log('<LOG> - POST /user/places/add - Invoke');
+    console.log('<LOG> - POST /user/games/add - Invoke');
 
-    const {
-        owner_id,
-        name,
-        start,
-        end,
-        start_location,
-        finish_location,
-        steps
-    } = req.body;
-
-    if (!name || !owner_id || !start || !end || !start_location || !finish_location || !steps) {
-            console.log('<LOG> - POST /games/create - At least 1 field is missing');
-            res.status(globals.status_codes.Bad_Request).json({message: 'missing argument'});
-            return;
-    }
-    if (typeof owner_id !== 'number' ||
-        typeof name !== 'string' ||
-        typeof start !== 'string' ||
-        typeof end !== 'string' ||
-        typeof start_location !== 'number' ||
-        typeof finish_location !== 'number') {
-            console.log('<LOG> - POST /games/create - Error with type of at least 1 input field');
-            res.status(globals.status_codes.Bad_Request).json({message: 'type error in game field'});
-            return;
-    }
-    if (steps && Array.isArray(steps)) {
-        let error = false;
-        let messageError = '';
-        steps.forEach(step => {
-            if (!step.name || !step.secret_key || !step.start_location || !step.finish_location || !step.step_num) {
-                error = true;
-                messageError = 'missing argument'
-            } else {
-                if (typeof step.name !== 'string' || typeof step.secret_key !== 'string' ||
-                    typeof step.start_location !== 'number' || typeof  step.finish_location !== 'number') {
-                    error = true;
-                    messageError = 'type error in game step'
-                }
-            }
-            step.description = step.description ? step.description : '';
-        });
-        if (error) {
-            console.log('<LOG> - POST /games/create - Error with game step');
-            res.status(globals.status_codes.Bad_Request).json({message: messageError});
-            return;
-        }
-    } else {
-        console.log('<LOG> - POST /games/create - Error with game steps');
-        res.status(globals.status_codes.Bad_Request).json();
-        return;
+    let checkDataResult = checkData(req.body);
+    if (checkDataResult && checkDataResult.status) {
+        res.status(checkDataResult.status).json({message: checkDataResult.message});
     }
 
     /* check for existing owner user */
-    db.query('SELECT * FROM users WHERE id = ? AND user_type = ?', [owner_id, 2], function (err, result) {
-        console.log('test result user : ', result);
-        if (err || !result || !result.length && false) {
+    db.query('SELECT * FROM users WHERE id = ? AND user_type = ?', [req.body.owner_id, 2], function (err, result) {
+        if (err || !result || !result.length) {
             console.log('<LOG> - POST /games/create - ERROR in search owner');
             console.error(err)
             res.status(globals.status_codes.Server_Error).json({message: 'can not find owner by owner_id'});
             return;
         }
         let game = {
-            owner_id,
-            name,
-            start,
-            end,
-            start_location,
-            finish_location,
+            owner_id: req.body.owner_id,
+            name: req.body.name,
+            start: req.body.start,
+            end: req.body.end,
+            start_location: req.body.start_location,
+            finish_location: req.body.finish_location,
             deleted: 0
         };
 
@@ -139,17 +90,9 @@ router.post('/create', function (req, res) {
                     res.status(globals.status_codes.Server_Error).json();
                     return;
                 }
-
-                // db.rollback(err => {
-                //     console.log('rollback error', err);
-                //
-                // });
-                // res.status(globals.status_codes.Server_Error).json({a: 'test'});
-                // return;
-
                 let insertSteps = [];
 
-                steps.forEach(step => {
+                req.body.steps.forEach(step => {
                     insertSteps.push([
                         result.insertId,
                         step.step_num,
@@ -174,7 +117,6 @@ router.post('/create', function (req, res) {
 
                             });
                             res.status(globals.status_codes.Server_Error).json();
-                            return;
                         } else {
                             db.commit(function(err) {
                                 if (err) {
@@ -188,15 +130,150 @@ router.post('/create', function (req, res) {
                         }
                     });
                 } else {
-
+                    db.commit(function(err) {
+                        if (err) {
+                            db.rollback(function() {
+                                throw err;
+                            });
+                        }
+                        res.status(globals.status_codes.OK).json();
+                        console.log('Transaction Complete.');
+                    });
                 }
             });
         });
         /* End transaction */
-
     });
-
 });
+
+router.patch('/edit', function (req, res) {
+    console.log('<LOG> - POST /user/games/update - Invoke');
+    if (!req.body.id) {
+        res.status(globals.status_codes.Bad_Request).json({message: 'missing argument id'});
+        return;
+    }
+    req.body.steps = []; //todo remove this
+    let checkDataResult = checkData(req.body);
+    if (checkDataResult && checkDataResult.status) {
+        res.status(checkDataResult.status).json({message: checkDataResult.message});
+        return;
+    }
+
+    /* check for existing owner user */
+    db.query('SELECT * FROM users WHERE id = ? AND user_type = ?', [req.body.owner_id, globals.user_types.businessOwner], function (err, result) {
+        if (err || !result || !result.length) {
+            console.log('<LOG> - POST /games/create - ERROR in search owner');
+            console.error(err)
+            res.status(globals.status_codes.Server_Error).json({message: 'can not find owner by owner_id'});
+            return;
+        }
+        let game = {
+            owner_id: req.body.owner_id,
+            name: req.body.name,
+            start: req.body.start,
+            end: req.body.end,
+            start_location: req.body.start_location,
+            finish_location: req.body.finish_location,
+            deleted: 0
+        };
+
+        db.query('SELECT * FROM games WHERE id = ?', [req.body.id], function (err, result) {
+            if (err) {
+                console.log('<LOG> - POST /games/patch - ERROR find game');
+                console.error(err)
+                res.status(globals.status_codes.Bad_Request).json({message: 'cannot find game by id'});
+                return;
+            }
+            db.query('UPDATE games SET ? WHERE id = ?', [game, req.body.id], function (err, result) {
+                if (err) {
+                    console.log('<LOG> - POST /games/create - ERROR insert game');
+                    console.error(err)
+                    res.status(globals.status_codes.Server_Error).json();
+                    return;
+                }
+                res.status(globals.status_codes.OK).json();
+                //todo update steps
+            });
+        });
+    });
+});
+
+router.get('/played', function (req, res) {
+    console.log('<LOG> - POST /user/games/played - Invoke');
+
+    db.query('SELECT * FROM active_players, users WHERE users.id = active_players.user_id AND game_id = ?', [req.body.game_id], function (err, result) {
+        if (err) {
+            console.log('<LOG> - POST /games//played - ERROR find players');
+            console.error(err)
+            res.status(globals.status_codes.Bad_Request).json({message: 'cannot find players by game_id'});
+            return;
+        }
+        if (result && result.length) {
+            result.forEach(player => {
+                delete player.password;
+                delete player.user_type;
+                delete player.hobbies;
+                delete player.deleted;
+            });
+        }
+        console.log('<LOG> - GET /user/games/played - SUCCESS');
+        res.status(globals.status_codes.OK).json(result)
+    });
+});
+
+function checkData(data) {
+    const {
+        owner_id,
+        name,
+        start,
+        end,
+        start_location,
+        finish_location,
+        steps
+    } = data;
+
+    if (!name || !owner_id || !start || !end || !start_location || !finish_location) {
+        console.log('<LOG> - POST /games/create - At least 1 field is missing');
+        return {status: globals.status_codes.Bad_Request, message: 'missing argument'};
+    }
+    if (typeof owner_id !== 'number' ||
+        typeof name !== 'string' ||
+        typeof start !== 'string' ||
+        typeof end !== 'string' ||
+        typeof start_location !== 'number' ||
+        typeof finish_location !== 'number') {
+        console.log('<LOG> - POST /games/create - Error with type of at least 1 input field');
+        return {status: globals.status_codes.Bad_Request, message: 'type error in game field'};
+    }
+    if (steps && Array.isArray(steps)) {
+        let error = false;
+        let messageError = '';
+        steps.forEach(step => {
+            if (!step.name || !step.secret_key || !step.start_location || !step.finish_location || !step.step_num) {
+                error = true;
+                messageError = 'missing argument'
+            } else {
+                if (typeof step.name !== 'string' || typeof step.secret_key !== 'string' ||
+                    typeof step.start_location !== 'number' || typeof  step.finish_location !== 'number') {
+                    error = true;
+                    messageError = 'type error in game step'
+                }
+            }
+        });
+        if (error) {
+            console.log('<LOG> - POST /games/create - Error with game step');
+            return {status: globals.status_codes.Bad_Request, message: messageError};
+        }
+        return {};
+    } else {
+        if (!steps) {
+            return {};
+        }
+        console.log('<LOG> - POST /games/create - Error with game steps');
+        return {status: globals.status_codes.Bad_Request, message: 'error with game steps'};
+    }
+    return;
+}
 
 
 module.exports = router;

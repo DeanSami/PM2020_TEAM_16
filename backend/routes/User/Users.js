@@ -4,7 +4,7 @@ const globals = require('../../globals');
 const router = express.Router();
 const hat = require('hat');
 const AWS = require('aws-sdk');
-const config = require('./configs/config.js')
+const config = require('../../configs/config.js')
 AWS.config.update({
     accessKeyId: config.AWS.accessKeyId,
     secretAccessKey: config.AWS.secretAccessKey,
@@ -13,11 +13,81 @@ AWS.config.update({
 
 const GAMES = require('./Games')
 const PLACES = require('./Places')
+const BUSINESS = require('./Business')
 const sns = new AWS.SNS();
+
+router.use(function isUser (req, res, next) {
+    if (req.originalUrl === '/user/games/edit' ||
+        req.originalUrl === '/user/games/create' ||
+        req.originalUrl === '/user/business/edit' ||
+        req.originalUrl === '/user/business/create' ||
+        req.originalUrl === '/user/games/played'
+    ) {
+        console.log('<LOG> - POST /user/* - Middleware')
+        const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth'];
+        if (incoming_token) {
+            db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ? AND user_type != ?', [incoming_token, globals.user_types.admin], function (err, result) {
+                if (err) {
+                    console.log('<LOG> - POST /user/* - ERROR');
+                    console.error(err);
+                    res.status(globals.status_codes.Server_Error).json();
+                }
+                else if (result.length > 0) {
+                    if (req.originalUrl == '/user/games/edit' ||
+                        req.originalUrl === '/user/games/create' ||
+                        req.originalUrl === '/user/business/edit' ||
+                        req.originalUrl === '/user/business/create' ||
+                        req.originalUrl === '/user/games/played') {
+                        if (result[0].id !== req.body.owner_id && !isNaN(req.body.owner_id)) {
+                            console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
+                            res.status(globals.status_codes.Unauthorized).json();
+                            return;
+                        }
+                        if (req.originalUrl === '/user/games/played') {
+                            if (req.body.game_id && !isNaN(req.body.game_id)) {
+                                db.query('SELECT * FROM games WHERE id = ? AND owner_id = ?', [req.body.game_id, req.body.owner_id], function (err, result) {
+                                    if (err) {
+                                        console.log('<LOG> - GET /user/login - ERROR');
+                                        console.error(err);
+                                        res.status(globals.status_codes.Server_Error).json()
+                                    } else {
+                                        if (result && result.length > 0) {
+                                            console.log('<LOG> - POST /user/played - SUCCESS');
+                                            next();
+                                        } else {
+                                            res.status(globals.status_codes.Unauthorized).json();
+                                        }
+                                    }
+                                });
+                            } else {
+                                res.status(globals.status_codes.Unauthorized).json();
+                            }
+                        } else {
+                            console.log('<LOG> - POST /user/* - SUCCESS');
+                            next();
+                        }
+                    } else {
+                        console.log('<LOG> - POST /user/* - SUCCESS');
+                        next();
+                    }
+                } else {
+                    console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
+                    res.status(globals.status_codes.Unauthorized).json();
+                }
+            })
+        } else {
+            console.log('<LOG> - POST /user/* - Missing Credentials');
+            res.status(globals.status_codes.Unauthorized).json();
+        }
+    } else {
+        next();
+    }
+});
 
 router.use(globals.log_func);
 router.use('/games', GAMES);
 router.use('/places', PLACES);
+router.use('/business', BUSINESS);
 
 router.get('/login', function (req, res) {
     console.log('<LOG> - GET /user/login - Invoke');

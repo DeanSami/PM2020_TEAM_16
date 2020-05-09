@@ -1,6 +1,8 @@
 module.exports = {
     user_types: {
         admin: 0,
+        dogOwner: 1,
+        businessOwner: 2
     },
     server_port: process.env.PORT || 3000,
     DB: {
