@@ -62,6 +62,8 @@ import { NewTreasureHuntComponent } from './user/businessOwner/new-treasure-hunt
 import { MatNativeDateModule } from '@angular/material/core';
 import {UserDogParksResolver} from './user/resolvers/userDogParksResolver.resolver';
 import {MatStepperModule} from '@angular/material/stepper';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -139,6 +141,8 @@ export function createTranslateLoader(http: HttpClient) {
     MatNativeDateModule,
     MatDatepickerModule,
     MatStepperModule,
+    MatRadioModule,
+    MatCheckboxModule,
   ],
   exports: [
     MatSidenavModule,

@@ -79,4 +79,8 @@ export class UserAuthService {
     this.currentUser.next(null);
     this.router.navigate(['/main']);
   }
+
+  editUser(user: User) {
+    return this.api.post('user/editUser', user);
+  }
 }

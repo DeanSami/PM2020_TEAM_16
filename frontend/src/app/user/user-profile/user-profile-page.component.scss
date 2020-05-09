@@ -31,6 +31,8 @@ section {
       place-items: center;
       align-content: space-between;
       font-size: 18px;
+      margin-bottom: 0.25rem;
+      color: #ffffff!important;
 
       i {
         padding-left: 5px;
@@ -64,6 +66,18 @@ section {
       .h5 {
         text-decoration: underline;
       }
+    }
+  }
+}
+.hobbies-layout {
+  display: flex;
+  flex-direction: row;
+  place-content: space-between;
+  .hobbies {
+    display: flex;
+    flex-direction: column;
+    mat-checkbox {
+      margin-bottom: 0.25rem;
     }
   }
 }

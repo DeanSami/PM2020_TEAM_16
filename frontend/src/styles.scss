@@ -9,18 +9,30 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-form-field.mat-focused .mat-form-field-label {
   color: #009DA0!important;
 }
+
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
+.mat-checkbox-checked.mat-accent .mat-checkbox-background,
+.mat-radio-button.mat-accent .mat-radio-inner-circle,
 .mat-form-field.mat-focused .mat-form-field-ripple {
   background-color: #009DA0!important;
 }
+
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+  border-color: #009DA0!important;
+}
+
 .mat-form-field {
     text-align: right!important;
 }
+
 .mat-slide-toggle.mat-primary.mat-checked .mat-slide-toggle-thumb {
   background-color: #009DA0!important;
 }
+
 .mat-slide-toggle.mat-primary.mat-checked .mat-slide-toggle-bar {
   background-color: rgba(25, 152, 155, 0.54)!important;
 }
+
 input {
   color: #000000!important;
 }

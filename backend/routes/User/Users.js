@@ -21,7 +21,8 @@ router.use(function isUser (req, res, next) {
         req.originalUrl === '/user/games/create' ||
         req.originalUrl === '/user/business/edit' ||
         req.originalUrl === '/user/business/create' ||
-        req.originalUrl === '/user/games/played'
+        req.originalUrl === '/user/games/played' ||
+        req.originalUrl === '/user/editUser'
     ) {
         console.log('<LOG> - POST /user/* - Middleware')
         const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth'];
@@ -37,7 +38,9 @@ router.use(function isUser (req, res, next) {
                         req.originalUrl === '/user/games/create' ||
                         req.originalUrl === '/user/business/edit' ||
                         req.originalUrl === '/user/business/create' ||
-                        req.originalUrl === '/user/games/played') {
+                        req.originalUrl === '/user/games/played' ||
+                        req.originalUrl === '/user/editUser'
+                    ) {
                         if (result[0].id !== req.body.owner_id && !isNaN(req.body.owner_id)) {
                             console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
                             res.status(globals.status_codes.Unauthorized).json();
@@ -61,6 +64,16 @@ router.use(function isUser (req, res, next) {
                                 });
                             } else {
                                 res.status(globals.status_codes.Unauthorized).json();
+                            }
+                        }
+                        if (req.originalUrl === '/user/editUser') {
+                            if (result[0].id !== req.body.id) {
+                                console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
+                                res.status(globals.status_codes.Unauthorized).json();
+                                return;
+                            } else {
+                                console.log('<LOG> - POST /user/* - SUCCESS');
+                                next();
                             }
                         } else {
                             console.log('<LOG> - POST /user/* - SUCCESS');
@@ -102,6 +115,11 @@ router.get('/login', function (req, res) {
                 if (result.length > 0) {
                     delete result[0].password;
                     console.log('<LOG> - GET /user/login - SUCCESS');
+                    if (result[0].avatar === '') {
+                        result[0].avatar = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/defaultAvater.jpg';
+                    } else {
+                        result[0].avatar = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/userImages/' + result[0].avatar;
+                    }
                     res.status(globals.status_codes.OK).json(result[0])
                 } else {
                     console.log('<LOG> - GET /admin/login - Unauthorized Credentials');
@@ -113,6 +131,45 @@ router.get('/login', function (req, res) {
         console.log('<LOG> - GET /admin/login - Credentials Missing');
         res.status(globals.status_codes.Bad_Request).json()
     }
+});
+
+router.post('/editUser', function (req, res) {
+    console.log('<LOG> - GET /user/edit - Invoke');
+
+    let user = {
+        name: typeof req.body.name === 'string' ?  escape(req.body.name).replace('%20',' ') : '',
+        email: typeof req.body.email === 'string' ?  escape(req.body.email) : '',
+        avatar: typeof req.body.avatar === 'string' ?  escape(req.body.avatar) : '',
+        birthday: typeof req.body.birthday === 'string' ?  req.body.birthday : null,
+        gender: req.body.gender ? (!!req.body.gender) : null,
+        hobbies: isNaN(req.body.hobbies) ? 0 : req.body.hobbies
+    };
+    if (user.avatar === '') {
+        delete user.avatar;
+    }
+    if (user.email === '') {
+        delete user.email;
+    }
+    if (user.name === '') {
+        delete user.name;
+    }
+    if (user.birthday === '') {
+        delete user.birthday;
+    }
+    if (user.gender === null) {
+        delete user.gender;
+    }
+
+    db.query('UPDATE users SET ? WHERE id = ?', [user, req.body.id], function(err, result) {
+        if (err) {
+            console.log('<LOG> - GET /user/edit - ERROR');
+            console.error(err);
+            res.status(globals.status_codes.Server_Error).json()
+        } else {
+            console.log('<LOG> - GET /user/login - SUCCESS');
+            res.status(globals.status_codes.OK).json()
+        }
+    })
 });
 
 router.get('/sendSms', function (req, res) {

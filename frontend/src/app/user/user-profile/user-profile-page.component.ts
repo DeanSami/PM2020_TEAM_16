@@ -3,6 +3,8 @@ import { AwsS3Service } from '../aws-s3.service';
 import { ToastrService } from 'ngx-toastr';
 import { UserAuthService } from '../user-auth.service';
 import { User, UserGender, UserHobbies } from '../../models/users';
+import { LoginResponse } from '../../models/Responses';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 
 @Component({
@@ -13,6 +15,8 @@ import { User, UserGender, UserHobbies } from '../../models/users';
 
 export class UserProfilePageComponent implements OnInit {
   currentUser: User;
+  editTmpCurrentUser: User;
+  currentHobbies;
   userHobbies = UserHobbies;
   currentPage = 'About';
   edit = false;
@@ -23,33 +27,89 @@ export class UserProfilePageComponent implements OnInit {
     private toastr: ToastrService,
     private userService: UserAuthService) { }
 
+  form = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    email: new FormControl('', []),
+    gender: new FormControl('', [Validators.required]),
+    birthday: new FormControl('', [Validators.required])
+  });
+
+  get name() {
+    return this.form.get('name');
+  }
+
+  get email() {
+    return this.form.get('email');
+  }
+
+  get gender() {
+    return this.form.get('gender');
+  }
+
+  get birthday() {
+    return this.form.get('birthday');
+  }
+
   ngOnInit() {
     this.userService.currentUser.subscribe(user => this.currentUser = user);
-    this.currentUser = {
-      id: 1,
-      name: 'דור שושן',
-      user_type: 1,
-      email: 'dor.shoshan@gmail.com',
-      phone: '0546484372',
-      avatar: 'avatar1.jpeg',
-      deleted: false,
-      birthday: '03/12/1993',
-      gender: UserGender.Mail,
-      hobbies: 3267,
-      created_at: '01/01/2020'
-    };
   }
 
   upload() {
-    const file = this.selectedFiles.item(0);
-    // todo change file name to unique name by userId
-    if (file.type.indexOf('image') < 0) {
-      this.toastr.error('סוג קובץ לא חוקי');
-    }
-    this.uploadService.uploadFile(file).then((res) =>  {
-        // todo save user avatar
-        this.toastr.error('תמונה עודכנה בהצלחה');
+    return new Promise<boolean>((resolve, reject) => {
+      if (this.selectedFiles && this.selectedFiles.item) {
+        const file = this.selectedFiles.item(0);
+        console.log('file', file);
+        const name = this.editTmpCurrentUser.id + 'Avatar.' + file.name.split('.')[file.name.split('.').length - 1];
+        if (file.type.indexOf('image') < 0) {
+          reject('סוג קובץ לא חוקי');
+        }
+        this.uploadService.uploadFile(file, name).then((res) =>  {
+          this.editTmpCurrentUser.avatar = name;
+          resolve();
+        }, () => {
+          reject('העלאת קובץ נכשלה');
+        });
+      } else {
+        this.editTmpCurrentUser.avatar = '';
+        resolve();
+      }
+    });
+  }
+
+  save() {
+    this.editTmpCurrentUser = {...this.currentUser};
+    this.upload().then(() => {
+      this.editTmpCurrentUser.hobbies = 0 +
+        (this.currentHobbies.Travelling ?  UserHobbies.Travelling : 0) +
+        (this.currentHobbies.Driving ?  UserHobbies.Driving : 0) +
+        (this.currentHobbies.Photography ?  UserHobbies.Photography : 0) +
+        (this.currentHobbies.Gaming ?  UserHobbies.Gaming : 0) +
+        (this.currentHobbies.Music ?  UserHobbies.Music : 0) +
+        (this.currentHobbies.Surfing ?  UserHobbies.Surfing : 0) +
+        (this.currentHobbies.Foodie ?  UserHobbies.Foodie : 0) +
+        (this.currentHobbies.TV ?  UserHobbies.TV : 0) +
+        (this.currentHobbies.Shopping ?  UserHobbies.Shopping : 0) +
+        (this.currentHobbies.Social ?  UserHobbies.Social : 0) +
+        (this.currentHobbies.Reading ?  UserHobbies.Reading : 0) +
+        (this.currentHobbies.Sport ?  UserHobbies.Sport : 0) +
+        (this.currentHobbies.Computers ?  UserHobbies.Computers : 0) +
+        (this.currentHobbies.Camping ?  UserHobbies.Camping : 0);
+      this.editTmpCurrentUser.email = this.email.value;
+      this.editTmpCurrentUser.name = this.name.value;
+      this.editTmpCurrentUser.gender = this.gender.value;
+      this.editTmpCurrentUser.birthday = this.birthday.value ? this.birthday.value.toISOString().split('T')[0] : '';
+
+      this.userService.editUser(this.editTmpCurrentUser).subscribe(result => {
+        this.editTmpCurrentUser.avatar = this.editTmpCurrentUser.avatar !== '' ? this.editTmpCurrentUser.avatar : this.currentUser.avatar;
+        this.userService.currentUser.next(this.editTmpCurrentUser);
+        this.toastr.success('משתמש עודכן בהצלחה');
+        this.edit = false;
+      }, err => {
+        this.toastr.error('עדכון משתמש נכשל');
       });
+    }, err => {
+      this.toastr.error(err);
+    });
   }
 
   selectFile(event) {
@@ -58,6 +118,41 @@ export class UserProfilePageComponent implements OnInit {
 
   showPage(page: string) {
       this.currentPage = page;
+  }
+
+  startEdit() {
+    this.form.reset();
+    this.currentHobbies = {
+      // tslint:disable-next-line:no-bitwise
+      Travelling: (this.currentUser.hobbies & UserHobbies.Travelling) > 0,
+      // tslint:disable-next-line:no-bitwise
+      Driving: (this.currentUser.hobbies & UserHobbies.Driving) > 0,
+      // tslint:disable-next-line:no-bitwise
+      Photography: (this.currentUser.hobbies & UserHobbies.Photography) > 0,
+      // tslint:disable-next-line:no-bitwise
+      Gaming: (this.currentUser.hobbies & UserHobbies.Gaming) > 0,
+      // tslint:disable-next-line:no-bitwise
+      Music: (this.currentUser.hobbies & UserHobbies.Music) > 0,
+      // tslint:disable-next-line:no-bitwise
+      Surfing: (this.currentUser.hobbies & UserHobbies.Surfing) > 0,
+      // tslint:disable-next-line:no-bitwise
+      Foodie: (this.currentUser.hobbies & UserHobbies.Foodie) > 0,
+      // tslint:disable-next-line:no-bitwise
+      TV: (this.currentUser.hobbies & UserHobbies.TV) > 0,
+      // tslint:disable-next-line:no-bitwise
+      Shopping: (this.currentUser.hobbies & UserHobbies.Shopping) > 0,
+      // tslint:disable-next-line:no-bitwise
+      Social: (this.currentUser.hobbies & UserHobbies.Social) > 0,
+      // tslint:disable-next-line:no-bitwise
+      Reading: (this.currentUser.hobbies & UserHobbies.Reading) > 0,
+      // tslint:disable-next-line:no-bitwise
+      Sport: (this.currentUser.hobbies & UserHobbies.Sport) > 0,
+      // tslint:disable-next-line:no-bitwise
+      Computers: (this.currentUser.hobbies & UserHobbies.Computers) > 0,
+      // tslint:disable-next-line:no-bitwise
+      Camping: (this.currentUser.hobbies & UserHobbies.Camping) > 0,
+    };
+    this.edit = !this.edit;
   }
 
   checkHobbies(hobby: number) {
