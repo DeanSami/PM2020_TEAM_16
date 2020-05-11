@@ -1,9 +1,9 @@
 import { Directive, HostListener, Inject } from '@angular/core';
 
-import { SidebarLinkDirective } from "./sidebarlink.directive";
+import { SidebarLinkDirective } from './sidebarlink.directive';
 
 @Directive({
-  selector: "[appSidebarAnchorToggle]"
+  selector: '[appSidebarAnchorToggle]'
 })
 export class SidebarAnchorToggleDirective {
   protected navlink: SidebarLinkDirective;
@@ -14,7 +14,7 @@ export class SidebarAnchorToggleDirective {
     this.navlink = navlink;
   }
 
-  @HostListener("click", ["$event"])
+  @HostListener('click', ['$event'])
   onClick() {
     this.navlink.toggle();
   }

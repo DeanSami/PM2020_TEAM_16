@@ -8,12 +8,12 @@ import {
   Output,
   EventEmitter,
   Renderer2
-} from "@angular/core";
-import { SidebarLinkDirective } from "./sidebarlink.directive";
-import { Router } from "@angular/router";
-import { filter } from "rxjs/operators";
+} from '@angular/core';
+import { SidebarLinkDirective } from './sidebarlink.directive';
+import { Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
-@Directive({ selector: "[appSidebar]" })
+@Directive({ selector: '[appSidebar]' })
 export class SidebarDirective implements OnInit, AfterViewInit {
   public navlinks: Array<SidebarLinkDirective> = [];
   activeLinks: string[] = [];
@@ -38,16 +38,18 @@ export class SidebarDirective implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     const element: HTMLElement = this.el.nativeElement;
-    this.$wrapper = this.renderer.parentNode(this.el.nativeElement) ;// document.getElementsByClassName("wrapper")[0];
+    this.$wrapper = this.renderer.parentNode(this.el.nativeElement) ; // document.getElementsByClassName('wrapper')[0];
 
+    // tslint:disable-next-line:variable-name
     const $sidebar_img_container = this.el.nativeElement.querySelector('.sidebar-background');
-    const $sidebar_img = element.getAttribute("data-image");
+    // tslint:disable-next-line:variable-name
+    const $sidebar_img = element.getAttribute('data-image');
 
     if ($sidebar_img_container.length !== 0 && $sidebar_img !== undefined) {
-      this.renderer.setAttribute($sidebar_img_container, 'style','background-image: url("' + $sidebar_img + '")' );
+      this.renderer.setAttribute($sidebar_img_container, 'style', 'background-image: url(' + $sidebar_img + ')' );
     }
 
-    if (!this.$wrapper.classList.contains("nav-collapsed")) {
+    if (!this.$wrapper.classList.contains('nav-collapsed')) {
       this.expandActive();
     }
     if (this.innerWidth < 992) {
@@ -58,9 +60,9 @@ export class SidebarDirective implements OnInit, AfterViewInit {
     this.cd.detectChanges();
   }
 
-  @HostListener("mouseenter", ["$event"])
+  @HostListener('mouseenter', ['$event'])
   onMouseOver(e: any) {
-    if (this.$wrapper.classList.contains("nav-collapsed")) {
+    if (this.$wrapper.classList.contains('nav-collapsed')) {
       this.renderer.removeClass(this.$wrapper, 'menu-collapsed');
 
       this.navlinks
@@ -72,9 +74,9 @@ export class SidebarDirective implements OnInit, AfterViewInit {
     }
   }
 
-  @HostListener("mouseleave", ["$event"])
+  @HostListener('mouseleave', ['$event'])
   onMouseOut(e: any) {
-    if (this.$wrapper.classList.contains("nav-collapsed")) {
+    if (this.$wrapper.classList.contains('nav-collapsed')) {
       this.renderer.addClass(this.$wrapper, 'menu-collapsed');
 
       this.navlinks
@@ -86,25 +88,25 @@ export class SidebarDirective implements OnInit, AfterViewInit {
     }
   }
 
-  @HostListener("click", ["$event"])
+  @HostListener('click', ['$event'])
   onClick(e: any) {
     if (
-      e.target.parentElement.classList.contains("logo-text") ||
-      e.target.parentElement.classList.contains("logo-img")
+      e.target.parentElement.classList.contains('logo-text') ||
+      e.target.parentElement.classList.contains('logo-img')
     ) {
       this.activeLinks = [];
       this.activeRoute = this.router.url;
       this.expandActive();
       this.hideSidebar();
     } else if (
-      e.target.parentElement.classList.contains("nav-close") ||
-      e.target.classList.contains("nav-close")
+      e.target.parentElement.classList.contains('nav-close') ||
+      e.target.classList.contains('nav-close')
     ) {
       this.toggleHideSidebar.emit(true);
     }
   }
 
-  @HostListener("window:resize", ["$event"])
+  @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.innerWidth = window.innerWidth;
     if (event.target.innerWidth < 992) {
@@ -113,23 +115,23 @@ export class SidebarDirective implements OnInit, AfterViewInit {
       this.toggleHideSidebar.emit(true);
     }
     if (event.target.innerWidth > 992) {
-      const toggleStatus = this.el.nativeElement
+      const toggleStatus = this.el.nativeElement;
       this.el.nativeElement.querySelector('.toggle-icon')
-        .getAttribute("data-toggle");
+        .getAttribute('data-toggle');
       if (
-        toggleStatus === "collapsed" &&
-        this.$wrapper.classList.contains("nav-collapsed") &&
-        this.$wrapper.classList.contains("menu-collapsed")
+        toggleStatus === 'collapsed' &&
+        this.$wrapper.classList.contains('nav-collapsed') &&
+        this.$wrapper.classList.contains('menu-collapsed')
       ) {
-        this.$wrapper.classList.add("nav-collapsed");
-        this.$wrapper.classList.add("menu-collapsed");
+        this.$wrapper.classList.add('nav-collapsed');
+        this.$wrapper.classList.add('menu-collapsed');
       }
       this.toggleHideSidebar.emit(false);
     }
   }
 
   // check outside click and close sidebar for smaller screen <992
-  @HostListener("document:click", ["$event"])
+  @HostListener('document:click', ['$event'])
   onOutsideClick(event) {
     if (this.innerWidth < 992) {
       let clickedComponent = event.target;
@@ -142,9 +144,9 @@ export class SidebarDirective implements OnInit, AfterViewInit {
       } while (clickedComponent);
 
       if (
-        !this.el.nativeElement.classList.contains("hide-sidebar") &&
+        !this.el.nativeElement.classList.contains('hide-sidebar') &&
         !inside &&
-        !event.target.classList.contains("navbar-toggle")
+        !event.target.classList.contains('navbar-toggle')
       ) {
         this.toggleHideSidebar.emit(true);
       }
@@ -172,10 +174,10 @@ export class SidebarDirective implements OnInit, AfterViewInit {
       .filter(_ => _.routePath === this.activeRoute)
       .forEach((link: SidebarLinkDirective) => {
         link.isShown = true;
-        if (link.level.toString().trim() === "3") {
+        if (link.level.toString().trim() === '3') {
           this.navlinks
             .filter(
-              _ => _.level.toString().trim() === "2" && _.title === link.parent
+              _ => _.level.toString().trim() === '2' && _.title === link.parent
             )
             .forEach((parentLink: SidebarLinkDirective) => {
               parentLink.open = true;
@@ -183,7 +185,7 @@ export class SidebarDirective implements OnInit, AfterViewInit {
               this.navlinks
                 .filter(
                   _ =>
-                    _.level.toString().trim() === "1" &&
+                    _.level.toString().trim() === '1' &&
                     _.title === parentLink.parent
                 )
                 .forEach((superParentLink: SidebarLinkDirective) => {
@@ -192,10 +194,10 @@ export class SidebarDirective implements OnInit, AfterViewInit {
                   superParentLink.toggleEmit.emit(this.activeLinks);
                 });
             });
-        } else if (link.level.toString().trim() === "2") {
+        } else if (link.level.toString().trim() === '2') {
           this.navlinks
             .filter(
-              _ => _.level.toString().trim() === "1" && _.title === link.parent
+              _ => _.level.toString().trim() === '1' && _.title === link.parent
             )
             .forEach((parentLink: SidebarLinkDirective) => {
               parentLink.open = true;
@@ -210,7 +212,7 @@ export class SidebarDirective implements OnInit, AfterViewInit {
     this.navlinks
       .filter(
         _ =>
-          _.level.toString().trim() === "3" && _.routePath !== this.activeRoute
+          _.level.toString().trim() === '3' && _.routePath !== this.activeRoute
       )
       .forEach((link: SidebarLinkDirective) => {
         link.active = false;
