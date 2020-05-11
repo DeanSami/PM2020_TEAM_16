@@ -7,7 +7,8 @@ import { AreYouSureDialogComponent } from '../../are-you-sure-dialog/are-you-sur
 // import { NewDogParkComponent } from './new-dog-park/new-dog-park.component';
 // import { DogParksService } from '../services/dog-parks.service';
 import { ToastrService } from 'ngx-toastr';
-import {Games} from '../../models/Game';
+import { Game } from '../../models/Games';
+import { GamesService } from '../services/games.service';
 
 @Component({
   selector: 'app-my-games',
@@ -15,12 +16,9 @@ import {Games} from '../../models/Game';
   styleUrls: ['./my-games.component.scss']
 })
 export class MyGamesComponent implements OnInit {
-  conditionType = ConditionType;
-  placeActiveType = PlaceActiveType;
-  conditionTypeTitle = ConditionTypeTitles;
   displayedColumns: string[] = ['name', 'start', 'end', 'start_location', 'finish_location', 'condition', 'action'];
-  dataSource: MatTableDataSource<Games>;
-  games: Games[];
+  dataSource: MatTableDataSource<Game>;
+  games: Game[];
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -30,21 +28,22 @@ export class MyGamesComponent implements OnInit {
   constructor(
     private rout: ActivatedRoute,
     private dialog: MatDialog,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private gamesService: GamesService
   ) { }
 
   ngOnInit(): void {
     this.games = this.rout.snapshot.data.games;
-    this.dataSource = new MatTableDataSource<Games>(this.games);
+    this.dataSource = new MatTableDataSource<Game>(this.games);
   }
 
-  // removeDogPark(dogParkId: number) {
+  // removeGame(GameId: number) {
   //   this.dialog.open(AreYouSureDialogComponent, {
   //     width: '250px',
   //   }).afterClosed().subscribe(result => {
   //     if (result) {
-  //       this.dogParkService.deleteDogPark(dogParkId).subscribe(() => {
-  //         this.dataSource.data = this.dataSource.data.filter(park => park.id !== dogParkId);
+  //       this.gamesService.deleteGame(GameId).subscribe(() => {
+  //         this.dataSource.data = this.dataSource.data.filter(game => game.id !== GameId);
   //         this.toastr.success('נמחק בהצלחה');
   //       }, err =>  {
   //         console.log(err);
@@ -94,16 +93,16 @@ export class MyGamesComponent implements OnInit {
   //   });
   // }
   //
-  // addDogPark() {
-  //   this.dialog.open(NewDogParkComponent, {
-  //     width: '600px',
-  //     data: null
-  //   }).afterClosed().subscribe(result => {
-  //     if (result) {
-  //       this.dataSource.data.push(result);
-  //       this.dataSource.data = this.dataSource.data;
-  //     }
-  //   });
+  // addGame() {
+  //  this.dialog.open(NewDogParkComponent, {
+  //    width: '600px',
+  //    data: null
+  //  }).afterClosed().subscribe(result => {
+  //    if (result) {
+  //      this.dataSource.data.push(result);
+  //      this.dataSource.data = this.dataSource.data;
+  //    }
+  //  });
   // }
 
 }

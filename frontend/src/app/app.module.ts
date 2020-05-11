@@ -64,6 +64,7 @@ import {UserDogParksResolver} from './user/resolvers/userDogParksResolver.resolv
 import {MatStepperModule} from '@angular/material/stepper';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import {GamesService} from './user/services/games.service';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -159,7 +160,8 @@ export function createTranslateLoader(http: HttpClient) {
     InterestingPointResolver,
     ApiProviderService,
     LoadingService,
-    UserDogParksResolver
+    UserDogParksResolver,
+    GamesService
   ],
   bootstrap: [AppComponent],
 })
