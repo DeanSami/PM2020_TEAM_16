@@ -12,22 +12,17 @@
         <li class="nav-item avatar dropdown">
           <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown"
              aria-haspopup="true" aria-expanded="false">
-            <img *ngIf="!currentUser || (currentUser && currentUser.avatar === '')" src="https://s3-eu-west-1.amazonaws.com/files.doggiehunt/defaultAvater.jpg" class="rounded-circle z-depth-0"
+            <img *ngIf="!currentUser || (currentUser && currentUser.avatar === '')" src="https://s3-eu-west-1.amazonaws.com/files.doggiehunt/defaultAvater.jpg" class="rounded-circle z-depth-0 width-50 height-50"
                  alt="avatar image">
-            <img *ngIf="currentUser && currentUser.avatar.length" [src]="currentUser.avatar" class="rounded-circle z-depth-0"
+            <img *ngIf="currentUser && currentUser.avatar.length" [src]="currentUser.avatar" class="rounded-circle z-depth-0 width-50 height-50"
                  alt="avatar image">
           </a>
-          <div *ngIf="!currentUser" class="dropdown-menu dropdown-menu-lg-right dropdown-secondary"
+          <div class="dropdown-menu dropdown-menu-lg-right dropdown-secondary"
                aria-labelledby="navbarDropdownMenuLink-55">
-            שלום אורח
-            <a class="dropdown-item" (click)="login()" >התחבר</a>
-            <a class="dropdown-item" (click)="register()" >הירשם</a>
-          </div>
-          <div *ngIf="currentUser" class="dropdown-menu dropdown-menu-lg-right dropdown-secondary"
-               aria-labelledby="navbarDropdownMenuLink-55">
-            שלום {{currentUser.name}}
-            <a class="dropdown-item" routerLink="/profile" >הפרופיל שלי</a>
-            <a class="dropdown-item" href="#">התנתק</a>
+            {{!currentUser ? 'שלום אורח' : 'שלום ' + currentUser.name}}
+            <a *ngIf="!currentUser"  class="dropdown-item" (click)="login()" >התחבר</a>
+            <a *ngIf="currentUser" class="dropdown-item" routerLink="/profile" >הפרופיל שלי</a>
+            <a *ngIf="currentUser" class="dropdown-item" (click)="logout()">התנתק</a>
           </div>
         </li>
       </ul>

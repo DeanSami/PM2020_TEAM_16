@@ -136,12 +136,13 @@ router.get('/login', function (req, res) {
 router.post('/editUser', function (req, res) {
     console.log('<LOG> - GET /user/edit - Invoke');
 
+    // todo validate birthday
     let user = {
-        name: typeof req.body.name === 'string' ?  escape(req.body.name).replace('%20',' ') : '',
+        name: typeof req.body.name === 'string' ?  req.body.name.replace(';', '').replace(',', '') : '',
         email: typeof req.body.email === 'string' ?  escape(req.body.email) : '',
         avatar: typeof req.body.avatar === 'string' ?  escape(req.body.avatar) : '',
         birthday: typeof req.body.birthday === 'string' ?  req.body.birthday : null,
-        gender: req.body.gender ? (!!req.body.gender) : null,
+        gender: isNaN(req.body.gender) ? null : (req.body.gender === 0 ? 0 : 1),
         hobbies: isNaN(req.body.hobbies) ? 0 : req.body.hobbies
     };
     if (user.avatar === '') {
@@ -176,7 +177,7 @@ router.get('/sendSms', function (req, res) {
     console.log('<LOG> - POST /user/sendSms');
     if (req && req.query && req.query.phone) {
         let name = req.query.name ? req.query.name : '';
-        let user_type = req.query.user_type ? req.query.user_type : '';
+        let user_type = req.query.user_type ? req.query.user_type : 1;
         let phone = req.query.phone.replace(/\D/g,'');
         if (phone.indexOf('+972') !== 0) {
             phone = '+972' + phone;
@@ -191,16 +192,26 @@ router.get('/sendSms', function (req, res) {
                 let user = result[0];
                 let token = hat();
                 let code = Math.floor(100000 + Math.random() * 900000);
+                console.log('WTFFFFF', result);
                 if (result.length === 0) {
                     db.query('INSERT INTO users (name, user_type, email, phone, password, avatar) VALUES (?,?,?,?,?,?)',
                         [name, user_type, '', phone.split('+972')[1], '', ''],function (err, result){
-                        if (err) {
-                            console.log('<LOG> - GET user/sendSms - fail insert user');
-                            console.error(err);
-                            res.status(globals.status_codes.Bad_Request).json();
-                        } else {
-                            insertSessionAndSendSms(user, token, code, phone, res);
-                        }
+                            if (err) {
+                                console.log('<LOG> - GET user/sendSms - fail insert user');
+                                console.error(err);
+                                res.status(globals.status_codes.Bad_Request).json();
+                            } else {
+                                db.query('SELECT * FROM users WHERE id = ?', [result.insertId], function(err, result) {
+                                    if (err) {
+                                        console.log('<LOG> - GET user/sendSms - fail insert user');
+                                        console.error(err);
+                                        res.status(globals.status_codes.Bad_Request).json();
+                                    } else {
+                                        user = result[0];
+                                        insertSessionAndSendSms(user, token, code, phone, res);
+                                    }
+                                });
+                            }
                     });
                 } else {
                     insertSessionAndSendSms(user, token, code, phone, res);

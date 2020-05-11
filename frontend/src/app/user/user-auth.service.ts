@@ -50,6 +50,7 @@ export class UserAuthService {
   }
 
   sendSms(phone: string) {
+    // this.token = '9c5bdc6363628534ce952b409a8b55bb';
     return new Promise((resolve, reject) => {
         this.api.get('user/sendSms', {phone}).subscribe((response: SmsResponse) => {
           resolve();
@@ -60,6 +61,7 @@ export class UserAuthService {
   }
 
   checkSms(phone: string, code: string) {
+    // this.token = '9c5bdc6363628534ce952b409a8b55bb';
     return new Promise((resolve, reject) => {
       this.api.get('user/checkValidationCode', {phone, code}).subscribe((response: SmsResponse) => {
         if (response.token) {
