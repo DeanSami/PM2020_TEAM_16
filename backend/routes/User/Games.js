@@ -35,16 +35,30 @@ router.get('/' , function(req, res) {
             }
         })
     } else {
-        db.query('SELECT * FROM games WHERE deleted = 0',[], function (err, result) {
-            if (err) {
-                console.log('<LOG> - GET /user/games/get - ERROR');
-                console.error(err);
-                res.status(globals.status_codes.Server_Error).json();
-            } else {
-                console.log('<LOG> - GET /user/games/get - SUCCESS');
-                res.status(globals.status_codes.OK).json(result)
-            }
-        })
+        if (req.body.owner_id) {
+            let id = req.body.owner_id;
+            db.query('SELECT * FROM games WHERE deleted = 0 AND owner_id = ?',[id], function (err, result) {
+                if (err) {
+                    console.log('<LOG> - GET /user/games/get - ERROR');
+                    console.error(err);
+                    res.status(globals.status_codes.Server_Error).json();
+                } else {
+                    console.log('<LOG> - GET /user/games/get - SUCCESS');
+                    res.status(globals.status_codes.OK).json(result)
+                }
+            })
+        } else {
+            db.query('SELECT * FROM games WHERE deleted = 0',[], function (err, result) {
+                if (err) {
+                    console.log('<LOG> - GET /user/games/get - ERROR');
+                    console.error(err);
+                    res.status(globals.status_codes.Server_Error).json();
+                } else {
+                    console.log('<LOG> - GET /user/games/get - SUCCESS');
+                    res.status(globals.status_codes.OK).json(result)
+                }
+            })
+        }
     }
 });
 
