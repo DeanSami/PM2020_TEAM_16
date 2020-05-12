@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { AwsS3Service } from '../aws-s3.service';
-import { ToastrService } from 'ngx-toastr';
-import { UserAuthService } from '../user-auth.service';
-import { User, UserGender, UserHobbies } from '../../models/users';
-import { LoginResponse } from '../../models/Responses';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {AwsS3Service} from '../aws-s3.service';
+import {ToastrService} from 'ngx-toastr';
+import {UserAuthService} from '../user-auth.service';
+import {User, UserHobbies, UserType} from '../../models/users';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from "@angular/router";
+import {Place} from "../../models/places";
+import { PlacesService } from "../services/places.service";
 
 
 @Component({
@@ -22,8 +24,11 @@ export class UserProfilePageComponent implements OnInit {
   edit = false;
   selectedFiles: FileList;
   imageSrc: string | ArrayBuffer;
+  userTypes = UserType;
+  dogParks: Place[];
 
   constructor(
+    private placesService: PlacesService,
     private uploadService: AwsS3Service,
     private toastr: ToastrService,
     private userService: UserAuthService) { }
@@ -52,7 +57,15 @@ export class UserProfilePageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.currentUser.subscribe(user => this.currentUser = user);
+    this.userService.currentUser.subscribe(user => {
+      this.currentUser = user
+      if (user.user_type == UserType.BusinessOwner)
+        this.placesService.getDogParks().subscribe(parks => {
+          this.dogParks = parks;
+        }, err => {
+          console.log(err);
+        });
+    });
   }
 
   upload() {

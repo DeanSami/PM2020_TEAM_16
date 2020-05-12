@@ -19,7 +19,6 @@ import { RegisterModalComponent } from '../../../user/register-modal/register-mo
   ) {
     this.userAuth.currentUser.subscribe(user => {
       this.currentUser = user;
-      console.log('user', this.currentUser);
     });
   }
 

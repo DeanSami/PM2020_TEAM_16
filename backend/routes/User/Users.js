@@ -17,12 +17,13 @@ const BUSINESS = require('./Business')
 const sns = new AWS.SNS();
 
 router.use(function isUser (req, res, next) {
-    if (req.originalUrl === '/user/games/edit' ||
-        req.originalUrl === '/user/games/create' ||
-        req.originalUrl === '/user/business/edit' ||
-        req.originalUrl === '/user/business/create' ||
-        req.originalUrl === '/user/games/played' ||
-        req.originalUrl === '/user/editUser'
+    if (req.originalUrl.toLowerCase() === '/user/games/edit' ||
+        req.originalUrl.toLowerCase() === '/user/games/create' ||
+        req.originalUrl.toLowerCase() === '/user/business/edit' ||
+        req.originalUrl.toLowerCase() === '/user/business/create' ||
+        req.originalUrl.toLowerCase() === '/user/games/played' ||
+        req.originalUrl.toLowerCase() === '/user/games/mygames' ||
+        req.originalUrl.toLowerCase() === '/user/edituser'
     ) {
         console.log('<LOG> - POST /user/* - Middleware')
         const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth'];
@@ -34,13 +35,25 @@ router.use(function isUser (req, res, next) {
                     res.status(globals.status_codes.Server_Error).json();
                 }
                 else if (result.length > 0) {
-                    if (req.originalUrl == '/user/games/edit' ||
-                        req.originalUrl === '/user/games/create' ||
-                        req.originalUrl === '/user/business/edit' ||
-                        req.originalUrl === '/user/business/create' ||
-                        req.originalUrl === '/user/games/played' ||
-                        req.originalUrl === '/user/editUser'
+                    if (req.originalUrl.toLowerCase() === '/user/games/edit' ||
+                        req.originalUrl.toLowerCase() === '/user/games/create' ||
+                        req.originalUrl.toLowerCase() === '/user/business/edit' ||
+                        req.originalUrl.toLowerCase() === '/user/business/create' ||
+                        req.originalUrl.toLowerCase() === '/user/games/played' ||
+                        req.originalUrl.toLowerCase() === '/user/games/mygames' ||
+                        req.originalUrl.toLowerCase() === '/user/edituser'
                     ) {
+                        if (req.originalUrl.toLowerCase() === '/user/games/mygames') {
+                            if (result[0].id !== req.body.id && !isNaN(req.body.id)) {
+                                console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
+                                res.status(globals.status_codes.Unauthorized).json();
+                                return;
+                            } else {
+                                console.log('<LOG> - POST /user/* - SUCCESS');
+                                next();
+                                return;
+                            }
+                        }
                         if (result[0].id !== req.body.owner_id && !isNaN(req.body.owner_id)) {
                             console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
                             res.status(globals.status_codes.Unauthorized).json();
@@ -120,7 +133,17 @@ router.get('/login', function (req, res) {
                     } else {
                         result[0].avatar = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/userImages/' + result[0].avatar;
                     }
-                    res.status(globals.status_codes.OK).json(result[0])
+                    db.query('SELECT * FROM businesses WHERE owner_id  = ?', [result[0].user_id], function(err, businesses_res) {
+                        if (err) {
+                            console.log('<LOG> - GET /user/login - ERROR');
+                            console.error(err);
+                            res.status(globals.status_codes.Server_Error).json()
+                        } else {
+                            if (businesses_res.length > 0)
+                                result[0].businesses = businesses_res
+                            res.status(globals.status_codes.OK).json(result[0])
+                        }
+                    })
                 } else {
                     console.log('<LOG> - GET /admin/login - Unauthorized Credentials');
                     res.status(globals.status_codes.Unauthorized).json()

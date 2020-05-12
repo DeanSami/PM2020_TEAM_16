@@ -1,5 +1,5 @@
-export interface Game {
-  id: number;
+export interface Games {
+  id?: number;
   owner_id: number;
   name: string;
   start: string;

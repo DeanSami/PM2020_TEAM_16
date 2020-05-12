@@ -34,8 +34,8 @@
                     <li>
                       <a (click)="showPage('Friends')" [ngClass]="currentPage === 'Friends' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">משחקי עבר</a>
                     </li>
-                    <li>
-                      <a (click)="showPage('Photos')" [ngClass]="currentPage === 'Photos' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">כפתור</a>
+                    <li *ngIf="currentUser.user_type === userTypes.BusinessOwner">
+                      <a (click)="showPage('business')" [ngClass]="currentPage === 'business' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">העסקים שלי</a>
                     </li>
                   </ul>
                 </div>
@@ -221,13 +221,8 @@
 
 <!--User Timeline section starts-->
 <section *ngIf="currentPage === 'TimeLine'">
-    <div class="row">
-        <div class="col-12">
-            <div class="content-header">המשחקים שלי</div>
-        </div>
-    </div>
-    <div id="timeline" class="timeline-center timeline-wrapper">
-
+    <div class="container">
+      <app-new-treasure-hunt [dogParks]="dogParks"></app-new-treasure-hunt>
     </div>
 </section>
 <!--User Timeline section ends-->
@@ -246,15 +241,10 @@
 <!--User's friend section starts-->
 
 <!--User's uploaded photos section starts-->
-<section id="photos" *ngIf="currentPage === 'Photos'">
-    <div class="row">
-        <div class="col-12">
-            <div class="content-header">Photos</div>
-        </div>
-    </div>
-    <div class="row">
-
-    </div>
+<section id="business" *ngIf="currentUser.user_type === userTypes.BusinessOwner && currentPage === 'business'">
+  <div class="container">
+    <app-create-business-info></app-create-business-info>
+  </div>
 </section>
 <!--User's uploaded photos section starts-->
 <!--User Profile Starts-->

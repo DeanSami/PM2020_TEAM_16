@@ -1,3 +1,5 @@
+import {Businesses} from "./businesses";
+
 export interface User {
   id: number;
   name: string;
@@ -10,6 +12,7 @@ export interface User {
   birthday?: string;
   gender: UserGender;
   hobbies: number;
+  businesses?: Businesses[]
   created_at?: string;
   update_at?: string;
 }

@@ -1,6 +1,6 @@
 import { User } from './users';
 import { Place } from './places';
-import { Game } from './Games';
+import { Games } from './Games';
 export interface LoginResponse {
   message?: string;
   user?: User;
@@ -14,7 +14,7 @@ export interface PlaceResponse {
 
 export interface GameResponse {
   message?: string;
-  Game?: Game | Game[];
+  Game?: Games | Games[];
 }
 
 export interface SmsResponse {

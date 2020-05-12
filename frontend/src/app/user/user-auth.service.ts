@@ -28,11 +28,11 @@ export class UserAuthService {
   }
 
   login() {
+    // this.token = "2f0863d333f4f0e30b1ddea2d1fa0c20"
     return new Promise((resolve, reject) => {
       if (this.token) {
         this.api.get('user/login').subscribe((response: User) => {
           this.loggedIn = true;
-          console.log('this.currentUser.next(response', response);
           this.currentUser.next(response);
           resolve(this.loggedIn);
         }, err => {

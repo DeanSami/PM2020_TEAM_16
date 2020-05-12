@@ -1,0 +1,13 @@
+.container {
+  min-height: calc(100vh - 130px);
+  padding-top: 75px;
+  p {
+    padding-top: 20px;
+  }
+  .mat-form-field {
+    display: block;
+  }
+  .mat-select {
+    width: 30%;
+  }
+}
