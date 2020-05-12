@@ -7,8 +7,8 @@ const router = express.Router()
 router.get('/' , function(req, res) {
     console.log('<LOG> - GET /user/games/get - Invoke');
     //if the clint want specific park dog
-    if (req.body.id) {
-        let id = req.body.id;
+    if (req.query.id) {
+        let id = req.query.id;
         db.query('SELECT * FROM games WHERE id = ? AND deleted = 0', [id], function (err, result) {
             if (err) {
                 console.log('<LOG> - GET /user/games/get - ERROR');
@@ -35,8 +35,8 @@ router.get('/' , function(req, res) {
             }
         })
     } else {
-        if (req.body.owner_id) {
-            let id = req.body.owner_id;
+        if (req.query.owner_id) {
+            let id = req.query.owner_id;
             db.query('SELECT * FROM games WHERE deleted = 0 AND owner_id = ?',[id], function (err, result) {
                 if (err) {
                     console.log('<LOG> - GET /user/games/get - ERROR');
