@@ -26,4 +26,10 @@ export class GamesService {
   updateGame(game: Game): Observable<Game> {
     return this.api.patch('user/my_games', game);
   }
+
+  createNewGame(game: Games): Observable<Games[]> {
+    return this.api.post('user/games/create', game);
+  }
+
+
 }

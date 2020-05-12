@@ -64,6 +64,7 @@ import {UserDogParksResolver} from './user/resolvers/userDogParksResolver.resolv
 import {MatStepperModule} from '@angular/material/stepper';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import {MatExpansionModule} from "@angular/material/expansion";
 import {GamesService} from './user/services/games.service';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -144,6 +145,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatStepperModule,
     MatRadioModule,
     MatCheckboxModule,
+    MatExpansionModule,
   ],
   exports: [
     MatSidenavModule,

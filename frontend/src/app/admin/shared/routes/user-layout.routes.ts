@@ -16,5 +16,6 @@ export const USER_FULL_ROUTES: Routes = [
     path: 'newTH',
     component: NewTreasureHuntComponent,
     resolve: { dogParks: UserDogParksResolver },
+    canActivate: [UserGuard]
   },
 ];

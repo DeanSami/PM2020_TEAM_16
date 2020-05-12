@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
     pass: new FormControl('',
       [
         Validators.required,
-        Validators.minLength(3),
+        Validators.minLength(4),
         Validators.maxLength(50)
       ]),
   });
