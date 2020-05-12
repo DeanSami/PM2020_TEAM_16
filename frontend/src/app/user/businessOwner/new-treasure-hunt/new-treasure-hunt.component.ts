@@ -93,7 +93,6 @@ export class NewTreasureHuntComponent implements OnInit {
       Object.keys(this.stepsForm.controls).forEach(key => {
         this.stepsForm.controls[key].setErrors(null)
       });
-      this.steps = [];
       return step;
     } else return;
   }
@@ -142,6 +141,7 @@ export class NewTreasureHuntComponent implements OnInit {
       Object.keys(this.basicForm.controls).forEach(key => {
         this.basicForm.controls[key].setErrors(null)
       });
+      this.steps = [];
     }, err => {
       this.toastr.error('הפעולה נכשלה!');
       console.log('err', err);
