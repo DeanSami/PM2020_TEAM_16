@@ -10,7 +10,8 @@ export const USER_FULL_ROUTES: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/home' },
   { path: 'home', component: UserMainComponent },
   { path: 'profile', component: UserProfilePageComponent, canActivate: [UserGuard] },
-  { path: 'myGames', component: MyGamesComponent, canActivate: [UserGuard] },
+  // TODO reset canActivate at 'myGames' path
+  { path: 'myGames', component: MyGamesComponent },
   {
     path: 'newTH',
     component: NewTreasureHuntComponent,

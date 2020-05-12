@@ -98,8 +98,11 @@ export class UserProfilePageComponent implements OnInit {
       this.editTmpCurrentUser.email = this.email.value;
       this.editTmpCurrentUser.name = this.name.value;
       this.editTmpCurrentUser.gender = this.gender.value;
-      this.editTmpCurrentUser.birthday = this.birthday.value ? this.birthday.value.toISOString().split('T')[0] : '';
-
+      try {
+        this.editTmpCurrentUser.birthday = this.birthday.value.toISOString().split('T')[0];
+      } catch {
+        this.editTmpCurrentUser.birthday = '';
+      }
       this.userService.editUser(this.editTmpCurrentUser).subscribe(result => {
         this.editTmpCurrentUser.avatar = this.editTmpCurrentUser.avatar !== '' ?
           'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/userImages/' + this.editTmpCurrentUser.avatar : this.currentUser.avatar;
@@ -160,6 +163,20 @@ export class UserProfilePageComponent implements OnInit {
       // tslint:disable-next-line:no-bitwise
       Camping: (this.currentUser.hobbies & UserHobbies.Camping) > 0,
     };
+    this.name.setValue(this.currentUser.name);
+    let tmpBirthday;
+    try {
+      tmpBirthday = new Date(this.currentUser.birthday);
+    } catch {
+      tmpBirthday = new Date();
+    }
+    if (this.currentUser.birthday) {
+      this.birthday.setValue(new Date(this.currentUser.birthday));
+    } else {
+      this.birthday.setValue(new Date());
+    }
+    this.gender.setValue(this.currentUser.gender);
+    this.email.setValue(this.currentUser.email);
     this.edit = !this.edit;
   }
 
