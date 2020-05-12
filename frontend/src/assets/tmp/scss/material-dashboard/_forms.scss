@@ -1,11 +1,11 @@
 form {
-  // ensure enough room at the bottom of any form to display a one-line bmd-help
+  // ensure enough room at the bottom of any treasure-hunt-form to display a one-line bmd-help
   margin-bottom: ($bmd-help-size-ratio * $font-size-base) * $line-height-base;
 
   .card &{
       margin: 0;
   }
-  // reverse the above for navbars (no help expected in a navbar form)
+  // reverse the above for navbars (no help expected in a navbar treasure-hunt-form)
   .navbar & {
     margin-bottom: 0; // only adjust bottom so that pull-xs-right flexed margin-left: auto works
 
@@ -61,7 +61,7 @@ form {
 
 
 // Help blocks (not in v4)
-//  position: absolute approach - uses no vertical space and there is no form jumping, but text wrapping - not so good.
+//  position: absolute approach - uses no vertical space and there is no treasure-hunt-form jumping, but text wrapping - not so good.
 //  FIXME: width/wrapping isn't automatic and overflows occur.  What are some solutions?
 //
 .bmd-help {
@@ -129,7 +129,7 @@ form {
 // MDL implementation: http://www.getmdl.io/components/index.html#textfields-section
 //.variations(unquote(" label"), color, $bmd-input-placeholder-color);  // default label color variations
 
-// Whereas .form-group adds structure, bmd-form-group just needs to make sure we have enough padding for our labels to work.  That's the only purpose.
+// Whereas .treasure-hunt-form-group adds structure, bmd-treasure-hunt-form-group just needs to make sure we have enough padding for our labels to work.  That's the only purpose.
 .bmd-form-group {
   position: relative;
 
@@ -202,7 +202,7 @@ form {
     }
   }
 
-  // default floating size/location with an bmd-form-group
+  // default floating size/location with an bmd-treasure-hunt-form-group
   @include bmd-form-size-variant($font-size-base, $bmd-label-top-margin-base, $input-padding-y, $bmd-form-line-height, "bmd-form-group default");
 
   // sm floating size/location
@@ -216,7 +216,7 @@ form {
   }
 }
 
-// default floating size/location without a form-group (will skip form-group styles, and just render default sizing variation) - IMPORTANT for non-form-group spacing such as radio/checkbox/switch
+// default floating size/location without a treasure-hunt-form-group (will skip treasure-hunt-form-group styles, and just render default sizing variation) - IMPORTANT for non-treasure-hunt-form-group spacing such as radio/checkbox/switch
 @include bmd-form-size-variant($font-size-base, $bmd-label-top-margin-base, $input-padding-y, $bmd-form-line-height);
 
 select {
@@ -229,7 +229,7 @@ select {
 }
 
 // Input files - hide actual input - requires specific markup in the sample.
-//.bmd-form-group input[type=file] {
+//.bmd-treasure-hunt-form-group input[type=file] {
 //  opacity: 0;
 //  position: absolute;
 //  top: 0;
@@ -243,7 +243,7 @@ select {
 
 //
 //
-//.form-horizontal {
+//.treasure-hunt-form-horizontal {
 //
 //  // Consistent vertical alignment of radios and checkboxes
 //  .radio,
