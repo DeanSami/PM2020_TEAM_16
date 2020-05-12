@@ -7,6 +7,8 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from "@angular/router";
 import {Place} from "../../models/places";
 import { PlacesService } from "../services/places.service";
+import { GamesService } from '../services/games.service';
+import { Games } from '../../models/Games';
 
 
 @Component({
@@ -25,13 +27,15 @@ export class UserProfilePageComponent implements OnInit {
   selectedFiles: FileList;
   imageSrc: string | ArrayBuffer;
   userTypes = UserType;
-  dogParks: Place[];
+  dogParks: Place[] = [];
+  myGames: Games[] = [];
 
   constructor(
     private placesService: PlacesService,
     private uploadService: AwsS3Service,
     private toastr: ToastrService,
-    private userService: UserAuthService) { }
+    private userService: UserAuthService,
+    private gameService: GamesService) { }
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -58,13 +62,20 @@ export class UserProfilePageComponent implements OnInit {
 
   ngOnInit() {
     this.userService.currentUser.subscribe(user => {
-      this.currentUser = user
-      if (user.user_type == UserType.BusinessOwner)
+      this.currentUser = user;
+      if (user.user_type === UserType.BusinessOwner) {
         this.placesService.getDogParks().subscribe(parks => {
           this.dogParks = parks;
         }, err => {
           console.log(err);
         });
+      }
+      this.gameService.getMyGames(user.id).subscribe(games => {
+        this.myGames = games;
+        console.log('this.myGames', this.myGames)
+      }, err => {
+        console.log(err);
+      });
     });
   }
 

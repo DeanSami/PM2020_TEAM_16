@@ -1,14 +1,10 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-<<<<<<< HEAD
-import { Gamestep } from '../../../models/Games';
-=======
-import {Gamestep, Games} from '../../../models/Games';
-import {UserAuthService} from "../../user-auth.service";
-import {GamesService} from "../../services/games.service";
-import {ToastrService} from "ngx-toastr";
->>>>>>> 4c0e167f32d4ffb7740bb459ffda0689f648593a
+import { Gamestep, Games } from '../../../models/Games';
+import { UserAuthService } from '../../user-auth.service';
+import { GamesService } from '../../services/games.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-new-treasure-hunt',

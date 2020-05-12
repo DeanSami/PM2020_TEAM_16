@@ -48,7 +48,7 @@ router.get('/' , function(req, res) {
     }
 });
 
-router.get('/myGames' , function(req, res) {
+router.post('/myGames' , function(req, res) {
     console.log('<LOG> - GET /user/myGames/get - Invoke');
     //if the clint want specific park dog
     if (req.body.id) {

@@ -4,7 +4,7 @@ const globals = require('../../globals');
 const router = express.Router();
 const hat = require('hat');
 const AWS = require('aws-sdk');
-const config = require('../../configs/config.simple.js')
+const config = require('../../configs/config.js')
 AWS.config.update({
     accessKeyId: config.AWS.accessKeyId,
     secretAccessKey: config.AWS.secretAccessKey,
@@ -215,7 +215,6 @@ router.get('/sendSms', function (req, res) {
                 let user = result[0];
                 let token = hat();
                 let code = Math.floor(100000 + Math.random() * 900000);
-                console.log('WTFFFFF', result);
                 if (result.length === 0) {
                     db.query('INSERT INTO users (name, user_type, email, phone, password, avatar) VALUES (?,?,?,?,?,?)',
                         [name, user_type, '', phone.split('+972')[1], '', ''],function (err, result){
