@@ -4,7 +4,7 @@ const globals = require('../../globals');
 const router = express.Router();
 const hat = require('hat');
 const AWS = require('aws-sdk');
-const config = require('../../configs/config.simple.js')
+const config = require('../../configs/config.js')
 AWS.config.update({
     accessKeyId: config.AWS.accessKeyId,
     secretAccessKey: config.AWS.secretAccessKey,
@@ -17,12 +17,13 @@ const BUSINESS = require('./Business')
 const sns = new AWS.SNS();
 
 router.use(function isUser (req, res, next) {
-    if (req.originalUrl === '/user/games/edit' ||
-        req.originalUrl === '/user/games/create' ||
-        req.originalUrl === '/user/business/edit' ||
-        req.originalUrl === '/user/business/create' ||
-        req.originalUrl === '/user/games/played' ||
-        req.originalUrl === '/user/editUser'
+    if (req.originalUrl.toLowerCase() === '/user/games/edit' ||
+        req.originalUrl.toLowerCase() === '/user/games/create' ||
+        req.originalUrl.toLowerCase() === '/user/business/edit' ||
+        req.originalUrl.toLowerCase() === '/user/business/create' ||
+        req.originalUrl.toLowerCase() === '/user/games/played' ||
+        req.originalUrl.toLowerCase() === '/user/games/mygames' ||
+        req.originalUrl.toLowerCase() === '/user/edituser'
     ) {
         console.log('<LOG> - POST /user/* - Middleware')
         const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth'];
@@ -34,13 +35,25 @@ router.use(function isUser (req, res, next) {
                     res.status(globals.status_codes.Server_Error).json();
                 }
                 else if (result.length > 0) {
-                    if (req.originalUrl == '/user/games/edit' ||
-                        req.originalUrl === '/user/games/create' ||
-                        req.originalUrl === '/user/business/edit' ||
-                        req.originalUrl === '/user/business/create' ||
-                        req.originalUrl === '/user/games/played' ||
-                        req.originalUrl === '/user/editUser'
+                    if (req.originalUrl.toLowerCase() === '/user/games/edit' ||
+                        req.originalUrl.toLowerCase() === '/user/games/create' ||
+                        req.originalUrl.toLowerCase() === '/user/business/edit' ||
+                        req.originalUrl.toLowerCase() === '/user/business/create' ||
+                        req.originalUrl.toLowerCase() === '/user/games/played' ||
+                        req.originalUrl.toLowerCase() === '/user/games/mygames' ||
+                        req.originalUrl.toLowerCase() === '/user/edituser'
                     ) {
+                        if (req.originalUrl.toLowerCase() === '/user/games/mygames') {
+                            if (result[0].id !== req.body.id && !isNaN(req.body.id)) {
+                                console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
+                                res.status(globals.status_codes.Unauthorized).json();
+                                return;
+                            } else {
+                                console.log('<LOG> - POST /user/* - SUCCESS');
+                                next();
+                                return;
+                            }
+                        }
                         if (result[0].id !== req.body.owner_id && !isNaN(req.body.owner_id)) {
                             console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
                             res.status(globals.status_codes.Unauthorized).json();
@@ -202,7 +215,6 @@ router.get('/sendSms', function (req, res) {
                 let user = result[0];
                 let token = hat();
                 let code = Math.floor(100000 + Math.random() * 900000);
-                console.log('WTFFFFF', result);
                 if (result.length === 0) {
                     db.query('INSERT INTO users (name, user_type, email, phone, password, avatar) VALUES (?,?,?,?,?,?)',
                         [name, user_type, '', phone.split('+972')[1], '', ''],function (err, result){

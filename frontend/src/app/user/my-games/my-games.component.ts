@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ConditionType, ConditionTypeTitles, Place, PlaceActiveType } from '../../models/places';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AreYouSureDialogComponent } from '../../are-you-sure-dialog/are-you-sure-dialog.component';
-// import { NewDogParkComponent } from './new-dog-park/new-dog-park.component';
-// import { DogParksService } from '../services/dog-parks.service';
 import { ToastrService } from 'ngx-toastr';
 import { Games } from '../../models/Games';
 import { GamesService } from '../services/games.service';
@@ -37,12 +34,12 @@ export class MyGamesComponent implements OnInit {
     this.dataSource = new MatTableDataSource<Games>(this.games);
   }
 
-  // removeGame(GameId: number) {
+  // finishGame(GameId: number) {
   //   this.dialog.open(AreYouSureDialogComponent, {
   //     width: '250px',
   //   }).afterClosed().subscribe(result => {
   //     if (result) {
-  //       this.gamesService.deleteGame(GameId).subscribe(() => {
+  //       this.gamesService.finishGame(GameId).subscribe(() => {
   //         this.dataSource.data = this.dataSource.data.filter(game => game.id !== GameId);
   //         this.toastr.success('נמחק בהצלחה');
   //       }, err =>  {
@@ -52,57 +49,6 @@ export class MyGamesComponent implements OnInit {
   //     }
   //   });
   // }
-  //
-  // editDogPark(dogPark: Place) {
-  //   this.dialog.open(NewDogParkComponent, {
-  //     width: '600px',
-  //     data: dogPark
-  //   }).afterClosed().subscribe(result => {
-  //     if (result) {
-  //       const idx = this.dataSource.data.findIndex(park => park.id === result.id);
-  //       if (idx >= 0) {
-  //         this.dataSource.data[idx] = result;
-  //       }
-  //       this.dataSource.data = this.dataSource.data;
-  //     }
-  //   });
-  // }
-  //
-  // shutdown(dogPark: Place) {
-  //   this.dialog.open(AreYouSureDialogComponent, {
-  //     width: '250px',
-  //   }).afterClosed().subscribe(result => {
-  //     if (result) {
-  //       dogPark.active = dogPark.active === PlaceActiveType.Active ? PlaceActiveType.InActive : PlaceActiveType.Active;
-  //       this.dogParkService.updateDogPark(dogPark).subscribe(res => {
-  //         const idx = this.dataSource.data.findIndex(park => park.id === res.id);
-  //         if (res.active === PlaceActiveType.Active) {
-  //           this.toastr.success('נקודת העניין נפתחה בהצלחה');
-  //         } else {
-  //           this.toastr.success('נקודת העניין נסגרה בהצלחה');
-  //         }
-  //         if (idx > 0) {
-  //           this.dataSource.data[idx].active = res.active;
-  //           this.dataSource.data = this.dataSource.data;
-  //         }
-  //       }, err => {
-  //         console.log(err);
-  //         this.toastr.error('ארעה שגיאה בעדכון נקודת העניין');
-  //       });
-  //     }
-  //   });
-  // }
-  //
-  // addGame() {
-  //  this.dialog.open(NewDogParkComponent, {
-  //    width: '600px',
-  //    data: null
-  //  }).afterClosed().subscribe(result => {
-  //    if (result) {
-  //      this.dataSource.data.push(result);
-  //      this.dataSource.data = this.dataSource.data;
-  //    }
-  //  });
-  // }
+
 
 }

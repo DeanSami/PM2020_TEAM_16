@@ -19,8 +19,8 @@ export class NotificationSidebarComponent implements OnInit, OnDestroy {
   }
 
   constructor(private elRef: ElementRef,
-    private renderer: Renderer2,
-    private layoutService: LayoutService) {
+              private renderer: Renderer2,
+              private layoutService: LayoutService) {
 
     this.layoutSub = layoutService.notiSidebarChangeEmitted$.subscribe(
       value => {
@@ -36,7 +36,7 @@ export class NotificationSidebarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if(this.layoutSub) {
+    if (this.layoutSub) {
       this.layoutSub.unsubscribe();
     }
   }

@@ -24,11 +24,11 @@ export class LayoutService {
         this.emitCustomizerCMSource.next(change);
     }
 
-       //customizer - compact menu
+       // customizer - compact menu
 
-       private emitNotiSidebarSource = new Subject<any>();
-       notiSidebarChangeEmitted$ = this.emitNotiSidebarSource.asObservable();
-       emitNotiSidebarChange(change: any) {
-           this.emitNotiSidebarSource.next(change);
-       }
+     private emitNotiSidebarSource = new Subject<any>();
+     notiSidebarChangeEmitted$ = this.emitNotiSidebarSource.asObservable();
+     emitNotiSidebarChange(change: any) {
+         this.emitNotiSidebarSource.next(change);
+     }
 }

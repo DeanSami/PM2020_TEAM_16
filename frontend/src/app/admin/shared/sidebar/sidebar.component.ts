@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, OnDestroy, ElementRef, Renderer2, AfterViewInit } from "@angular/core";
+import { Component, OnInit, Input, ViewChild, OnDestroy, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
 
 import { ROUTES } from './sidebar-routes.config';
 import { Router, ActivatedRoute } from '@angular/router';

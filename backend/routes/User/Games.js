@@ -48,6 +48,28 @@ router.get('/' , function(req, res) {
     }
 });
 
+router.post('/myGames' , function(req, res) {
+    console.log('<LOG> - GET /user/myGames/get - Invoke');
+    //if the clint want specific park dog
+    if (req.body.id) {
+        let id = req.body.id;
+        db.query(`SELECT games.*, active_players.*
+         FROM users, games, active_players WHERE users.id = ? AND games.id = active_players.game_id AND active_players.user_id = users.id`, [id], function (err, result) {
+            if (err) {
+                console.log('<LOG> - GET /user/myGames/get - ERROR');
+                console.error(err);
+                res.status(globals.status_codes.Server_Error).json();
+            } else {
+                console.log('<LOG> - GET /user/games/get - SUCCESS');
+                res.status(globals.status_codes.OK).json(result)
+            }
+        })
+    } else {
+        console.log('<LOG> - GET /user/myGames/get - missing arguments');
+        res.status(globals.status_codes.Server_Error).json({message: 'missing arguments'});
+    }
+});
+
 router.post('/create', function (req, res) {
     console.log('<LOG> - POST /user/games/add - Invoke');
 
