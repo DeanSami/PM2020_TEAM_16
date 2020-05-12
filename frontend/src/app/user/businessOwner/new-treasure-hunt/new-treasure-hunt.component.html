@@ -1,20 +1,33 @@
 <div class="container">
 
-  <mat-horizontal-stepper #stepper>
-    <mat-step [stepControl]="basicForm">
-      <form [formGroup]="basicForm" fxLayout="column">
+  <mat-vertical-stepper #stepper>
+    <ng-template matStepperIcon="edit">
+      <mat-icon></mat-icon>
+    </ng-template>
+
+    <ng-template matStepperIcon="done">
+      <mat-icon></mat-icon>
+    </ng-template>
+
+    <!-- Custom icon with a context variable. -->
+    <ng-template matStepperIcon="number" let-index="index">
+      <mat-icon></mat-icon>
+    </ng-template>
+    <form [formGroup]="basicForm">
+
+      <mat-step [stepControl]="basicForm" fxLayoutAlign="center center" fxLayout="column">
         <ng-template matStepLabel>מלא את הפרטים הבסיסיים למשחק</ng-template>
         <mat-form-field appearance="fill">
           <mat-label>כותרת</mat-label>
-          <input matInput placeholder="כותרת" formControlName="name" />
+          <input matInput placeholder="כותרת" formControlName="title" />
         </mat-form-field>
-        <mat-form-field>
+        <mat-form-field appearance="fill">
           <mat-label>בחר תאריך התחלה</mat-label>
           <input matInput [matDatepicker]="start_picker" formControlName="start" />
           <mat-datepicker-toggle matSuffix [for]="start_picker"></mat-datepicker-toggle>
-          <mat-datepicker #start_picker></mat-datepicker>
+          <mat-datepicker #start_picker [formControl]="basicForm.controls.start"></mat-datepicker>
         </mat-form-field>
-        <mat-form-field>
+        <mat-form-field appearance="fill">
           <mat-label>בחר תאריך סיום</mat-label>
           <input matInput [matDatepicker]="end_picker" formControlName="end" />
           <mat-datepicker-toggle matSuffix [for]="end_picker"></mat-datepicker-toggle>
@@ -33,56 +46,74 @@
           </mat-select>
         </mat-form-field>
         <div>
-          <button mat-button matStepperNext>המשך</button>
+          <button mat-stroked-button color="primary" matStepperNext >המשך</button>
         </div>
-      </form>
-    </mat-step>
-    <mat-step [stepControl]="stepsForm">
-      <form>
-        <ng-template matStepLabel>בחר צעדים למשחק</ng-template>
+      </mat-step>
+    </form>
 
-        <div>
+    <form [formGroup]="stepsForm">
+      <mat-step [stepControl]="stepsForm" [formGroup]="stepsForm">
+        <form>
+          <ng-template matStepLabel>בחר צעדים למשחק</ng-template>
+
           <mat-form-field appearance="fill">
             <mat-label>מיקום הצעד</mat-label>
-            <mat-select required [(ngModel)]="currentLocation" [ngModelOptions]="{name: 'loc_selection'}">
+            <mat-select required [(ngModel)]="currentStep.finish_location" [ngModelOptions]="{name: 'loc_selection'}">
               <mat-option *ngFor="let place of places" [value]="place.id">{{place.name}}</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field appearance="fill">
-            <mat-label>רמז</mat-label>
-            <input matInput placeholder="רמז" [(ngModel)]="currentHint" [ngModelOptions]="{name: 'hint_str'}" />
+            <mat-label>קוד סודי</mat-label>
+            <input matInput placeholder="קוד סודי" [(ngModel)]="currentStep.secret_key" [ngModelOptions]="{name: 'sk_str'}" />
           </mat-form-field>
-        </div>
-        <button mat-button (click)="createNewStep()">הוסף צעד נוסף</button>
-        <div>
+          <mat-form-field appearance="fill">
+            <mat-label>תיאור</mat-label>
+            <input matInput placeholder="תיאור" [(ngModel)]="currentStep.description" [ngModelOptions]="{name: 'desc_str'}" />
+          </mat-form-field>
+          <button mat-stroked-button color="primary" (click)="pushNewStep()">הוסף צעד נוסף</button>
 
-        <div *ngFor="let step of steps">
+          <mat-accordion>
+            <mat-expansion-panel *ngFor="let step of steps" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{'#' + step.step_num + ' - ' + step.name}}
+                </mat-panel-title>
+                <mat-panel-description>
+                  <p>{{step.description}}</p>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <p>
+                מיקום התחלתי לצעד
+                {{step.start_location}}<br/>
+                מיקום סופי לצעד
+                {{step.finish_location}}<br/>
+                קוד סודי
+                {{step.secret_key}}<br/>
 
-        <mat-form-field appearance="fill">
-          <mat-label>מיקום הצעד</mat-label>
-          <input matInput placeholder="מיקום הצעד" [value]="step.finish_location" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>רמז</mat-label>
-          <input matInput placeholder="רמז" [value]="step.secret_key" disabled />
-        </mat-form-field>
-        <button (click)="removeStep(steps.indexOf(step))" mat-button>X</button>
-        </div>
+              </p>
+              <mat-action-row>
+                <button mat-flat-button color="warn" (click)="removeStep(steps.indexOf(step))">X</button>
+              </mat-action-row>
 
-          <button mat-button matStepperPrevious>חזור</button>
-          <button mat-button matStepperNext>המשך</button>
-        </div>
-      </form>
-    </mat-step>
+            </mat-expansion-panel>
+          </mat-accordion>
+
+          <div>
+            <button mat-stroked-button matStepperPrevious>חזור</button>
+            <button mat-stroked-button color="primary" matStepperNext>המשך</button>
+          </div>
+        </form>
+      </mat-step>
+    </form>
     <mat-step>
       <ng-template matStepLabel>סיום</ng-template>
-      <button mat-button (click)="submitGame()">צור משחק</button>
+      <button mat-stroked-button color="primary" (click)="submitGame()">צור משחק</button>
       <div>
-        <button mat-button matStepperPrevious>חזור</button>
-        <button mat-button (click)="stepper.reset()">אפס</button>
+        <button mat-stroked-button matStepperPrevious>חזור</button>
+        <button mat-stroked-button color="warn" (click)="stepper.reset()">אפס</button>
       </div>
     </mat-step>
-  </mat-horizontal-stepper>
+  </mat-vertical-stepper>
 
 
 

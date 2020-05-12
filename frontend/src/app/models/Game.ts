@@ -1,5 +1,5 @@
 export interface Games {
-  id: number;
+  id?: number;
   owner_id: number;
   name: string;
   start: string;
