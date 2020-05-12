@@ -7,7 +7,7 @@ import { AreYouSureDialogComponent } from '../../are-you-sure-dialog/are-you-sur
 // import { NewDogParkComponent } from './new-dog-park/new-dog-park.component';
 // import { DogParksService } from '../services/dog-parks.service';
 import { ToastrService } from 'ngx-toastr';
-import { Game } from '../../models/Games';
+import { Games } from '../../models/Games';
 import { GamesService } from '../services/games.service';
 
 @Component({
@@ -17,8 +17,8 @@ import { GamesService } from '../services/games.service';
 })
 export class MyGamesComponent implements OnInit {
   displayedColumns: string[] = ['name', 'start', 'end', 'start_location', 'finish_location', 'condition', 'action'];
-  dataSource: MatTableDataSource<Game>;
-  games: Game[];
+  dataSource: MatTableDataSource<Games>;
+  games: Games[];
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -34,7 +34,7 @@ export class MyGamesComponent implements OnInit {
 
   ngOnInit(): void {
     this.games = this.rout.snapshot.data.games;
-    this.dataSource = new MatTableDataSource<Game>(this.games);
+    this.dataSource = new MatTableDataSource<Games>(this.games);
   }
 
   // removeGame(GameId: number) {

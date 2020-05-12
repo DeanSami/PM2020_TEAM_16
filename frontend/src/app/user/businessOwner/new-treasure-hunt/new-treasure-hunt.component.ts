@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Place } from '../../../models/places';
 import { ActivatedRoute } from '@angular/router';
-import {Gamestep, Games} from '../../../models/Game';
+import {Gamestep, Games} from '../../../models/Games';
 import {UserAuthService} from "../../user-auth.service";
 import {InterestingPointService} from "../../../admin/services/interesting-point.service";
 import {GamesService} from "../../services/games.service";

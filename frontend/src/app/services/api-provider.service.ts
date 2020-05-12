@@ -60,7 +60,6 @@ export class ApiProviderService {
     }
 
     const url = environment.apiUrl + path;
-    console.log('auth token', this.token);
     if (path.indexOf('user') >= 0) {
       if (this.userToken) {
         headers = headers.append('x-auth', this.userToken);

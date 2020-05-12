@@ -33,7 +33,6 @@ export class UserAuthService {
       if (this.token) {
         this.api.get('user/login').subscribe((response: User) => {
           this.loggedIn = true;
-          console.log('this.currentUser.next(response', response);
           this.currentUser.next(response);
           resolve(this.loggedIn);
         }, err => {

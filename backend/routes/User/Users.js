@@ -120,7 +120,17 @@ router.get('/login', function (req, res) {
                     } else {
                         result[0].avatar = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/userImages/' + result[0].avatar;
                     }
-                    res.status(globals.status_codes.OK).json(result[0])
+                    db.query('SELECT * FROM businesses WHERE owner_id  = ?', [result[0].user_id], function(err, businesses_res) {
+                        if (err) {
+                            console.log('<LOG> - GET /user/login - ERROR');
+                            console.error(err);
+                            res.status(globals.status_codes.Server_Error).json()
+                        } else {
+                            if (businesses_res.length > 0)
+                                result[0].businesses = businesses_res
+                            res.status(globals.status_codes.OK).json(result[0])
+                        }
+                    })
                 } else {
                     console.log('<LOG> - GET /admin/login - Unauthorized Credentials');
                     res.status(globals.status_codes.Unauthorized).json()
