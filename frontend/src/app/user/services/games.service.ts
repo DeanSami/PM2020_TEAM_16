@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ApiProviderService } from '../../services/api-provider.service';
 import { Observable } from 'rxjs';
-import { Game } from '../../models/Games';
+import {Games} from '../../models/Games';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GamesService {
-  games: Game[] = [];
+  places: Games[] = [];
 
   constructor(private api: ApiProviderService) { }
 
-  getGames(): Observable<Game[]> {
+  getGames(): Observable<Games[]> {
     return this.api.get('user/my_games');
   }
 
@@ -19,11 +19,11 @@ export class GamesService {
     return this.api.delete('user/my_games', {id: GameID});
   }
 
-  saveGame(game: Game): Observable<Game> {
+  saveGame(game: Games): Observable<Games> {
     return this.api.post('user/my_games', game);
   }
 
-  updateGame(game: Game): Observable<Game> {
+  updateGame(game: Games): Observable<Games> {
     return this.api.patch('user/my_games', game);
   }
 

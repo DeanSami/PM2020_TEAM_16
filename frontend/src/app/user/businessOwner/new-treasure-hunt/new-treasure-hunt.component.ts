@@ -134,7 +134,7 @@ export class NewTreasureHuntComponent implements OnInit {
       this.toastr.error('יש להזין את כל השדות הבסיסיים למשחק');
       return;
     }
-    let game: Games = {
+    let game: Game = {
       owner_id: this.userAuth.currentUser.getValue().id,
       name: this.basicForm.controls.title.value,
       start: this.date_str(new Date(this.basicForm.controls.start.value)),
