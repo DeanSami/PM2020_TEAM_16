@@ -15,15 +15,10 @@ export const USER_FULL_ROUTES: Routes = [
   { path: 'profile', component: UserProfilePageComponent, canActivate: [UserGuard] },
   // TODO reset canActivate at 'myGames' path
   { path: 'myGames', component: MyGamesComponent },
-  {
-    path: 'newTH',
-    component: NewTreasureHuntComponent,
-    resolve: { dogParks: UserDogParksResolver },
-    canActivate: [UserGuard]
-  },
-  {
-    path: 'BusinessInfo',
-    component: BusinessInfoComponent,
-    canActivate: [UserGuard]
-  },
+  // {
+  //   path: 'newTH',
+  //   component: NewTreasureHuntComponent,
+  //   resolve: { dogParks: UserDogParksResolver },
+  //   canActivate: [UserGuard]
+  // },
 ];

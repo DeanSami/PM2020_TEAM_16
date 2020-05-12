@@ -1,8 +1,10 @@
 <div class="container">
+  <hr>
   <mat-select [value]="currentBusiness.id" *ngIf="businessesInfo.length > 1" (selectionChange)="updateEditForm($event)">
     <mat-option *ngFor="let business of businessesInfo" [value]="business.id">{{business.name}}</mat-option>
     <mat-option [value]="-1">צור עסק חדש...</mat-option>
   </mat-select>
+  <hr>
   <h1>פרטי העסק</h1>
   <form #businessInfoForm="ngForm">
 

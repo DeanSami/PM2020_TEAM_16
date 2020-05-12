@@ -1,10 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Place } from '../../../models/places';
 import { ActivatedRoute } from '@angular/router';
 import {Gamestep, Games} from '../../../models/Games';
 import {UserAuthService} from "../../user-auth.service";
-import {InterestingPointService} from "../../../admin/services/interesting-point.service";
 import {GamesService} from "../../services/games.service";
 import {ToastrService} from "ngx-toastr";
 
@@ -14,10 +12,9 @@ import {ToastrService} from "ngx-toastr";
   styleUrls: ['./new-treasure-hunt.component.scss'],
 })
 export class NewTreasureHuntComponent implements OnInit {
-  places: Place[];
   currentStepNum = 1;
-  currentStep = this.initStep();
   steps: Gamestep[] = [];
+  @Input() dogParks;
   constructor(
     private rout: ActivatedRoute,
     private userAuth: UserAuthService,
@@ -35,15 +32,14 @@ export class NewTreasureHuntComponent implements OnInit {
 
   stepsForm = new FormGroup({
     location: new FormControl('', [Validators.required]),
-    hint: new FormControl('', [Validators.required])
+    secret_key: new FormControl('', [Validators.required]),
+    description: new FormControl(''),
   });
 
   mode: any;
   panelOpenState = false;
 
   ngOnInit(): void {
-    this.places = this.rout.snapshot.data.dogParks;
-    this.currentStep = this.initStep();
   }
 
   initStep(): Gamestep {
@@ -67,25 +63,18 @@ export class NewTreasureHuntComponent implements OnInit {
   }
 
   createNewStep(): Gamestep {
-    //
-    // name: new FormControl('', [Validators.required]),
-    //   start: new FormControl('', [Validators.required]),
-    //   end: new FormControl('', [Validators.required]),
-    //   start_location: new FormControl('', [Validators.required]),
-    //   finish_location: new FormControl('', [Validators.required]),
     let title = this.basicForm.controls.title.value,
-      secret_key = this.currentStep.secret_key,
-      finish_location =this.currentStep.finish_location,
-      description = this.currentStep.description
-    let raw_gamestep: Gamestep = this.initStep();
-    if (secret_key == raw_gamestep.secret_key || finish_location == raw_gamestep.finish_location) {
+      secret_key = this.stepsForm.controls.secret_key.value,
+      finish_location =this.stepsForm.controls.location.value,
+      description = this.stepsForm.controls.description.value;
+    if (!this.stepsForm.valid) {
       this.toastr.error('יש להזין את כל השדות הדרושים לצעד');
       return null;
     }
 
-    let place_index = this.findWithAttr(this.places, 'id', this.currentStep.finish_location)
+    let place_index = this.findWithAttr(this.dogParks, 'id', finish_location)
     if (place_index > -1) {
-      let place = this.places[place_index];
+      let place = this.dogParks[place_index];
       let name = place.name;
       let start_location = this.basicForm.controls.start_location.value
       if (this.steps.length > 0) {
@@ -100,7 +89,11 @@ export class NewTreasureHuntComponent implements OnInit {
         step_num: this.currentStepNum++,
         description: description
       };
-      this.currentStep = this.initStep()
+      this.stepsForm.reset();
+      Object.keys(this.stepsForm.controls).forEach(key => {
+        this.stepsForm.controls[key].setErrors(null)
+      });
+      this.steps = [];
       return step;
     } else return;
   }
@@ -130,7 +123,7 @@ export class NewTreasureHuntComponent implements OnInit {
   }
 
   submitGame(): void {
-    if (this.basicForm.controls.title.value == '' || this.basicForm.controls.finish_location.value == '') {
+    if (!this.basicForm.valid) {
       this.toastr.error('יש להזין את כל השדות הבסיסיים למשחק');
       return;
     }
@@ -145,6 +138,10 @@ export class NewTreasureHuntComponent implements OnInit {
     }
     this.GamesService.createNewGame(game).subscribe((res) => {
       this.toastr.success('הפעולה הסתיימה בהצלחה!');
+      this.basicForm.reset();
+      Object.keys(this.basicForm.controls).forEach(key => {
+        this.basicForm.controls[key].setErrors(null)
+      });
     }, err => {
       this.toastr.error('הפעולה נכשלה!');
       console.log('err', err);

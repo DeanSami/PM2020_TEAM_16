@@ -13,9 +13,9 @@
     <ng-template matStepperIcon="number" let-index="index">
       <mat-icon></mat-icon>
     </ng-template>
-    <form [formGroup]="basicForm">
 
-      <mat-step [stepControl]="basicForm" fxLayoutAlign="center center" fxLayout="column">
+    <mat-step [stepControl]="basicForm">
+      <form [formGroup]="basicForm">
         <ng-template matStepLabel>מלא את הפרטים הבסיסיים למשחק</ng-template>
         <mat-form-field appearance="fill">
           <mat-label>כותרת</mat-label>
@@ -25,7 +25,7 @@
           <mat-label>בחר תאריך התחלה</mat-label>
           <input matInput [matDatepicker]="start_picker" formControlName="start" />
           <mat-datepicker-toggle matSuffix [for]="start_picker"></mat-datepicker-toggle>
-          <mat-datepicker #start_picker [formControl]="basicForm.controls.start"></mat-datepicker>
+          <mat-datepicker #start_picker></mat-datepicker>
         </mat-form-field>
         <mat-form-field appearance="fill">
           <mat-label>בחר תאריך סיום</mat-label>
@@ -36,41 +36,41 @@
         <mat-form-field appearance="fill">
           <mat-label>מיקום התחלת המשחק</mat-label>
           <mat-select formControlName="start_location" required>
-            <mat-option *ngFor="let place of places" [value]="place.id">{{place.name}}</mat-option>
+            <mat-option *ngFor="let place of dogParks" [value]="place.id">{{place.name}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="fill">
           <mat-label>מיקום סיום המשחק</mat-label>
           <mat-select formControlName="finish_location" required>
-            <mat-option *ngFor="let place of places" [value]="place.id">{{place.name}}</mat-option>
+            <mat-option *ngFor="let place of dogParks" [value]="place.id">{{place.name}}</mat-option>
           </mat-select>
         </mat-form-field>
         <div>
           <button mat-stroked-button color="primary" matStepperNext >המשך</button>
         </div>
-      </mat-step>
-    </form>
+      </form>
+    </mat-step>
 
-    <form [formGroup]="stepsForm">
-      <mat-step [stepControl]="stepsForm" [formGroup]="stepsForm">
-        <form>
+    <mat-step [stepControl]="stepsForm" [formGroup]="stepsForm">
+      <form [formGroup]="stepsForm">
           <ng-template matStepLabel>בחר צעדים למשחק</ng-template>
 
           <mat-form-field appearance="fill">
             <mat-label>מיקום הצעד</mat-label>
-            <mat-select required [(ngModel)]="currentStep.finish_location" [ngModelOptions]="{name: 'loc_selection'}">
-              <mat-option *ngFor="let place of places" [value]="place.id">{{place.name}}</mat-option>
+            <mat-select required formControlName="location">
+              <mat-option *ngFor="let place of dogParks" [value]="place.id">{{place.name}}</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>קוד סודי</mat-label>
-            <input matInput placeholder="קוד סודי" [(ngModel)]="currentStep.secret_key" [ngModelOptions]="{name: 'sk_str'}" />
+            <input matInput placeholder="קוד סודי" formControlName="secret_key" />
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>תיאור</mat-label>
-            <input matInput placeholder="תיאור" [(ngModel)]="currentStep.description" [ngModelOptions]="{name: 'desc_str'}" />
+            <input matInput placeholder="תיאור" formControlName="description" />
           </mat-form-field>
           <button mat-stroked-button color="primary" (click)="pushNewStep()">הוסף צעד נוסף</button>
+      </form>
 
           <mat-accordion>
             <mat-expansion-panel *ngFor="let step of steps" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
@@ -102,9 +102,7 @@
             <button mat-stroked-button matStepperPrevious>חזור</button>
             <button mat-stroked-button color="primary" matStepperNext>המשך</button>
           </div>
-        </form>
-      </mat-step>
-    </form>
+    </mat-step>
     <mat-step>
       <ng-template matStepLabel>סיום</ng-template>
       <button mat-stroked-button color="primary" (click)="submitGame()">צור משחק</button>
