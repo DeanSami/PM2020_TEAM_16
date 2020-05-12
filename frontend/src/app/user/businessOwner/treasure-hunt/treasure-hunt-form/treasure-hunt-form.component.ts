@@ -1,17 +1,17 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import {Gamestep, Games} from '../../../models/Games';
-import {UserAuthService} from "../../user-auth.service";
-import {GamesService} from "../../services/games.service";
+import {Gamestep, Games} from '../../../../models/Games';
+import {UserAuthService} from "../../../user-auth.service";
+import {GamesService} from "../../../services/games.service";
 import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-new-treasure-hunt',
-  templateUrl: './new-treasure-hunt.component.html',
-  styleUrls: ['./new-treasure-hunt.component.scss'],
+  templateUrl: './treasure-hunt-form.component.html',
+  styleUrls: ['./treasure-hunt-form.component.scss'],
 })
-export class NewTreasureHuntComponent implements OnInit {
+export class TreasureHuntFormComponent implements OnInit {
   currentStepNum = 1;
   steps: Gamestep[] = [];
   @Input() dogParks;

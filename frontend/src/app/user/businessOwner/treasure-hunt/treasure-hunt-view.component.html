@@ -1,0 +1,47 @@
+<p class="center"><button mat-stroked-button color="primary" (click)="openCreateDialog()">צור משחק חדש!</button></p>
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource">
+
+    <!-- Position Column -->
+    <ng-container matColumnDef="owner_id">
+      <th mat-header-cell *matHeaderCellDef> מנהל המשחק </th>
+      <td mat-cell *matCellDef="let element"> {{element.owner_id}} </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> שם המשחק </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="start">
+      <th mat-header-cell *matHeaderCellDef> זמן התחלה </th>
+      <td mat-cell *matCellDef="let element"> {{element.start}} </td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="end">
+      <th mat-header-cell *matHeaderCellDef> זמן סיום </th>
+      <td mat-cell *matCellDef="let element"> {{element.end}} </td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="start_location">
+      <th mat-header-cell *matHeaderCellDef> מיקום התחלה </th>
+      <td mat-cell *matCellDef="let element"> {{element.start_location}} </td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="finish_location">
+      <th mat-header-cell *matHeaderCellDef> מיקום סיום </th>
+      <td mat-cell *matCellDef="let element"> {{element.finish_location}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>
+

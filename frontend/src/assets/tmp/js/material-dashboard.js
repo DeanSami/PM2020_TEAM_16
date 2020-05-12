@@ -70,7 +70,7 @@ $(document).ready(function() {
   //  Activate the tooltips
   $('[rel="tooltip"]').tooltip();
 
-  $('.form-control').on("focus", function() {
+  $('.treasure-hunt-form-control').on("focus", function() {
     $(this).parent('.input-group').addClass("input-group-focus");
   }).on("blur", function() {
     $(this).parent(".input-group").removeClass("input-group-focus");
@@ -320,11 +320,11 @@ md = {
 
       nav_content = '<ul class="nav navbar-nav nav-mobile-menu">' + nav_content + '</ul>';
 
-      navbar_form = $('nav').find('.navbar-form').length != 0 ? $('nav').find('.navbar-form')[0].outerHTML : null;
+      navbar_form = $('nav').find('.navbar-treasure-hunt-form').length != 0 ? $('nav').find('.navbar-treasure-hunt-form')[0].outerHTML : null;
 
       $sidebar_nav = $sidebar_wrapper.find(' > .nav');
 
-      // insert the navbar form before the sidebar list
+      // insert the navbar treasure-hunt-form before the sidebar list
       $nav_content = $(nav_content);
       $navbar_form = $(navbar_form);
       $nav_content.insertBefore($sidebar_nav);
@@ -342,7 +342,7 @@ md = {
     } else {
       if ($(window).width() > 991) {
         // reset all the additions that we made for the sidebar wrapper only if the screen is bigger than 991px
-        $sidebar_wrapper.find('.navbar-form').remove();
+        $sidebar_wrapper.find('.navbar-treasure-hunt-form').remove();
         $sidebar_wrapper.find('.nav-mobile-menu').remove();
 
         mobile_menu_initialized = false;

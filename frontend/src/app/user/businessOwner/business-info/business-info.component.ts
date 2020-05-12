@@ -15,7 +15,6 @@ export class BusinessInfoComponent implements OnInit {
 
   businessesInfo: Businesses[];
   currentBusiness: Businesses;
-  currentBusinessIndex: number;
   edit: boolean;
 
   constructor(
