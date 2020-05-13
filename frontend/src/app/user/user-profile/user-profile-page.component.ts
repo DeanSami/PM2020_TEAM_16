@@ -70,7 +70,7 @@ export class UserProfilePageComponent implements OnInit {
           console.log(err);
         });
       }
-      this.gameService.getMyGames(user.id).subscribe(games => {
+      this.gameService.getGames({owner_id: user.id}).subscribe(games => {
         this.myGames = games;
         console.log('this.myGames', this.myGames)
       }, err => {

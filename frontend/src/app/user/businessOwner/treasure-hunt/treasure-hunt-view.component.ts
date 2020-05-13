@@ -28,7 +28,7 @@ export class TreasureHuntViewComponent implements OnInit {
               @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   ngOnInit(): void {
     this.userAuthService.currentUser.subscribe(res => this.currentUser = res, err => console.log(err));
-      this.gamesService.getMyGames(this.currentUser.id).subscribe(result => {
+      this.gamesService.getGames({owner_id: this.currentUser.id}).subscribe(result => {
         this.myGames = result;
         this.dataSource = new MatTableDataSource<Games>(this.myGames);
         this.dataSource.paginator = this.paginator;
