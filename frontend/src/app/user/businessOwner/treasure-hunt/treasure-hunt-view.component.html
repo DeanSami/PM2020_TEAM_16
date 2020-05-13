@@ -38,6 +38,16 @@
       <td mat-cell *matCellDef="let element"> {{element.finish_location}} </td>
     </ng-container>
 
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef>פעולות</th>
+      <td mat-cell *matCellDef="let element">
+        <i class="ft-trash-2 cursor-pointer font-medium-3 danger ml-3"></i>
+        <i class="ft-edit-2 cursor-pointer font-medium-3 success ml-3" (click)="editTreasureHunt(element)"></i>
+        <!--      <i class="ft-power cursor-pointer font-medium-3 danger ml-3" *ngIf="element.active == placeActiveType.Active" (click)="shutdown(element)"></i>-->
+        <!--      <i class="ft-play cursor-pointer font-medium-3 success ml-3" *ngIf="element.active == placeActiveType.InActive" (click)="shutdown(element)"></i>-->
+      </td>
+    </ng-container>
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>

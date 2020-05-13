@@ -12,9 +12,9 @@ import { Games } from '../../models/Games';
 
 
 @Component({
-    selector: 'app-user-profile-page',
-    templateUrl: './user-profile-page.component.html',
-    styleUrls: ['./user-profile-page.component.scss']
+  selector: 'app-user-profile-page',
+  templateUrl: './user-profile-page.component.html',
+  styleUrls: ['./user-profile-page.component.scss']
 })
 
 export class UserProfilePageComponent implements OnInit {
@@ -66,13 +66,13 @@ export class UserProfilePageComponent implements OnInit {
       if (user.user_type === UserType.BusinessOwner) {
         this.placesService.getDogParks().subscribe(parks => {
           this.dogParks = parks;
+          console.log('user profile', this.dogParks)
         }, err => {
           console.log(err);
         });
       }
       this.gameService.getGames({owner_id: user.id}).subscribe(games => {
         this.myGames = games;
-        console.log('this.myGames', this.myGames)
       }, err => {
         console.log(err);
       });
@@ -152,7 +152,7 @@ export class UserProfilePageComponent implements OnInit {
   }
 
   showPage(page: string) {
-      this.currentPage = page;
+    this.currentPage = page;
   }
 
   startEdit() {

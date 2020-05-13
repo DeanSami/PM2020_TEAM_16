@@ -1,10 +1,13 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, Input, OnInit, ViewChild} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {Gamestep, Games} from '../../../../models/Games';
 import {UserAuthService} from "../../../user-auth.service";
 import {GamesService} from "../../../services/games.service";
 import {ToastrService} from "ngx-toastr";
+import {Place} from "../../../../models/places";
+import {PlacesService} from "../../../services/places.service"
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-new-treasure-hunt',
@@ -14,13 +17,18 @@ import {ToastrService} from "ngx-toastr";
 export class TreasureHuntFormComponent implements OnInit {
   currentStepNum = 1;
   steps: Gamestep[] = [];
-  @Input() dogParks;
+  dogParks: Place[];
+
   constructor(
     private rout: ActivatedRoute,
     private userAuth: UserAuthService,
     private toastr: ToastrService,
-    private GamesService: GamesService
-  ) {}
+    private GamesService: GamesService,
+    private placesService: PlacesService,
+    private dialogRef: MatDialogRef<TreasureHuntFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public treasureHunt: Games
+  ) {
+  }
 
   basicForm = new FormGroup({
     title: new FormControl('', [Validators.required]),
@@ -40,17 +48,22 @@ export class TreasureHuntFormComponent implements OnInit {
   panelOpenState = false;
 
   ngOnInit(): void {
-  }
-
-  initStep(): Gamestep {
-    return {
-      name: '',
-      secret_key: undefined,
-      start_location: NaN,
-      finish_location: NaN,
-      step_num: NaN,
-      description: ''
-    }
+    this.placesService.getDogParks().subscribe(parks => {
+      this.dogParks = parks;
+      if (this.treasureHunt) {
+        console.log(this.treasureHunt);
+        this.basicForm.setValue({
+          title: this.treasureHunt.name,
+          start: this.treasureHunt.start,
+          end: this.treasureHunt.end,
+          start_location: this.treasureHunt.start_location,
+          finish_location: this.treasureHunt.finish_location
+        });
+        this.steps = this.treasureHunt.steps;
+      }
+    }, err => {
+      console.log(err);
+    });
   }
 
   findWithAttr(arr, attr, val) {
@@ -116,7 +129,7 @@ export class TreasureHuntFormComponent implements OnInit {
 
   date_str(date: Date): string {
     let y = date.getFullYear();
-    let m = date.getMonth();
+    let m = date.getMonth()+1;
     let d = date.getDate();
     return y + '-' + m + '-' + d;
   }
@@ -142,6 +155,30 @@ export class TreasureHuntFormComponent implements OnInit {
         this.basicForm.controls[key].setErrors(null)
       });
       this.steps = [];
+    }, err => {
+      this.toastr.error('הפעולה נכשלה!');
+      console.log('err', err);
+    });
+  }
+
+  updateGame(): void {
+    if (!this.basicForm.valid) {
+      this.toastr.error('יש להזין את כל השדות הבסיסיים למשחק');
+      return;
+    }
+    let game: Games = {
+      id: this.treasureHunt.id,
+      owner_id: this.userAuth.currentUser.getValue().id,
+      name: this.basicForm.controls.title.value,
+      start: this.date_str(new Date(this.basicForm.controls.start.value)),
+      end: this.date_str(new Date(this.basicForm.controls.end.value)),
+      start_location: this.basicForm.controls.start_location.value,
+      finish_location: this.basicForm.controls.finish_location.value,
+      steps: this.steps
+    }
+    this.GamesService.updateGame(game).subscribe((res) => {
+      this.toastr.success('הפעולה הסתיימה בהצלחה!');
+      this.dialogRef.close(res);
     }, err => {
       this.toastr.error('הפעולה נכשלה!');
       console.log('err', err);
