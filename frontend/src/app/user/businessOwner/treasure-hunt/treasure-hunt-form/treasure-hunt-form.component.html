@@ -1,5 +1,6 @@
 <div class="container">
-
+  <h3>{{this.treasureHunt ? 'עדכן משחק' : 'צור משחק'}}</h3>
+  <hr>
   <mat-vertical-stepper #stepper>
     <ng-template matStepperIcon="edit">
       <mat-icon></mat-icon>
@@ -105,7 +106,7 @@
     </mat-step>
     <mat-step>
       <ng-template matStepLabel>סיום</ng-template>
-      <button mat-stroked-button color="primary" (click)="submitGame()">צור משחק</button>
+      <button mat-stroked-button color="primary" (click)="this.treasureHunt ? updateGame() : submitGame()">{{this.treasureHunt ? 'עדכן משחק' : 'צור משחק'}}</button>
       <div>
         <button mat-stroked-button matStepperPrevious>חזור</button>
         <button mat-stroked-button color="warn" (click)="stepper.reset()">אפס</button>

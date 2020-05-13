@@ -37,14 +37,30 @@ router.get('/' , function(req, res) {
     } else {
         if (req.query.owner_id) {
             let id = req.query.owner_id;
-            db.query('SELECT * FROM games WHERE deleted = 0 AND owner_id = ?',[id], function (err, result) {
+            db.query('SELECT * FROM games WHERE deleted = 0 AND owner_id = ?',[id], function (err, games_result) {
                 if (err) {
                     console.log('<LOG> - GET /user/games/get - ERROR');
                     console.error(err);
                     res.status(globals.status_codes.Server_Error).json();
                 } else {
-                    console.log('<LOG> - GET /user/games/get - SUCCESS');
-                    res.status(globals.status_codes.OK).json(result)
+                    let games = JSON.parse(JSON.stringify(games_result));
+                    let query = `SELECT * FROM game_steps WHERE game_id = ?;`.repeat(games.length).slice(0, -1);
+                    let ids = []
+                    for (game of games)  {
+                        ids.push(game.id);
+                    }
+
+                    db.query(query, ids, function (err, steps_result) {
+                        if (err) {
+                            console.log('<LOG> - GET /user/games/get - ERROR');
+                            console.error(err);
+                            res.status(globals.status_codes.Server_Error).json();
+                        } else {
+                            for (let i = 0; i < games.length; i++) games[i].steps = steps_result[i];
+                            console.log('<LOG> - GET /user/games/get - SUCCESS');
+                            res.status(globals.status_codes.OK).json(games)
+                        }
+                    });
                 }
             })
         } else {
@@ -238,23 +254,22 @@ router.patch('/edit', function (req, res) {
             deleted: 0
         };
 
-        db.query('SELECT * FROM games WHERE id = ?', [req.body.id], function (err, result) {
+        db.query('UPDATE games SET ? WHERE id = ?', [game, req.body.id], function (err, update_result) {
             if (err) {
-                console.log('<LOG> - POST /games/patch - ERROR find game');
+                console.log('<LOG> - POST /games/create - ERROR insert game');
                 console.error(err)
-                res.status(globals.status_codes.Bad_Request).json({message: 'cannot find game by id'});
-                return;
+                res.status(globals.status_codes.Server_Error).json();
+            } else {
+                db.query('SELECT * FROM games WHERE id = ?', [req.body.id], function(err, select_result) {
+                    if (err) {
+                        console.log('<LOG> - POST /games/create - ERROR insert game');
+                        console.error(err)
+                        res.status(globals.status_codes.Server_Error).json();
+                    }
+                    res.status(globals.status_codes.OK).json(select_result[0]);
+                    //todo update steps
+                });
             }
-            db.query('UPDATE games SET ? WHERE id = ?', [game, req.body.id], function (err, result) {
-                if (err) {
-                    console.log('<LOG> - POST /games/create - ERROR insert game');
-                    console.error(err)
-                    res.status(globals.status_codes.Server_Error).json();
-                    return;
-                }
-                res.status(globals.status_codes.OK).json();
-                //todo update steps
-            });
         });
     });
 });

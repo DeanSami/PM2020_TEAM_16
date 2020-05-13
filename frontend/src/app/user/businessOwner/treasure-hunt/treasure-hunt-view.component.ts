@@ -16,7 +16,7 @@ import {User} from "../../../models/users";
 })
 export class TreasureHuntViewComponent implements OnInit {
 
-  displayedColumns: string[] = ['owner_id', 'name', 'start', 'end', 'start_location', 'finish_location']
+  displayedColumns: string[] = ['owner_id', 'name', 'start', 'end', 'start_location', 'finish_location', 'action']
   myGames: Games[];
   dataSource: MatTableDataSource<Games>;
   private currentUser: User;
@@ -36,13 +36,40 @@ export class TreasureHuntViewComponent implements OnInit {
   }
 
   openCreateDialog(): void {
+    console.log('TH-view create', this.dogParks);
     const dialogRef = this.dialog.open(TreasureHuntFormComponent, {
       // width: '250px',
       direction: "rtl",
-      data: {dogParks: this.dogParks}
+
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+
+  findWithAttr(arr, attr, val) {
+    for (var i = 0; i < arr.length; i += 1) {
+      if (arr[i][attr] === val) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  editTreasureHunt(element: Games) {
+    let i = this.findWithAttr(this.myGames, 'id', element.id);
+    console.log('index', i, 'game', this.myGames[i]);
+    const dialogRef = this.dialog.open(TreasureHuntFormComponent, {
+      // width: '250px',
+      direction: "rtl",
+      data: this.myGames[i]
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.myGames[this.findWithAttr(this.myGames, 'id', result.id)] = result;
+      this.dataSource = new MatTableDataSource<Games>(this.myGames);
+      this.dataSource.paginator = this.paginator;
       console.log('The dialog was closed');
     });
   }

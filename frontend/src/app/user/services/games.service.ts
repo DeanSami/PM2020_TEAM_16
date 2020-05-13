@@ -34,9 +34,9 @@ export class GamesService {
   //   return this.api.post('user/my_games', game);
   // }
   //
-  // updateGame(game: Games): Observable<Games> {
-  //   return this.api.patch('user/my_games', game);
-  // }
+  updateGame(game: Games): Observable<Games> {
+    return this.api.patch('user/games/edit', game);
+  }
 
   createNewGame(game: Games): Observable<Games[]> {
     return this.api.post('user/games/create', game);

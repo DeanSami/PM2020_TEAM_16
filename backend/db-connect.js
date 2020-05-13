@@ -5,7 +5,8 @@ var connection = mysql.createConnection({
     port: globals.DB.PORT,
     user: globals.DB.USER,
     password: globals.DB.PASS,
-    database: globals.DB.NAME
+    database: globals.DB.NAME,
+    multipleStatements: true
 })
 
 module.exports = connection
