@@ -6,6 +6,8 @@ import { AreYouSureDialogComponent } from '../../are-you-sure-dialog/are-you-sur
 import { ToastrService } from 'ngx-toastr';
 import { Games } from '../../models/Games';
 import { GamesService } from '../services/games.service';
+import {UserAuthService} from "../user-auth.service";
+import {User} from "../../models/users";
 
 @Component({
   selector: 'app-my-games',
@@ -13,25 +15,32 @@ import { GamesService } from '../services/games.service';
   styleUrls: ['./my-games.component.scss']
 })
 export class MyGamesComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'start', 'end', 'start_location', 'finish_location', 'condition', 'action'];
+  displayedColumns: string[] = ['name', 'start', 'end', 'start_location', 'finish_location', 'action'];
   dataSource: MatTableDataSource<Games>;
   games: Games[];
+  user: User;
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    // const filterValue = (event.target as HTMLInputElement).value;
+    // this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   constructor(
-    private rout: ActivatedRoute,
+    private userAuthService: UserAuthService,
     private dialog: MatDialog,
     private toastr: ToastrService,
     private gamesService: GamesService
   ) { }
 
   ngOnInit(): void {
-    this.games = this.rout.snapshot.data.games;
-    this.dataSource = new MatTableDataSource<Games>(this.games);
+    this.userAuthService.currentUser.subscribe(user => {
+      this.user = user;
+      this.gamesService.getGamesPlayedById(this.user.id).subscribe(games => {
+        this.games = games;
+        this.dataSource = new MatTableDataSource<Games>(this.games);
+      }, err => console.log(err));
+    }, err => console.log(err));
+
   }
 
   // finishGame(GameId: number) {

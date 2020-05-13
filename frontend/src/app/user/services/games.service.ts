@@ -4,19 +4,22 @@ import { Observable } from 'rxjs';
 import { Games } from '../../models/Games';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GamesService {
   places: Games[] = [];
 
-  constructor(private api: ApiProviderService) { }
+  constructor(private api: ApiProviderService) {}
 
-  getGames(): Observable<Games[]> {
-    return this.api.get('user/my_games');
+
+  // { owenr_id: ... } - get all games thats owned by user with id ||
+  // { id: ... } get all games that are being played by user id
+  getGames(params: object): Observable<Games[]> {
+    return this.api.get('user/games', params);
   }
 
-  getMyGames(id: number): Observable<Games[]> {
-    return this.api.post('user/games/myGames', {id});
+  getGamesPlayedById(id: number) {
+    return this.api.post('user/games/myGames', {id: id});
   }
 
   // deleteGame(GameID: number) {
@@ -34,6 +37,4 @@ export class GamesService {
   createNewGame(game: Games): Observable<Games[]> {
     return this.api.post('user/games/create', game);
   }
-
-
 }
