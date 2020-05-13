@@ -6,8 +6,8 @@ import { AreYouSureDialogComponent } from '../../are-you-sure-dialog/are-you-sur
 import { ToastrService } from 'ngx-toastr';
 import { Games } from '../../models/Games';
 import { GamesService } from '../services/games.service';
-import {UserAuthService} from "../user-auth.service";
-import {User} from "../../models/users";
+import {UserAuthService} from '../user-auth.service';
+import {User} from '../../models/users';
 
 @Component({
   selector: 'app-my-games',
@@ -15,7 +15,7 @@ import {User} from "../../models/users";
   styleUrls: ['./my-games.component.scss']
 })
 export class MyGamesComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'start', 'end', 'start_location', 'finish_location', 'action'];
+  displayedColumns: string[] = ['name', 'start', 'end', 'start_location', 'step_id', 'finish_location', 'action'];
   dataSource: MatTableDataSource<Games>;
   games: Games[];
   user: User;
@@ -43,21 +43,23 @@ export class MyGamesComponent implements OnInit {
 
   }
 
-  // finishGame(GameId: number) {
-  //   this.dialog.open(AreYouSureDialogComponent, {
-  //     width: '250px',
-  //   }).afterClosed().subscribe(result => {
-  //     if (result) {
-  //       this.gamesService.finishGame(GameId).subscribe(() => {
-  //         this.dataSource.data = this.dataSource.data.filter(game => game.id !== GameId);
-  //         this.toastr.success('נמחק בהצלחה');
-  //       }, err =>  {
-  //         console.log(err);
-  //         this.toastr.error('ארעה שגיאה במחיקה');
-  //       });
-  //     }
-  //   });
-  // }
+  finishGame(GameId: number, UserId: number) {
+    this.dialog.open(AreYouSureDialogComponent, {
+      width: '250px',
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        console.log("game id =" + GameId);
+        console.log("user id =" + UserId);
+        this.gamesService.finishGame(GameId, UserId).subscribe(() => {
+          this.dataSource.data = this.dataSource.data.filter(game => game.id !== GameId);
+          this.toastr.success('נעצר בהצלחה');
+        }, err =>  {
+          console.log(err);
+          this.toastr.error('ארעה שגיאה בניסיון לעצירת המשחק');
+        });
+      }
+    });
+  }
 
 
 }

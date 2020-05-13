@@ -21,6 +21,10 @@ export class GamesService {
   getGamesPlayedById(id: number) {
     return this.api.post('user/games/myGames', {id: id});
   }
+  // REQUEST to finish/stop the game by given game id and user id
+  finishGame(GameId: number, UserId: number){
+    return this.api.patch('user/games/myGames',{ GameId: GameId, UserId: UserId});
+  }
 
   // deleteGame(GameID: number) {
   //   return this.api.delete('user/my_games', {id: GameID});

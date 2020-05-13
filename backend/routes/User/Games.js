@@ -61,14 +61,16 @@ router.get('/' , function(req, res) {
         }
     }
 });
-
+//REQUEST to get Game list per user
 router.post('/myGames' , function(req, res) {
     console.log('<LOG> - GET /user/myGames/get - Invoke');
-    //if the clint want specific park dog
+
     if (req.body.id) {
         let id = req.body.id;
         db.query(`SELECT games.*, active_players.*
-         FROM users, games, active_players WHERE users.id = ? AND games.id = active_players.game_id AND active_players.user_id = users.id`, [id], function (err, result) {
+                    FROM users, games, active_players WHERE users.id = ? AND 
+                                         games.id = active_players.game_id AND 
+                                            active_players.user_id = users.id`, [id], function (err, result) {
             if (err) {
                 console.log('<LOG> - GET /user/myGames/get - ERROR');
                 console.error(err);
@@ -83,6 +85,29 @@ router.post('/myGames' , function(req, res) {
         res.status(globals.status_codes.Server_Error).json({message: 'missing arguments'});
     }
 });
+
+// router.patch('/myGames', function (req,res) {
+//     console.log('<LOG> - GET /user/myGames/patch - Invoke');
+//     if(req.body.user_id && req.body.game_id)
+//     {
+//         let user_id = req.body.user_id;
+//         let game_id = req.body.game_id;
+//         let now_date = Date.now();
+//         db.query('UPDATE active_players SET finish_at = ? WHERE user_id = ? AND game_id = ?', [now_date,user_id,game_id],function (err,result) {
+//             if (err) {
+//                 console.log('<LOG> - GET /user/myGames/patch - ERROR');
+//                 console.error(err);
+//                 res.status(globals.status_codes.Server_Error).json();
+//         }else{
+//                 console.log('<LOG> - GET /user/games/patch - SUCCESS');
+//                 res.status(globals.status_codes.OK).json(result)
+//             }
+//         })
+//     } else {
+//         console.log('<LOG> - GET /user/myGames/patch - missing arguments');
+//         res.status(globals.status_codes.Server_Error).json({message: 'missing arguments'});
+//     }
+// });
 
 router.post('/create', function (req, res) {
     console.log('<LOG> - POST /user/games/add - Invoke');
