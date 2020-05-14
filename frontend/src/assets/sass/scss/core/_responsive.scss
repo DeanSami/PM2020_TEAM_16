@@ -15,7 +15,6 @@
   }
   footer{
     padding-left: 250px;
-    margin-top: 2rem;
   }
 
   .sidebar-sm{
@@ -170,7 +169,6 @@
       }
     }
     footer{
-      padding-right: 250px;
       padding-left: 0  !important;
     }
 
@@ -220,7 +218,7 @@
   @media (max-width: 992px) {
     .navbar-header .navbar-toggle {
       margin: 10px 0 10px 15px;
-    } 
+    }
     .navbar-header .navbar-collapse-toggle {
        margin: 20px 15px 10px 0px;
     }

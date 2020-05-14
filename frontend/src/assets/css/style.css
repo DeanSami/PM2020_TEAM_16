@@ -18,36 +18,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /*--------------------------------------------------------------
-# Back to top button
---------------------------------------------------------------*/
-.back-to-top {
-  position: fixed;
-  display: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50px;
-  right: 15px;
-  bottom: 15px;
-  background: #5777ba;
-  color: #fff;
-  transition: display 0.5s ease-in-out;
-  z-index: 99999;
-}
-
-.back-to-top i {
-  font-size: 24px;
-  position: absolute;
-  top: 7px;
-  left: 8px;
-}
-
-.back-to-top:hover {
-  color: #fff;
-  background: #748ec6;
-  transition: background 0.2s ease-in-out;
-}
-
-/*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/
 #header {
@@ -800,9 +770,10 @@ section {
 
 .faq .accordion-list li {
   padding: 20px;
-  background: #fff;
+  /*background: #fff;*/
   border-radius: 4px;
   position: relative;
+  background-color: #f2f5fa;
 }
 
 .faq .accordion-list a {
@@ -1016,10 +987,9 @@ section {
 --------------------------------------------------------------*/
 #footer {
   background: #fff;
-  padding: 0 0 30px 0;
   color: #47536e;
   font-size: 14px;
-  background: #eff2f8;
+  /*background: #eff2f8;*/
 }
 
 #footer .footer-newsletter {
