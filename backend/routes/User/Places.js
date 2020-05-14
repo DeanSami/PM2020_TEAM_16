@@ -4,6 +4,30 @@ const db = require('../../db-connect')
 const router = express.Router()
 
 //ADD PARK REQUEST
+
+router.delete('/',function (req,res){
+    console.log('<LOG> - DELETE /user/places - Invoke');
+    if(req.query.id && !isNaN(req.query.id)) {
+        db.query('UPDATE places SET deleted = 1 WHERE id = ?', [req.query.id],function (err, result) {
+            if (err) {
+                console.log('<LOG> - DELETE /user/places - ERROR');
+                console.error(err);
+                res.status(globals.status_codes.Server_Error).json();
+            } if (result.affectedRows > 0) {
+                console.log("<LOG> - DELETE /users/places - SUCCESS");
+                res.status(globals.status_codes.OK).json()
+            } else {
+                console.log('<LOG> - DELETE /users/places - query ERROR');
+                res.status(globals.status_codes.Bad_Request).json();
+            }
+
+        });
+    } else {
+        console.error("missing arguments id");
+        res.status(globals.status_codes.Bad_Request).json();
+    }
+});
+
 router.post('/', function (req, res) {
     console.log('<LOG> - POST /user/places/add - Invoke');
 
@@ -79,30 +103,6 @@ router.post('/', function (req, res) {
     }
 });
 
-
-
-router.delete('/',function (req,res){
-    console.log('<LOG> - DELETE /user/places - Invoke');
-    if(req.query.id && !isNaN(req.query.id)) {
-        db.query('UPDATE places SET deleted = 1 WHERE id = ?', [req.query.id],function (err, result) {
-            if (err) {
-                console.log('<LOG> - DELETE /user/places - ERROR');
-                console.error(err);
-                res.status(globals.status_codes.Server_Error).json();
-            } if (result.affectedRows > 0) {
-                console.log("<LOG> - DELETE /users/places - SUCCESS");
-                res.status(globals.status_codes.OK).json()
-            } else {
-                console.log('<LOG> - DELETE /users/places - query ERROR');
-                res.status(globals.status_codes.Bad_Request).json();
-            }
-
-        });
-    } else {
-        console.error("missing arguments id");
-        res.status(globals.status_codes.Bad_Request).json();
-    }
-});
 
 router.get('/' , function(req, res) {
     console.log('<LOG> - GET /user/places/get - Invoke');
