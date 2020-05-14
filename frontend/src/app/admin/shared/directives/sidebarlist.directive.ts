@@ -1,7 +1,7 @@
-import { Directive } from "@angular/core";
-import { SidebarLinkDirective } from "./sidebarlink.directive";
+import { Directive } from '@angular/core';
+import { SidebarLinkDirective } from './sidebarlink.directive';
 
-@Directive({ selector: "[appSidebarList]" })
+@Directive({ selector: '[appSidebarList]' })
 export class SidebarListDirective {
   protected navlinks: Array<SidebarLinkDirective> = [];
   public activeLinks: string[] = [];
@@ -13,11 +13,11 @@ export class SidebarListDirective {
   collapse(link: SidebarLinkDirective): void {
     link.open = false;
     this.setIsHidden(link);
-    if (link.level.toString().trim() === "2") {
+    if (link.level.toString().trim() === '2') {
       this.activeLinks.push(this.navlinks
-        .filter(_ => _.level.toString().trim() === "1" &&  _.open === true)[0].title);
+        .filter(_ => _.level.toString().trim() === '1' &&  _.open === true)[0].title);
       }
-     link.toggleEmit.emit(this.activeLinks);
+    link.toggleEmit.emit(this.activeLinks);
   }
 
   expand(link: SidebarLinkDirective): void {
@@ -30,7 +30,7 @@ export class SidebarListDirective {
 
   toggleActiveList(openLink: SidebarLinkDirective) {
     this.navlinks
-      .filter(_ => _.level.toString().trim() === "3")
+      .filter(_ => _.level.toString().trim() === '3')
       .forEach((link: SidebarLinkDirective) => {
         if (link !== openLink) {
           link.active = false;
@@ -39,12 +39,12 @@ export class SidebarListDirective {
   }
 
   collapseOtherLinks(openLink: SidebarLinkDirective): void {
-    if (openLink.level.toString().trim() === "1") {
+    if (openLink.level.toString().trim() === '1') {
       this.navlinks
         .filter(
           _ =>
             (_.level.toString().trim() === openLink.level.toString().trim() ||
-              _.level.toString().trim() === "2") &&
+              _.level.toString().trim() === '2') &&
             _.open === true
         )
         .forEach((link: SidebarLinkDirective) => {
@@ -53,9 +53,9 @@ export class SidebarListDirective {
             this.setIsHidden(link);
           }
         });
-    } else if (openLink.level.toString().trim() === "2") {
+    } else if (openLink.level.toString().trim() === '2') {
       this.activeLinks.push(this.navlinks
-        .filter(_ => _.level.toString().trim() === "1" &&  _.open === true)[0].title);
+        .filter(_ => _.level.toString().trim() === '1' &&  _.open === true)[0].title);
       this.navlinks
         .filter(
           _ =>

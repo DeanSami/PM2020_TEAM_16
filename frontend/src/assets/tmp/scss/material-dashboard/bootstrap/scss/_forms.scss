@@ -1,7 +1,7 @@
 // stylelint-disable selector-no-qualifying-type
 
 //
-// Textual form controls
+// Textual treasure-hunt-form controls
 //
 
 .form-control {
@@ -85,7 +85,7 @@ select.form-control {
 //
 
 // For use with horizontal and inline forms, when you need the label (or legend)
-// text to align with the form controls.
+// text to align with the treasure-hunt-form controls.
 .col-form-label {
   padding-top: calc(#{$input-padding-y} + #{$input-border-width});
   padding-bottom: calc(#{$input-padding-y} + #{$input-border-width});
@@ -135,10 +135,10 @@ select.form-control {
 
 // Form control sizing
 //
-// Build on `.form-control` with modifier classes to decrease or increase the
-// height and font-size of form controls.
+// Build on `.treasure-hunt-form-control` with modifier classes to decrease or increase the
+// height and font-size of treasure-hunt-form controls.
 //
-// The `.form-group-* form-control` variations are sadly duplicated to avoid the
+// The `.treasure-hunt-form-group-* treasure-hunt-form-control` variations are sadly duplicated to avoid the
 // issue documented in https://github.com/twbs/bootstrap/issues/15074.
 
 .form-control-sm {
@@ -185,7 +185,7 @@ select.form-control-lg {
 
 // Form grid
 //
-// Special replacement for our grid system's `.row` for tighter form layouts.
+// Special replacement for our grid system's `.row` for tighter treasure-hunt-form layouts.
 
 .form-row {
   display: flex;
@@ -228,10 +228,10 @@ select.form-control-lg {
 .form-check-inline {
   display: inline-flex;
   align-items: center;
-  padding-left: 0; // Override base .form-check
+  padding-left: 0; // Override base .treasure-hunt-form-check
   margin-right: $form-check-inline-margin-x;
 
-  // Undo .form-check-input defaults and add some `margin-right`.
+  // Undo .treasure-hunt-form-check-input defaults and add some `margin-right`.
   .form-check-input {
     position: static;
     margin-top: 0;
@@ -243,7 +243,7 @@ select.form-control-lg {
 
 // Form validation
 //
-// Provide feedback to users when form field values are valid or invalid. Works
+// Provide feedback to users when treasure-hunt-form field values are valid or invalid. Works
 // primarily for client-side validation via scoped `:invalid` and `:valid`
 // pseudo-classes but also includes `.is-invalid` and `.is-valid` classes for
 // server side validation.
@@ -253,12 +253,12 @@ select.form-control-lg {
 
 // Inline forms
 //
-// Make forms appear inline(-block) by adding the `.form-inline` class. Inline
+// Make forms appear inline(-block) by adding the `.treasure-hunt-form-inline` class. Inline
 // forms begin stacked on extra small (mobile) devices and then go inline when
 // viewports reach <768px.
 //
-// Requires wrapping inputs and labels with `.form-group` for proper display of
-// default HTML form controls and our custom form controls (e.g., input groups).
+// Requires wrapping inputs and labels with `.treasure-hunt-form-group` for proper display of
+// default HTML treasure-hunt-form controls and our custom treasure-hunt-form controls (e.g., input groups).
 
 .form-inline {
   display: flex;
@@ -290,10 +290,10 @@ select.form-control-lg {
       margin-bottom: 0;
     }
 
-    // Allow folks to *not* use `.form-group`
+    // Allow folks to *not* use `.treasure-hunt-form-group`
     .form-control {
       display: inline-block;
-      width: auto; // Prevent labels from stacking above inputs in `.form-group`
+      width: auto; // Prevent labels from stacking above inputs in `.treasure-hunt-form-group`
       vertical-align: middle;
     }
 

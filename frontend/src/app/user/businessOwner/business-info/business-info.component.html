@@ -1,0 +1,42 @@
+<div class="container">
+  <hr>
+  <h5>בחר עסק לעריכה, או צור עסק חדש</h5>
+  <mat-select [value]="currentBusiness.id" *ngIf="businessesInfo.length > 1" (selectionChange)="updateEditForm($event)">
+    <mat-option *ngFor="let business of businessesInfo" [value]="business.id">{{business.name}}</mat-option>
+    <mat-option [value]="-1">צור עסק חדש...</mat-option>
+  </mat-select>
+  <hr>
+  <h1>פרטי העסק</h1>
+  <form>
+
+    <mat-form-field appearance="fill">
+      <mat-label>שם העסק</mat-label>
+      <input matInput placeholder="שם העסק" id="name" required [(ngModel)]="currentBusiness.name" name="name"/>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>תיאור העסק</mat-label>
+      <input matInput placeholder="תיאור העסק" id="desc" [(ngModel)]="currentBusiness.description" name="desc">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>טלפון</mat-label>
+      <input matInput placeholder="טלפון" id="phone" required [(ngModel)]="currentBusiness.phone" name="phone">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>כתובת</mat-label>
+      <input matInput placeholder="כתובת" id="addr" [(ngModel)]="currentBusiness.address" name="addr">
+    </mat-form-field>
+
+    <mat-checkbox [(ngModel)]="currentBusiness.dog_friendly" name="dog_friend">עסק ידידותי לכלבים?</mat-checkbox>
+    <hr>
+    <div *ngIf="!edit; else editIt">
+      <button mat-stroked-button color="primary" type="submit" (click)="publishNewBusiness()">פרסם</button>
+    </div>
+    <ng-template #editIt>
+      <button mat-stroked-button color="primary" type="submit" (click)="editCurrentBusiness()">עדכן</button>
+    </ng-template>
+
+  </form>
+</div>

@@ -1,16 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { AwsS3Service } from '../aws-s3.service';
-import { ToastrService } from 'ngx-toastr';
-import { UserAuthService } from '../user-auth.service';
-import { User, UserGender, UserHobbies } from '../../models/users';
-import { LoginResponse } from '../../models/Responses';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {AwsS3Service} from '../aws-s3.service';
+import {ToastrService} from 'ngx-toastr';
+import {UserAuthService} from '../user-auth.service';
+import {User, UserHobbies, UserType} from '../../models/users';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from "@angular/router";
+import {Place} from "../../models/places";
+import { PlacesService } from "../services/places.service";
+import { GamesService } from '../services/games.service';
+import { Games } from '../../models/Games';
 
 
 @Component({
-    selector: 'app-user-profile-page',
-    templateUrl: './user-profile-page.component.html',
-    styleUrls: ['./user-profile-page.component.scss']
+  selector: 'app-user-profile-page',
+  templateUrl: './user-profile-page.component.html',
+  styleUrls: ['./user-profile-page.component.scss']
 })
 
 export class UserProfilePageComponent implements OnInit {
@@ -22,11 +26,16 @@ export class UserProfilePageComponent implements OnInit {
   edit = false;
   selectedFiles: FileList;
   imageSrc: string | ArrayBuffer;
+  userTypes = UserType;
+  dogParks: Place[] = [];
+  myGames: Games[] = [];
 
   constructor(
+    private placesService: PlacesService,
     private uploadService: AwsS3Service,
     private toastr: ToastrService,
-    private userService: UserAuthService) { }
+    private userService: UserAuthService,
+    private gameService: GamesService) { }
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -52,7 +61,22 @@ export class UserProfilePageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.currentUser.subscribe(user => this.currentUser = user);
+    this.userService.currentUser.subscribe(user => {
+      this.currentUser = user;
+      if (user.user_type === UserType.BusinessOwner) {
+        this.placesService.getDogParks().subscribe(parks => {
+          this.dogParks = parks;
+          console.log('user profile', this.dogParks)
+        }, err => {
+          console.log(err);
+        });
+      }
+      this.gameService.getGames({owner_id: user.id}).subscribe(games => {
+        this.myGames = games;
+      }, err => {
+        console.log(err);
+      });
+    });
   }
 
   upload() {
@@ -98,8 +122,11 @@ export class UserProfilePageComponent implements OnInit {
       this.editTmpCurrentUser.email = this.email.value;
       this.editTmpCurrentUser.name = this.name.value;
       this.editTmpCurrentUser.gender = this.gender.value;
-      this.editTmpCurrentUser.birthday = this.birthday.value ? this.birthday.value.toISOString().split('T')[0] : '';
-
+      try {
+        this.editTmpCurrentUser.birthday = this.birthday.value.toISOString().split('T')[0];
+      } catch {
+        this.editTmpCurrentUser.birthday = '';
+      }
       this.userService.editUser(this.editTmpCurrentUser).subscribe(result => {
         this.editTmpCurrentUser.avatar = this.editTmpCurrentUser.avatar !== '' ?
           'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/userImages/' + this.editTmpCurrentUser.avatar : this.currentUser.avatar;
@@ -125,7 +152,7 @@ export class UserProfilePageComponent implements OnInit {
   }
 
   showPage(page: string) {
-      this.currentPage = page;
+    this.currentPage = page;
   }
 
   startEdit() {
@@ -160,6 +187,20 @@ export class UserProfilePageComponent implements OnInit {
       // tslint:disable-next-line:no-bitwise
       Camping: (this.currentUser.hobbies & UserHobbies.Camping) > 0,
     };
+    this.name.setValue(this.currentUser.name);
+    let tmpBirthday;
+    try {
+      tmpBirthday = new Date(this.currentUser.birthday);
+    } catch {
+      tmpBirthday = new Date();
+    }
+    if (this.currentUser.birthday) {
+      this.birthday.setValue(new Date(this.currentUser.birthday));
+    } else {
+      this.birthday.setValue(new Date());
+    }
+    this.gender.setValue(this.currentUser.gender);
+    this.email.setValue(this.currentUser.email);
     this.edit = !this.edit;
   }
 

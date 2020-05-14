@@ -34,8 +34,8 @@
                     <li>
                       <a (click)="showPage('Friends')" [ngClass]="currentPage === 'Friends' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">משחקי עבר</a>
                     </li>
-                    <li>
-                      <a (click)="showPage('Photos')" [ngClass]="currentPage === 'Photos' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">כפתור</a>
+                    <li *ngIf="currentUser.user_type === userTypes.BusinessOwner">
+                      <a (click)="showPage('business')" [ngClass]="currentPage === 'business' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">העסקים שלי</a>
                     </li>
                   </ul>
                 </div>
@@ -74,19 +74,25 @@
                                     <span *ngIf="!edit" class="d-block overflow-hidden">{{currentUser.gender === 0 ? 'גבר' : 'אישה'}}</span>
                                     <div *ngIf="edit">
                                       <mat-radio-group aria-label="Select an option" formControlName="gender">
-                                        <mat-radio-button value="0">גבר</mat-radio-button><br>
-                                        <mat-radio-button value="1">אישה</mat-radio-button>
+                                        <mat-radio-button [value]="0">גבר</mat-radio-button><br>
+                                        <mat-radio-button [value]="1">אישה</mat-radio-button>
                                       </mat-radio-group>
                                     </div>
                                   </li>
                                   <li class="mb-2">
                                     <span class="text-bold-500 primary"><a><i class="ft-smartphone font-small-3"></i> מספר טלפון:</a></span>
-                                    <span class="d-block overflow-hidden">054-6484372</span>
+                                    <span class="d-block overflow-hidden">{{currentUser.phone}}</span>
                                   </li>
                               </ul>
                           </div>
                           <div class="col-6">
                               <ul class="no-list-style">
+                                  <li class="mb-2" *ngIf="edit">
+                                    <span class="text-bold-500 primary"><a><i class="ft-mail font-small-3"></i> שם מלא:</a></span>
+                                    <div>
+                                      <input type="text" formControlName="name" />
+                                    </div>
+                                  </li>
                                   <li class="mb-2">
                                     <span class="text-bold-500 primary"><a><i class="ft-mail font-small-3"></i> כתובת דוא"ל:</a></span>
                                     <span *ngIf="!edit" class="d-block overflow-hidden">{{currentUser.email == '' ? 'לא הוגדר' : currentUser.email}}</span>
@@ -113,72 +119,72 @@
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.Travelling)">
                         <i class="icon-plane danger font-large-2"></i>
-                        <div class="mt-2">Travelling</div>
+                        <div class="mt-2">טיולים בעולם</div>
                       </span>
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.Driving)">
                         <i class="icon-speedometer danger font-large-2"></i>
-                        <div class="mt-2">Driving</div>
+                        <div class="mt-2">נהיגה</div>
                       </span>
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.Photography)">
                         <i class="icon-camera danger font-large-2"></i>
-                        <div class="mt-2">Photography</div>
+                        <div class="mt-2">צילום ועיצוב</div>
                       </span>
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.Gaming)">
                         <i class="icon-game-controller danger font-large-2"></i>
-                        <div class="mt-2">Gaming</div>
+                        <div class="mt-2">משחקי קונסולה</div>
                       </span>
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.Music)">
                         <i class="icon-music-tone-alt danger font-large-2"></i>
-                        <div class="mt-2">Music</div>
+                        <div class="mt-2">מוזיקה</div>
                       </span>
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.Surfing)">
                         <i class="ft-monitor danger font-large-2"></i>
-                        <div class="mt-2">Surfing</div>
+                        <div class="mt-2">גלישה</div>
                       </span>
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.Foodie)">
                         <i class="ft-pie-chart danger font-large-2"></i>
-                        <div class="mt-2">Foodie</div>
+                        <div class="mt-2">אוכל</div>
                       </span>
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.TV)">
                         <i class="ft-tv danger font-large-2"></i>
-                        <div class="mt-2">TV</div>
+                        <div class="mt-2">טלויזיה</div>
                       </span>
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.Shopping)">
                         <i class="icon-basket-loaded danger font-large-2"></i>
-                        <div class="mt-2">Shopping</div>
+                        <div class="mt-2">קניות</div>
                       </span>
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.Social)">
                         <i class="icon-like danger font-large-2"></i>
-                        <div class="mt-2">Social</div>
+                        <div class="mt-2">רשתות חברתיות</div>
                       </span>
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.Reading)">
                         <i class="icon-book-open danger font-large-2"></i>
-                        <div class="mt-2">Reading</div>
+                        <div class="mt-2">קריאה</div>
                       </span>
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.Sport)">
                         <i class="icon-social-dribbble danger font-large-2"></i>
-                        <div class="mt-2">Sport</div>
+                        <div class="mt-2">ספורט</div>
                       </span>
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.Computers)">
                         <i class="icon-mouse danger font-large-2"></i>
-                        <div class="mt-2">Computers</div>
+                        <div class="mt-2">מחשבים וטכנולוגיה</div>
                       </span>
                       <span class="mr-3 mt-2 text-center float-left width-100"
                             *ngIf="checkHobbies(userHobbies.Camping)">
                         <i class="icon-fire danger font-large-2"></i>
-                        <div class="mt-2">Camping</div>
+                        <div class="mt-2">קמפינג וטבע</div>
                       </span>
                     </div>
                     <div *ngIf="edit" class="mt-2 overflow-hidden">
@@ -215,13 +221,9 @@
 
 <!--User Timeline section starts-->
 <section *ngIf="currentPage === 'TimeLine'">
-    <div class="row">
-        <div class="col-12">
-            <div class="content-header">המשחקים שלי</div>
-        </div>
-    </div>
-    <div id="timeline" class="timeline-center timeline-wrapper">
-
+    <div class="container">
+      <app-treasure-hunt-view [dogParks]="dogParks"></app-treasure-hunt-view>
+<!--      <app-new-treasure-hunt [dogParks]="dogParks"></app-new-treasure-hunt>-->
     </div>
 </section>
 <!--User Timeline section ends-->
@@ -240,15 +242,10 @@
 <!--User's friend section starts-->
 
 <!--User's uploaded photos section starts-->
-<section id="photos" *ngIf="currentPage === 'Photos'">
-    <div class="row">
-        <div class="col-12">
-            <div class="content-header">Photos</div>
-        </div>
-    </div>
-    <div class="row">
-
-    </div>
+<section id="business" *ngIf="currentUser.user_type === userTypes.BusinessOwner && currentPage === 'business'">
+  <div class="container">
+    <app-create-business-info></app-create-business-info>
+  </div>
 </section>
 <!--User's uploaded photos section starts-->
 <!--User Profile Starts-->

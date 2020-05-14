@@ -2,8 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { UserAuthService } from '../../../user/user-auth.service';
 import { User } from '../../../models/users';
-import { AreYouSureDialogComponent } from '../../../are-you-sure-dialog/are-you-sure-dialog.component';
-import { PlaceActiveType } from '../../../models/places';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginModalComponent } from '../../../user/login-modal/login-modal.component';
 import { RegisterModalComponent } from '../../../user/register-modal/register-modal.component';
@@ -21,7 +19,6 @@ import { RegisterModalComponent } from '../../../user/register-modal/register-mo
   ) {
     this.userAuth.currentUser.subscribe(user => {
       this.currentUser = user;
-      console.log('user', this.currentUser);
     });
   }
 
@@ -40,6 +37,10 @@ import { RegisterModalComponent } from '../../../user/register-modal/register-mo
         console.log(result);
       }
     });
+  }
+
+  logout() {
+    this.userAuth.logout();
   }
 
   register() {

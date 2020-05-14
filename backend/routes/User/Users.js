@@ -4,7 +4,7 @@ const globals = require('../../globals');
 const router = express.Router();
 const hat = require('hat');
 const AWS = require('aws-sdk');
-const config = require('../../configs/config.js')
+const config = require('../../configs/config.simple')
 AWS.config.update({
     accessKeyId: config.AWS.accessKeyId,
     secretAccessKey: config.AWS.secretAccessKey,
@@ -17,12 +17,13 @@ const BUSINESS = require('./Business')
 const sns = new AWS.SNS();
 
 router.use(function isUser (req, res, next) {
-    if (req.originalUrl === '/user/games/edit' ||
-        req.originalUrl === '/user/games/create' ||
-        req.originalUrl === '/user/business/edit' ||
-        req.originalUrl === '/user/business/create' ||
-        req.originalUrl === '/user/games/played' ||
-        req.originalUrl === '/user/editUser'
+    if (req.originalUrl.toLowerCase() === '/user/games/edit' ||
+        req.originalUrl.toLowerCase() === '/user/games/create' ||
+        req.originalUrl.toLowerCase() === '/user/business/edit' ||
+        req.originalUrl.toLowerCase() === '/user/business/create' ||
+        req.originalUrl.toLowerCase() === '/user/games/played' ||
+        req.originalUrl.toLowerCase() === '/user/games/mygames' ||
+        req.originalUrl.toLowerCase() === '/user/edituser'
     ) {
         console.log('<LOG> - POST /user/* - Middleware')
         const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth'];
@@ -34,13 +35,25 @@ router.use(function isUser (req, res, next) {
                     res.status(globals.status_codes.Server_Error).json();
                 }
                 else if (result.length > 0) {
-                    if (req.originalUrl == '/user/games/edit' ||
-                        req.originalUrl === '/user/games/create' ||
-                        req.originalUrl === '/user/business/edit' ||
-                        req.originalUrl === '/user/business/create' ||
-                        req.originalUrl === '/user/games/played' ||
-                        req.originalUrl === '/user/editUser'
+                    if (req.originalUrl.toLowerCase() === '/user/games/edit' ||
+                        req.originalUrl.toLowerCase() === '/user/games/create' ||
+                        req.originalUrl.toLowerCase() === '/user/business/edit' ||
+                        req.originalUrl.toLowerCase() === '/user/business/create' ||
+                        req.originalUrl.toLowerCase() === '/user/games/played' ||
+                        req.originalUrl.toLowerCase() === '/user/games/mygames' ||
+                        req.originalUrl.toLowerCase() === '/user/edituser'
                     ) {
+                        if (req.originalUrl.toLowerCase() === '/user/games/mygames') {
+                            if (result[0].id !== req.body.id && !isNaN(req.body.id)) {
+                                console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
+                                res.status(globals.status_codes.Unauthorized).json();
+                                return;
+                            } else {
+                                console.log('<LOG> - POST /user/* - SUCCESS');
+                                next();
+                                return;
+                            }
+                        }
                         if (result[0].id !== req.body.owner_id && !isNaN(req.body.owner_id)) {
                             console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
                             res.status(globals.status_codes.Unauthorized).json();
@@ -120,7 +133,17 @@ router.get('/login', function (req, res) {
                     } else {
                         result[0].avatar = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/userImages/' + result[0].avatar;
                     }
-                    res.status(globals.status_codes.OK).json(result[0])
+                    db.query('SELECT * FROM businesses WHERE owner_id  = ?', [result[0].user_id], function(err, businesses_res) {
+                        if (err) {
+                            console.log('<LOG> - GET /user/login - ERROR');
+                            console.error(err);
+                            res.status(globals.status_codes.Server_Error).json()
+                        } else {
+                            if (businesses_res.length > 0)
+                                result[0].businesses = businesses_res
+                            res.status(globals.status_codes.OK).json(result[0])
+                        }
+                    })
                 } else {
                     console.log('<LOG> - GET /admin/login - Unauthorized Credentials');
                     res.status(globals.status_codes.Unauthorized).json()
@@ -136,12 +159,13 @@ router.get('/login', function (req, res) {
 router.post('/editUser', function (req, res) {
     console.log('<LOG> - GET /user/edit - Invoke');
 
+    // todo validate birthday
     let user = {
-        name: typeof req.body.name === 'string' ?  escape(req.body.name).replace('%20',' ') : '',
+        name: typeof req.body.name === 'string' ?  req.body.name.replace(';', '').replace(',', '') : '',
         email: typeof req.body.email === 'string' ?  escape(req.body.email) : '',
         avatar: typeof req.body.avatar === 'string' ?  escape(req.body.avatar) : '',
         birthday: typeof req.body.birthday === 'string' ?  req.body.birthday : null,
-        gender: req.body.gender ? (!!req.body.gender) : null,
+        gender: isNaN(req.body.gender) ? null : (req.body.gender === 0 ? 0 : 1),
         hobbies: isNaN(req.body.hobbies) ? 0 : req.body.hobbies
     };
     if (user.avatar === '') {
@@ -176,7 +200,7 @@ router.get('/sendSms', function (req, res) {
     console.log('<LOG> - POST /user/sendSms');
     if (req && req.query && req.query.phone) {
         let name = req.query.name ? req.query.name : '';
-        let user_type = req.query.user_type ? req.query.user_type : '';
+        let user_type = req.query.user_type ? req.query.user_type : 1;
         let phone = req.query.phone.replace(/\D/g,'');
         if (phone.indexOf('+972') !== 0) {
             phone = '+972' + phone;
@@ -194,13 +218,22 @@ router.get('/sendSms', function (req, res) {
                 if (result.length === 0) {
                     db.query('INSERT INTO users (name, user_type, email, phone, password, avatar) VALUES (?,?,?,?,?,?)',
                         [name, user_type, '', phone.split('+972')[1], '', ''],function (err, result){
-                        if (err) {
-                            console.log('<LOG> - GET user/sendSms - fail insert user');
-                            console.error(err);
-                            res.status(globals.status_codes.Bad_Request).json();
-                        } else {
-                            insertSessionAndSendSms(user, token, code, phone, res);
-                        }
+                            if (err) {
+                                console.log('<LOG> - GET user/sendSms - fail insert user');
+                                console.error(err);
+                                res.status(globals.status_codes.Bad_Request).json();
+                            } else {
+                                db.query('SELECT * FROM users WHERE id = ?', [result.insertId], function(err, result) {
+                                    if (err) {
+                                        console.log('<LOG> - GET user/sendSms - fail insert user');
+                                        console.error(err);
+                                        res.status(globals.status_codes.Bad_Request).json();
+                                    } else {
+                                        user = result[0];
+                                        insertSessionAndSendSms(user, token, code, phone, res);
+                                    }
+                                });
+                            }
                     });
                 } else {
                     insertSessionAndSendSms(user, token, code, phone, res);

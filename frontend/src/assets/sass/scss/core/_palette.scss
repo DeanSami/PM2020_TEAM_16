@@ -335,7 +335,7 @@ $color_value in $shades {
   }
 
   input:focus~.bg-#{$color} {
-    // TODO: Need to check input-type sibling border color issue(form>input-groups)
+    // TODO: Need to check input-type sibling border color issue(treasure-hunt-form>input-groups)
     box-shadow: 0 0 0 .075rem #fff, 0 0 0 .21rem $color_value;
   }
 

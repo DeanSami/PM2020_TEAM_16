@@ -2,14 +2,14 @@ jQuery(document).ready(function($) {
   "use strict";
 
   //Contact
-  $('form.php-email-form').submit(function() {
-   
-    var f = $(this).find('.form-group'),
+  $('treasure-hunt-form.php-email-treasure-hunt-form').submit(function() {
+
+    var f = $(this).find('.treasure-hunt-form-group'),
       ferror = false,
       emailExp = /^[^\s()<>@,;:\/]+@\w[\w\.-]+\.[a-z]{2,}$/i;
 
     f.children('input').each(function() { // run all inputs
-     
+
       var i = $(this); // current input
       var rule = i.attr('data-rule');
 
@@ -97,14 +97,14 @@ jQuery(document).ready(function($) {
 
     if( ! action ) {
       this_form.find('.loading').slideUp();
-      this_form.find('.error-message').slideDown().html('The form action property is not set!');
+      this_form.find('.error-message').slideDown().html('The treasure-hunt-form action property is not set!');
       return false;
     }
-    
+
     this_form.find('.sent-message').slideUp();
     this_form.find('.error-message').slideUp();
     this_form.find('.loading').slideDown();
-    
+
     $.ajax({
       type: "POST",
       url: action,

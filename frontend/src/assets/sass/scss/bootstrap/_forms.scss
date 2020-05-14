@@ -79,7 +79,7 @@ form{
         }
     }
 
-    /* .form-body{
+    /* .treasure-hunt-form-body{
         overflow: hidden;
     } */
 
@@ -204,8 +204,8 @@ select.form-control {
 }
 
 
-/* 
-TODO:M: To check with latest bootstrap version and remove it. 
+/*
+TODO:M: To check with latest bootstrap version and remove it.
 Bootstrap Enhance */
 // Custom checkbox
 .custom-control{
@@ -267,10 +267,10 @@ select.form-control-xl:not([size]):not([multiple]){
 }
 
 [dir="rtl"]{
-    form{  
-        .form-control-position{      
+    form{
+        .form-control-position{
             left: 0;
-            right: auto;        
+            right: auto;
         }
         .has-icon-left{
             .form-control-position{
@@ -288,16 +288,16 @@ select.form-control-xl:not([size]):not([multiple]){
                 padding-right: auto;
             }
         }
-        
 
-        .form-actions{ 
+
+        .form-actions{
             &.right{
                 text-align: left;
-            }       
+            }
 
             @include media-breakpoint-down(sm) {
                 .buttons-group{
-                    float: right !important;               
+                    float: right !important;
                 }
             }
         }
@@ -313,46 +313,46 @@ select.form-control-xl:not([size]):not([multiple]){
         }
 
         &.row-separator{
-            .form-group{           
-                > div{                
+            .form-group{
+                > div{
                     padding-left: 0;
                     padding-right: auto;
-                }            
+                }
             }
         }
 
         &.form-bordered{
             .form-group{
-                
-                > div{               
+
+                > div{
                     padding-left: 0;
                     padding-right: auto;
                     border-right: 1px solid darken($body-bg, 3%);
-                }           
+                }
             }
         }
 
         &.striped-rows{
-            .form-group{            
-                > div{               
+            .form-group{
+                > div{
                     padding-left: 0;
                     padding-right: auto;
                 }
-                
+
             }
         }
 
         &.striped-labels{
-            .form-group{           
-                > div{                
+            .form-group{
+                > div{
                     padding-left: 0;
                     padding-right: auto;
-                }           
+                }
             }
         }
     }
 
-    .custom-control-indicator{  
+    .custom-control-indicator{
     + .custom-control-description{
         margin-right: 1rem;
         margin-left: auto;
@@ -360,7 +360,7 @@ select.form-control-xl:not([size]):not([multiple]){
     }
 
 
-    .input-group-addon input[type="radio"], .input-group-addon input[type="checkbox"]{   
+    .input-group-addon input[type="radio"], .input-group-addon input[type="checkbox"]{
         margin-right: -1rem;
         margin-left: auto;
     }

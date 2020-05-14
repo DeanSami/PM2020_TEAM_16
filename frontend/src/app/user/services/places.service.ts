@@ -8,6 +8,7 @@ import {Observable} from 'rxjs';
 })
 export class PlacesService {
 
+
   constructor(private api: ApiProviderService) { }
 
   getInterestPoints(): Observable<Place[]> {

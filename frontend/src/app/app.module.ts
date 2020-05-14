@@ -58,12 +58,17 @@ import { LoginModalComponent } from './user/login-modal/login-modal.component';
 import { RegisterModalComponent } from './user/register-modal/register-modal.component';
 import { MyGamesComponent } from './user/my-games/my-games.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { NewTreasureHuntComponent } from './user/businessOwner/new-treasure-hunt/new-treasure-hunt.component';
+import { TreasureHuntFormComponent } from './user/businessOwner/treasure-hunt/treasure-hunt-form/treasure-hunt-form.component';
 import { MatNativeDateModule } from '@angular/material/core';
 import {UserDogParksResolver} from './user/resolvers/userDogParksResolver.resolver';
 import {MatStepperModule} from '@angular/material/stepper';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import {MatExpansionModule} from "@angular/material/expansion";
+import {GamesService} from './user/services/games.service';
+import { BusinessInfoComponent } from './user/businessOwner/business-info/business-info.component';
+import { TreasureHuntViewComponent } from './user/businessOwner/treasure-hunt/treasure-hunt-view.component';
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -96,7 +101,9 @@ export function createTranslateLoader(http: HttpClient) {
     LoginModalComponent,
     RegisterModalComponent,
     MyGamesComponent,
-    NewTreasureHuntComponent
+    TreasureHuntFormComponent,
+    BusinessInfoComponent,
+    TreasureHuntViewComponent
   ],
   imports: [
     HttpClientModule,
@@ -143,6 +150,8 @@ export function createTranslateLoader(http: HttpClient) {
     MatStepperModule,
     MatRadioModule,
     MatCheckboxModule,
+    MatExpansionModule,
+    MatPaginatorModule,
   ],
   exports: [
     MatSidenavModule,
@@ -159,7 +168,8 @@ export function createTranslateLoader(http: HttpClient) {
     InterestingPointResolver,
     ApiProviderService,
     LoadingService,
-    UserDogParksResolver
+    UserDogParksResolver,
+    GamesService
   ],
   bootstrap: [AppComponent],
 })
