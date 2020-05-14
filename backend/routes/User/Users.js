@@ -115,6 +115,47 @@ router.use('/games', GAMES);
 router.use('/places', PLACES);
 router.use('/business', BUSINESS);
 
+
+router.post('/editUser', function (req, res) {
+    console.log('<LOG> - GET /user/edit - Invoke');
+
+    // todo validate birthday
+    let user = {
+        name: typeof req.body.name === 'string' ?  req.body.name.replace(';', '').replace(',', '') : '',
+        email: typeof req.body.email === 'string' ?  escape(req.body.email) : '',
+        avatar: typeof req.body.avatar === 'string' ?  escape(req.body.avatar) : '',
+        birthday: typeof req.body.birthday === 'string' ?  req.body.birthday : null,
+        gender: isNaN(req.body.gender) ? null : (req.body.gender === 0 ? 0 : 1),
+        hobbies: isNaN(req.body.hobbies) ? 0 : req.body.hobbies
+    };
+    if (user.avatar === '') {
+        delete user.avatar;
+    }
+    if (user.email === '') {
+        delete user.email;
+    }
+    if (user.name === '') {
+        delete user.name;
+    }
+    if (user.birthday === '') {
+        delete user.birthday;
+    }
+    if (user.gender === null) {
+        delete user.gender;
+    }
+
+    db.query('UPDATE users SET ? WHERE id = ?', [user, req.body.id], function(err, result) {
+        if (err) {
+            console.log('<LOG> - GET /user/edit - ERROR');
+            console.error(err);
+            res.status(globals.status_codes.Server_Error).json()
+        } else {
+            console.log('<LOG> - GET /user/login - SUCCESS');
+            res.status(globals.status_codes.OK).json()
+        }
+    })
+});
+
 router.get('/login', function (req, res) {
     console.log('<LOG> - GET /user/login - Invoke');
     const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
@@ -156,45 +197,6 @@ router.get('/login', function (req, res) {
     }
 });
 
-router.post('/editUser', function (req, res) {
-    console.log('<LOG> - GET /user/edit - Invoke');
-
-    // todo validate birthday
-    let user = {
-        name: typeof req.body.name === 'string' ?  req.body.name.replace(';', '').replace(',', '') : '',
-        email: typeof req.body.email === 'string' ?  escape(req.body.email) : '',
-        avatar: typeof req.body.avatar === 'string' ?  escape(req.body.avatar) : '',
-        birthday: typeof req.body.birthday === 'string' ?  req.body.birthday : null,
-        gender: isNaN(req.body.gender) ? null : (req.body.gender === 0 ? 0 : 1),
-        hobbies: isNaN(req.body.hobbies) ? 0 : req.body.hobbies
-    };
-    if (user.avatar === '') {
-        delete user.avatar;
-    }
-    if (user.email === '') {
-        delete user.email;
-    }
-    if (user.name === '') {
-        delete user.name;
-    }
-    if (user.birthday === '') {
-        delete user.birthday;
-    }
-    if (user.gender === null) {
-        delete user.gender;
-    }
-
-    db.query('UPDATE users SET ? WHERE id = ?', [user, req.body.id], function(err, result) {
-        if (err) {
-            console.log('<LOG> - GET /user/edit - ERROR');
-            console.error(err);
-            res.status(globals.status_codes.Server_Error).json()
-        } else {
-            console.log('<LOG> - GET /user/login - SUCCESS');
-            res.status(globals.status_codes.OK).json()
-        }
-    })
-});
 
 router.get('/sendSms', function (req, res) {
     console.log('<LOG> - POST /user/sendSms');
