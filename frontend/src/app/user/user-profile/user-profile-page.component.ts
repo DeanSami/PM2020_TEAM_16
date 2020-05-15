@@ -1,14 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import {AwsS3Service} from '../aws-s3.service';
-import {ToastrService} from 'ngx-toastr';
-import {UserAuthService} from '../user-auth.service';
-import {User, UserHobbies, UserType} from '../../models/users';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from "@angular/router";
-import {Place} from "../../models/places";
-import { PlacesService } from "../services/places.service";
+import { Component, OnInit } from '@angular/core';
+import { AwsS3Service } from '../aws-s3.service';
+import { ToastrService } from 'ngx-toastr';
+import { UserAuthService } from '../user-auth.service';
+import { User, UserHobbies, UserType } from '../../models/users';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Place } from '../../models/places';
+import { PlacesService } from '../services/places.service';
 import { GamesService } from '../services/games.service';
 import { Games } from '../../models/Games';
+import { BusinessesService } from '../services/businesses.service';
+import { Businesses } from '../../models/businesses';
 
 
 @Component({
@@ -29,12 +30,14 @@ export class UserProfilePageComponent implements OnInit {
   userTypes = UserType;
   dogParks: Place[] = [];
   myGames: Games[] = [];
+  myBusinesses: Businesses[] = [];
 
   constructor(
     private placesService: PlacesService,
     private uploadService: AwsS3Service,
     private toastr: ToastrService,
     private userService: UserAuthService,
+    private businessService: BusinessesService,
     private gameService: GamesService) { }
 
   form = new FormGroup({
@@ -64,15 +67,20 @@ export class UserProfilePageComponent implements OnInit {
     this.userService.currentUser.subscribe(user => {
       this.currentUser = user;
       if (user.user_type === UserType.BusinessOwner) {
-        this.placesService.getDogParks().subscribe(parks => {
-          this.dogParks = parks;
-          console.log('user profile', this.dogParks)
+        this.gameService.getGames({owner_id: user.id}).subscribe(games => {
+          this.myGames = games;
+        }, err => {
+          console.log(err);
+        });
+      } else {
+        this.gameService.getGamesPlayedById(user.id).subscribe(games => {
+          this.myGames = games;
         }, err => {
           console.log(err);
         });
       }
-      this.gameService.getGames({owner_id: user.id}).subscribe(games => {
-        this.myGames = games;
+      this.placesService.getDogParks().subscribe(parks => {
+        this.dogParks = parks;
       }, err => {
         console.log(err);
       });

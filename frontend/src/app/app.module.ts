@@ -69,6 +69,7 @@ import {GamesService} from './user/services/games.service';
 import { BusinessInfoComponent } from './user/businessOwner/business-info/business-info.component';
 import { TreasureHuntViewComponent } from './user/businessOwner/treasure-hunt/treasure-hunt-view.component';
 import {MatPaginatorModule} from "@angular/material/paginator";
+import { BusinessViewComponent } from './user/businessOwner/business-info/business-view/business-view.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -103,7 +104,8 @@ export function createTranslateLoader(http: HttpClient) {
     MyGamesComponent,
     TreasureHuntFormComponent,
     BusinessInfoComponent,
-    TreasureHuntViewComponent
+    TreasureHuntViewComponent,
+    BusinessViewComponent
   ],
   imports: [
     HttpClientModule,

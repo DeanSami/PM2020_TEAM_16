@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { User } from '../models/users';
+import { User, UserType } from '../models/users';
 import { LocalStorage } from 'ngx-store';
 import { ApiProviderService } from '../services/api-provider.service';
 import { Router } from '@angular/router';
@@ -49,10 +49,10 @@ export class UserAuthService {
     });
   }
 
-  sendSms(phone: string) {
+  sendSms(data: {phone: string, user_type: UserType}) {
     // this.token = '9c5bdc6363628534ce952b409a8b55bb';
     return new Promise((resolve, reject) => {
-        this.api.get('user/sendSms', {phone}).subscribe((response: SmsResponse) => {
+        this.api.get('user/sendSms', data).subscribe((response: SmsResponse) => {
           resolve();
         }, err => {
           reject(err);

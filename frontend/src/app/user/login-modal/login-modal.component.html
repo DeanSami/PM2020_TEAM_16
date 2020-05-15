@@ -20,9 +20,11 @@
     </mat-form-field>
   </form>
 
-  <div *ngIf="isRegister" fxFill class="custom-control custom-checkbox custom-control-inline mb-1" >
-    <input type="checkbox" id="rememberCheckBox" class="custom-control-input" />
-    <label class="custom-control-label" for="rememberCheckBox" > בעל עסק</label>
+  <div *ngIf="!setValidationCode"  fxFill class="custom-control custom-checkbox custom-control-inline mb-1" >
+    <mat-radio-group aria-label="Select an option" [(ngModel)]="userChoose">
+      <mat-radio-button [value]="userTypes.BusinessOwner">בעל עסק</mat-radio-button>
+      <mat-radio-button [value]="userTypes.DogOwner">בעל כלב</mat-radio-button>
+    </mat-radio-group>
   </div>
   <button *ngIf="!setValidationCode" fxFill class="btn btn-primary" (click)="sendSms()">שלח לי קוד אימות</button>
   <button *ngIf="setValidationCode" fxFill class="btn btn-primary" (click)="checkCode()">התחבר</button>

@@ -43,24 +43,29 @@ router.get('/' , function(req, res) {
                     console.error(err);
                     res.status(globals.status_codes.Server_Error).json();
                 } else {
-                    let games = JSON.parse(JSON.stringify(games_result));
-                    let query = `SELECT * FROM game_steps WHERE game_id = ?;`.repeat(games.length).slice(0, -1);
-                    let ids = []
-                    for (game of games)  {
-                        ids.push(game.id);
-                    }
-
-                    db.query(query, ids, function (err, steps_result) {
-                        if (err) {
-                            console.log('<LOG> - GET /user/games/get - ERROR');
-                            console.error(err);
-                            res.status(globals.status_codes.Server_Error).json();
-                        } else {
-                            for (let i = 0; i < games.length; i++) games[i].steps = steps_result[i];
-                            console.log('<LOG> - GET /user/games/get - SUCCESS');
-                            res.status(globals.status_codes.OK).json(games)
+                    if (games_result && games_result.length > 0) {
+                        let games = JSON.parse(JSON.stringify(games_result));
+                        let query = `SELECT * FROM game_steps WHERE game_id = ?;`.repeat(games.length).slice(0, -1);
+                        let ids = []
+                        for (game of games)  {
+                            ids.push(game.id);
                         }
-                    });
+
+                        db.query(query, ids, function (err, steps_result) {
+                            if (err) {
+                                console.log('<LOG> - GET /user/games/get - ERROR');
+                                console.error(err);
+                                res.status(globals.status_codes.Server_Error).json();
+                            } else {
+                                for (let i = 0; i < games.length; i++) games[i].steps = steps_result[i];
+                                console.log('<LOG> - GET /user/games/get - SUCCESS');
+                                res.status(globals.status_codes.OK).json(games)
+                            }
+                        });
+                    } else {
+                        console.log('<LOG> - GET /user/games/get - SUCCESS');
+                        res.status(globals.status_codes.OK).json([]);
+                    }
                 }
             })
         } else {

@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Businesses} from "../../../models/businesses";
-import {ActivatedRoute} from "@angular/router";
-import {UserAuthService} from "../../user-auth.service";
-import {ToastrService} from "ngx-toastr";
-import {BusinessesService} from "../../services/businesses.service";
-import {User} from "../../../models/users";
+import { Businesses} from '../../../models/businesses';
+import {UserAuthService} from '../../user-auth.service';
+import {ToastrService} from 'ngx-toastr';
+import {BusinessesService} from '../../services/businesses.service';
 
 @Component({
   selector: 'app-create-business-info',
@@ -20,64 +18,65 @@ export class BusinessInfoComponent implements OnInit {
   constructor(
     private userAuth: UserAuthService,
     private toastr: ToastrService,
-    private BusinessesService: BusinessesService
+    private businessesService: BusinessesService
   ) { }
 
   ngOnInit(): void {
     this.userAuth.currentUser.subscribe(user => {
-      let hasNoBusinesses = user.businesses === undefined
+      const hasNoBusinesses = user.businesses === undefined;
       this.businessesInfo = !hasNoBusinesses ? user.businesses : [this.initBusinessInfo()];
       this.edit = !hasNoBusinesses;
-      this.currentBusiness = this.businessesInfo[0]
+      this.currentBusiness = this.businessesInfo[0];
     });
   }
 
   initBusinessInfo(): Businesses {
     return {
-      address: "",
-      description: "",
+      address: '',
+      description: '',
       dog_friendly: false,
-      image: "",
-      name: "",
+      image: '',
+      name: '',
       owner_id: 0,
-      phone: "",
-      type: 2
-    }
+      phone: '',
+      type: 1
+    };
   }
 
   publishNewBusiness(): void {
-    this.userAuth.currentUser.subscribe(user => this.currentBusiness.owner_id = user.id)
-    this.BusinessesService.createNewBusiness(this.currentBusiness).subscribe(res => {
+    this.userAuth.currentUser.subscribe(user => this.currentBusiness.owner_id = user.id);
+    this.businessesService.createNewBusiness(this.currentBusiness).subscribe(res => {
       this.toastr.success('העסק נוצר בהצלחה!');
       this.businessesInfo.push(this.currentBusiness);
       this.currentBusiness = this.initBusinessInfo();
     }, err => {
       this.toastr.error('משהו השתבש!');
-      console.log(err)
-    })
+      console.log(err);
+    });
   }
 
   updateEditForm(event: any): void {
-    if (event.value == -1) {
+    if (event.value === -1) {
       this.currentBusiness = this.initBusinessInfo();
       this.edit = false;
     } else {
-      for (var i = 0; i < this.businessesInfo.length; i += 1) {
-        if (this.businessesInfo[i]['id'] === event.value) {
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < this.businessesInfo.length; i += 1) {
+        if (this.businessesInfo[i].id === event.value) {
           this.currentBusiness = this.businessesInfo[i];
-          this.edit = true
+          this.edit = true;
         }
       }
     }
   }
 
   editCurrentBusiness(): void {
-    this.BusinessesService.updateBusiness(this.currentBusiness).subscribe(res => {
+    this.businessesService.updateBusiness(this.currentBusiness).subscribe(res => {
       this.toastr.success('העסק עודכן בהצלחה!');
     }, err => {
       this.toastr.error('משהו השתבש!');
-      console.log(err)
-    })
+      console.log(err);
+    });
   }
 
 }

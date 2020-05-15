@@ -6,7 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Place } from '../../models/places';
 import { ToastrService } from 'ngx-toastr';
 import { UserAuthService } from '../user-auth.service';
-import { User } from '../../models/users';
+import { User, UserType } from '../../models/users';
 
 @Component({
   selector: 'app-login-modal',
@@ -20,6 +20,8 @@ export class LoginModalComponent implements OnInit {
   loading = false;
   setValidationCode = false;
   currentUser: User;
+  userTypes = UserType;
+  userChoose = UserType.DogOwner;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public isRegister: boolean,
@@ -56,7 +58,7 @@ export class LoginModalComponent implements OnInit {
   sendSms() {
     this.loading = true;
     if (this.phone.valid) {
-      this.userService.sendSms(this.phone.value).then(() => {
+      this.userService.sendSms({phone: this.phone.value, user_type: this.userChoose}).then(() => {
         this.loading = false;
         this.toastr.success('קוד אימות נשלח לנייד');
         this.setValidationCode = true;

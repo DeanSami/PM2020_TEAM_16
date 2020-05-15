@@ -16,7 +16,7 @@ export class BusinessesService {
   }
 
   getBusiness(id: number): Observable<Businesses> {
-    return this.api.post('user/business', {id: id})
+    return this.api.post('user/business', {id});
   }
 
   updateBusiness(business: Businesses): Observable<Businesses> {

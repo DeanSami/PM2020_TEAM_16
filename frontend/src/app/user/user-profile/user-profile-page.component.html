@@ -252,7 +252,8 @@
 <!--User's uploaded photos section starts-->
 <section id="business" *ngIf="currentUser.user_type === userTypes.BusinessOwner && currentPage === 'business'">
   <div class="container">
-    <app-create-business-info></app-create-business-info>
+    <app-business-view [myBusinesses]="currentUser.businesses"></app-business-view>
+<!--    <app-create-business-info></app-create-business-info>-->
   </div>
 </section>
 <!--User's uploaded photos section starts-->

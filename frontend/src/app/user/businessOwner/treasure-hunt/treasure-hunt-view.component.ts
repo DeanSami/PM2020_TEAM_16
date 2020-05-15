@@ -14,17 +14,17 @@ import { User } from '../../../models/users';
   styleUrls: ['./treasure-hunt-view.component.scss']
 })
 export class TreasureHuntViewComponent implements OnInit {
-
   displayedColumns: string[] = ['owner_id', 'name', 'start', 'end', 'start_location', 'finish_location', 'action']
   myGames: Games[];
   dataSource: MatTableDataSource<Games>;
   private currentUser: User;
   @Input() dogParks;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+
   constructor(public dialog: MatDialog,
               private gamesService: GamesService,
               private userAuthService: UserAuthService) { }
 
-              @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   ngOnInit(): void {
     this.userAuthService.currentUser.subscribe(res => this.currentUser = res, err => console.log(err));
     this.gamesService.getGames({owner_id: this.currentUser.id}).subscribe(result => {
