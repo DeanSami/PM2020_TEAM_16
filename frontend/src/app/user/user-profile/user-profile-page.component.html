@@ -25,17 +25,25 @@
                 </a>
                 <div class="profile-section">
                   <ul class="profile-menu no-list-style">
-                    <li>
-                        <a (click)="showPage('About')" [ngClass]="currentPage === 'About' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">פרטים אישיים</a>
+                    <li class="col-3">
+                      <div [ngClass]="currentPage === 'About' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">
+                        <a (click)="showPage('About')" >פרטים אישיים</a>
+                      </div>
                     </li>
-                    <li>
-                        <a (click)="showPage('TimeLine')" [ngClass]="currentPage === 'TimeLine' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">המשחקים שלי</a>
+                    <li class="col-3">
+                      <div [ngClass]="currentPage === 'TimeLine' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">
+                        <a (click)="showPage('TimeLine')" >המשחקים שלי</a>
+                      </div>
                     </li>
-                    <li>
-                      <a (click)="showPage('Friends')" [ngClass]="currentPage === 'Friends' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">משחקי עבר</a>
+                    <li class="col-3">
+                      <div [ngClass]="currentPage === 'Friends' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">
+                      <a (click)="showPage('Friends')" >משחקי עבר</a>
+                      </div>
                     </li>
-                    <li *ngIf="currentUser.user_type === userTypes.BusinessOwner">
-                      <a (click)="showPage('business')" [ngClass]="currentPage === 'business' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">העסקים שלי</a>
+                    <li class="col-3">
+                      <div [ngClass]="currentPage === 'business' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">
+                        <a *ngIf="currentUser.user_type === userTypes.BusinessOwner" (click)="showPage('business')" >העסקים שלי</a>
+                      </div>
                     </li>
                   </ul>
                 </div>

@@ -1,7 +1,12 @@
 .profile-menu{
-    .active{
+    li {
+      display: flex;
+      place-content: center;
+
+      .active{
         border-bottom: 2px solid;
         margin-bottom: -2px;
+      }
     }
 }
 section {

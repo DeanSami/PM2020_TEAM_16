@@ -33,6 +33,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background-color: rgba(25, 152, 155, 0.54)!important;
 }
 
+.mat-step-header .mat-step-icon-selected,
+.mat-step-header .mat-step-icon-state-done,
+.mat-step-header .mat-step-icon-state-edit {
+  background-color: rgba(25, 152, 155, 0.54)!important;
+}
+
+.mat-vertical-content-container {
+  padding: 20px 0 0 0!important;
+}
+
 input {
   color: #000000!important;
 }

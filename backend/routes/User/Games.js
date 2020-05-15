@@ -177,7 +177,7 @@ router.post('/create', function (req, res) {
                         step.secret_key,
                         step.start_location,
                         step.finish_location,
-                        step.description
+                        step.description ? step.description : ''
                     ]);
                 });
 

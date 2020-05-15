@@ -1,6 +1,5 @@
-<div class="container">
+<div fxLayout="column" fxLayoutAlign="space-around center">
   <h3>{{this.treasureHunt ? 'עדכן משחק' : 'צור משחק'}}</h3>
-  <hr>
   <mat-vertical-stepper #stepper>
     <ng-template matStepperIcon="edit">
       <mat-icon></mat-icon>
@@ -16,21 +15,21 @@
     </ng-template>
 
     <mat-step [stepControl]="basicForm">
-      <form [formGroup]="basicForm">
-        <ng-template matStepLabel>מלא את הפרטים הבסיסיים למשחק</ng-template>
+      <form [formGroup]="basicForm" fxLayout="column" fxLayoutAlign="space-around none">
+        <ng-template matStepLabel>פרטי המשחק</ng-template>
         <mat-form-field appearance="fill">
           <mat-label>כותרת</mat-label>
-          <input matInput placeholder="כותרת" formControlName="title" />
+          <input matInput placeholder="כותרת" formControlName="title"/>
         </mat-form-field>
         <mat-form-field appearance="fill">
           <mat-label>בחר תאריך התחלה</mat-label>
-          <input matInput [matDatepicker]="start_picker" formControlName="start" />
+          <input matInput [matDatepicker]="start_picker" formControlName="start"/>
           <mat-datepicker-toggle matSuffix [for]="start_picker"></mat-datepicker-toggle>
           <mat-datepicker #start_picker></mat-datepicker>
         </mat-form-field>
         <mat-form-field appearance="fill">
           <mat-label>בחר תאריך סיום</mat-label>
-          <input matInput [matDatepicker]="end_picker" formControlName="end" />
+          <input matInput [matDatepicker]="end_picker" formControlName="end"/>
           <mat-datepicker-toggle matSuffix [for]="end_picker"></mat-datepicker-toggle>
           <mat-datepicker #end_picker></mat-datepicker>
         </mat-form-field>
@@ -46,74 +45,78 @@
             <mat-option *ngFor="let place of dogParks" [value]="place.id">{{place.name}}</mat-option>
           </mat-select>
         </mat-form-field>
-        <div>
-          <button mat-stroked-button color="primary" matStepperNext >המשך</button>
+        <div fxLayout="row" fxLayoutAlign="end center">
+          <button type="button" class="btn btn-primary btn-raise" matStepperNext><i class="ft-chevrons-left"></i>המשך
+          </button>
         </div>
       </form>
     </mat-step>
 
     <mat-step [stepControl]="stepsForm" [formGroup]="stepsForm">
-      <form [formGroup]="stepsForm">
-          <ng-template matStepLabel>בחר צעדים למשחק</ng-template>
-
-          <mat-form-field appearance="fill">
-            <mat-label>מיקום הצעד</mat-label>
-            <mat-select required formControlName="location">
-              <mat-option *ngFor="let place of dogParks" [value]="place.id">{{place.name}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="fill">
-            <mat-label>קוד סודי</mat-label>
-            <input matInput placeholder="קוד סודי" formControlName="secret_key" />
-          </mat-form-field>
-          <mat-form-field appearance="fill">
-            <mat-label>תיאור</mat-label>
-            <input matInput placeholder="תיאור" formControlName="description" />
-          </mat-form-field>
-          <button mat-stroked-button color="primary" (click)="pushNewStep()">הוסף צעד נוסף</button>
+      <form [formGroup]="stepsForm" fxLayout="column" fxLayoutAlign="space-around none">
+        <ng-template matStepLabel>שלבי המשחק</ng-template>
+        <mat-form-field appearance="fill">
+          <mat-label>מיקום הצעד</mat-label>
+          <mat-select required formControlName="location">
+            <mat-option *ngFor="let place of dogParks" [value]="place.id">{{place.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>קוד סודי</mat-label>
+          <input matInput placeholder="קוד סודי" formControlName="secret_key"/>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>תיאור</mat-label>
+          <input matInput placeholder="תיאור" formControlName="description"/>
+        </mat-form-field>
+        <div fxLayout="row" fxLayoutAlign="space-between center" >
+          <button type="button" class="btn btn-primary btn-raise" (click)="pushNewStep()"><i class="ft-plus"></i>הוסף
+            שלב
+          </button>
+          <button type="button" class="btn btn-primary btn-raise" (click)="toggleSteps()"><i [className]="showSteps ? 'ft-eye-off' : 'ft-eye'" class="ft-chevrons-left"></i>הצג שלבים
+          </button>
+          <button type="button" class="btn btn-primary btn-raise" matStepperNext><i class="ft-chevrons-left"></i>המשך
+          </button>
+        </div>
       </form>
 
-          <mat-accordion>
-            <mat-expansion-panel *ngFor="let step of steps" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  {{'#' + step.step_num + ' - ' + step.name}}
-                </mat-panel-title>
-                <mat-panel-description>
-                  <p>{{step.description}}</p>
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              <p>
-                מיקום התחלתי לצעד
-                {{step.start_location}}<br/>
-                מיקום סופי לצעד
-                {{step.finish_location}}<br/>
-                קוד סודי
-                {{step.secret_key}}<br/>
+      <mat-accordion *ngIf="showSteps">
+        <mat-expansion-panel *ngFor="let step of steps" (opened)="panelOpenState = true"
+                             (closed)="panelOpenState = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{'#' + step.step_num + ' - ' + step.name}}
+            </mat-panel-title>
+            <mat-panel-description>
+              <p>{{step.description}}</p>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>
+            מיקום התחלתי לצעד
+            {{step.start_location}}<br/>
+            מיקום סופי לצעד
+            {{step.finish_location}}<br/>
+            קוד סודי
+            {{step.secret_key}}<br/>
 
-              </p>
-              <mat-action-row>
-                <button mat-flat-button color="warn" (click)="removeStep(steps.indexOf(step))">X</button>
-              </mat-action-row>
+          </p>
+          <mat-action-row>
+            <button type="button" class="btn btn-danger btn-raise" (click)="removeStep(steps.indexOf(step))"><i class="ft-x"></i>מחק
+            </button>
+          </mat-action-row>
 
-            </mat-expansion-panel>
-          </mat-accordion>
+        </mat-expansion-panel>
+      </mat-accordion>
 
-          <div>
-            <button mat-stroked-button matStepperPrevious>חזור</button>
-            <button mat-stroked-button color="primary" matStepperNext>המשך</button>
-          </div>
     </mat-step>
     <mat-step>
       <ng-template matStepLabel>סיום</ng-template>
-      <button mat-stroked-button color="primary" (click)="this.treasureHunt ? updateGame() : submitGame()">{{this.treasureHunt ? 'עדכן משחק' : 'צור משחק'}}</button>
-      <div>
-        <button mat-stroked-button matStepperPrevious>חזור</button>
-        <button mat-stroked-button color="warn" (click)="stepper.reset()">אפס</button>
+      <div fxLayout="row" fxLayoutAlign="end center">
+        <button type="button" class="btn btn-primary btn-raise" (click)="this.treasureHunt ? updateGame() : submitGame()">
+          <i class="ft-check"></i>{{this.treasureHunt ? 'עדכן משחק' : 'צור משחק'}}</button>
       </div>
     </mat-step>
   </mat-vertical-stepper>
-
 
 
 </div>

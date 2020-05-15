@@ -1,13 +1,13 @@
-import {Component, Inject, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {Gamestep, Games} from '../../../../models/Games';
-import {UserAuthService} from "../../../user-auth.service";
-import {GamesService} from "../../../services/games.service";
-import {ToastrService} from "ngx-toastr";
-import {Place} from "../../../../models/places";
-import {PlacesService} from "../../../services/places.service"
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {UserAuthService} from '../../../user-auth.service';
+import {GamesService} from '../../../services/games.service';
+import {ToastrService} from 'ngx-toastr';
+import {Place} from '../../../../models/places';
+import {PlacesService} from '../../../services/places.service';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-new-treasure-hunt',
@@ -16,6 +16,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 })
 export class TreasureHuntFormComponent implements OnInit {
   currentStepNum = 1;
+  showSteps = false;
   steps: Gamestep[] = [];
   dogParks: Place[];
 
@@ -23,7 +24,7 @@ export class TreasureHuntFormComponent implements OnInit {
     private rout: ActivatedRoute,
     private userAuth: UserAuthService,
     private toastr: ToastrService,
-    private GamesService: GamesService,
+    private gamesService: GamesService,
     private placesService: PlacesService,
     private dialogRef: MatDialogRef<TreasureHuntFormComponent>,
     @Inject(MAT_DIALOG_DATA) public treasureHunt: Games
@@ -67,7 +68,7 @@ export class TreasureHuntFormComponent implements OnInit {
   }
 
   findWithAttr(arr, attr, val) {
-    for (var i = 0; i < arr.length; i += 1) {
+    for (let i = 0; i < arr.length; i += 1) {
       if (arr[i][attr] === val) {
         return i;
       }
@@ -76,50 +77,55 @@ export class TreasureHuntFormComponent implements OnInit {
   }
 
   createNewStep(): Gamestep {
-    let title = this.basicForm.controls.title.value,
-      secret_key = this.stepsForm.controls.secret_key.value,
-      finish_location =this.stepsForm.controls.location.value,
+    // tslint:disable-next-line:variable-name one-variable-per-declaration
+    const secret_key = this.stepsForm.controls.secret_key.value,
+      // tslint:disable-next-line:variable-name
+      finish_location = this.stepsForm.controls.location.value,
       description = this.stepsForm.controls.description.value;
     if (!this.stepsForm.valid) {
-      this.toastr.error('יש להזין את כל השדות הדרושים לצעד');
+      this.toastr.error('יש להזין את כל השדות המסומנים');
       return null;
     }
 
-    let place_index = this.findWithAttr(this.dogParks, 'id', finish_location)
+    // tslint:disable-next-line:variable-name
+    const place_index = this.findWithAttr(this.dogParks, 'id', finish_location);
     if (place_index > -1) {
-      let place = this.dogParks[place_index];
-      let name = place.name;
-      let start_location = this.basicForm.controls.start_location.value
+      const place = this.dogParks[place_index];
+      const name = place.name;
+      // tslint:disable-next-line:variable-name
+      let start_location = this.basicForm.controls.start_location.value;
       if (this.steps.length > 0) {
-        start_location = this.steps[this.steps.length - 1].finish_location
-        this.steps[this.steps.length - 1].finish_location = start_location
+        start_location = this.steps[this.steps.length - 1].finish_location;
+        this.steps[this.steps.length - 1].finish_location = start_location;
       }
-      let step: Gamestep = {
-        name: name,
-        secret_key: secret_key,
-        start_location: start_location,
-        finish_location: finish_location,
+      const step: Gamestep = {
+        name,
+        secret_key,
+        start_location,
+        finish_location,
         step_num: this.currentStepNum++,
-        description: description
+        description
       };
       this.stepsForm.reset();
       Object.keys(this.stepsForm.controls).forEach(key => {
-        this.stepsForm.controls[key].setErrors(null)
+        this.stepsForm.controls[key].setErrors(null);
       });
       return step;
-    } else return;
+    } else { return; }
   }
 
   pushNewStep(): void {
-    if (this.steps.length == 0) {
-      if (this.basicForm.controls.start_location.value == '') {
-        this.toastr.error('יש להזין את כל השדות הבסיסיים למשחק');
+    if (this.steps.length === 0) {
+      if (this.basicForm.controls.start_location.value === '') {
+        this.toastr.error('יש להזין את כל השדות המסומנים');
         return;
       }
     }
-    let newStep = this.createNewStep();
-    if (newStep == null) return;
-    this.steps.push(newStep);
+    const newStep = this.createNewStep();
+    if (newStep) {
+      this.steps.push(newStep);
+    }
+    this.toastr.success('שלב נוסף בהצלחה');
   }
 
   removeStep(index: number) {
@@ -128,18 +134,18 @@ export class TreasureHuntFormComponent implements OnInit {
   }
 
   date_str(date: Date): string {
-    let y = date.getFullYear();
-    let m = date.getMonth()+1;
-    let d = date.getDate();
+    const y = date.getFullYear();
+    const m = date.getMonth() + 1;
+    const d = date.getDate();
     return y + '-' + m + '-' + d;
   }
 
   submitGame(): void {
     if (!this.basicForm.valid) {
-      this.toastr.error('יש להזין את כל השדות הבסיסיים למשחק');
+      this.toastr.error('יש להזין את כל השדות המסומנים');
       return;
     }
-    let game: Games = {
+    const game: Games = {
       owner_id: this.userAuth.currentUser.getValue().id,
       name: this.basicForm.controls.title.value,
       start: this.date_str(new Date(this.basicForm.controls.start.value)),
@@ -147,14 +153,15 @@ export class TreasureHuntFormComponent implements OnInit {
       start_location: this.basicForm.controls.start_location.value,
       finish_location: this.basicForm.controls.finish_location.value,
       steps: this.steps
-    }
-    this.GamesService.createNewGame(game).subscribe((res) => {
+    };
+    this.gamesService.createNewGame(game).subscribe((res) => {
       this.toastr.success('הפעולה הסתיימה בהצלחה!');
-      this.basicForm.reset();
-      Object.keys(this.basicForm.controls).forEach(key => {
-        this.basicForm.controls[key].setErrors(null)
-      });
-      this.steps = [];
+      this.dialogRef.close(game);
+      // this.basicForm.reset();
+      // Object.keys(this.basicForm.controls).forEach(key => {
+      //   this.basicForm.controls[key].setErrors(null);
+      // });
+      // this.steps = [];
     }, err => {
       this.toastr.error('הפעולה נכשלה!');
       console.log('err', err);
@@ -163,10 +170,10 @@ export class TreasureHuntFormComponent implements OnInit {
 
   updateGame(): void {
     if (!this.basicForm.valid) {
-      this.toastr.error('יש להזין את כל השדות הבסיסיים למשחק');
+      this.toastr.error('יש להזין את כל השדות המסומנים');
       return;
     }
-    let game: Games = {
+    const game: Games = {
       id: this.treasureHunt.id,
       owner_id: this.userAuth.currentUser.getValue().id,
       name: this.basicForm.controls.title.value,
@@ -175,14 +182,22 @@ export class TreasureHuntFormComponent implements OnInit {
       start_location: this.basicForm.controls.start_location.value,
       finish_location: this.basicForm.controls.finish_location.value,
       steps: this.steps
-    }
-    this.GamesService.updateGame(game).subscribe((res) => {
+    };
+    this.gamesService.updateGame(game).subscribe((res) => {
       this.toastr.success('הפעולה הסתיימה בהצלחה!');
       this.dialogRef.close(res);
     }, err => {
       this.toastr.error('הפעולה נכשלה!');
       console.log('err', err);
     });
+  }
+
+  toggleSteps() {
+    if (this.steps.length > 0) {
+      this.showSteps = !this.showSteps;
+    } else {
+      this.toastr.error('אין שלבים להציג!');
+    }
   }
 
 }
