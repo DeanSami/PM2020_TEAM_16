@@ -4,7 +4,12 @@ const globals = require('../../globals');
 const router = express.Router();
 const hat = require('hat');
 const AWS = require('aws-sdk');
-const config = require('../../configs/config')
+let config;
+try {
+    config = require('../../configs/config')
+} catch {
+    config = require('../../configs/config.simple')
+}
 AWS.config.update({
     accessKeyId: config.AWS.accessKeyId,
     secretAccessKey: config.AWS.secretAccessKey,
