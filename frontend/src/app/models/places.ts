@@ -12,6 +12,8 @@ export interface Place {
   condition: ConditionType;
   deleted?: boolean;
   active: PlaceActiveType;
+  icon?: string;
+  image?: string;
   created_at?: string;
   update_at?: string;
 }

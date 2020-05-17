@@ -5332,7 +5332,7 @@ tbody.collapse.show {
   display: flex;
   height: 1rem;
   overflow: hidden;
-  font-size: 0.75rem;
+  font-size: 1rem;
   background-color: #e9ecef;
   border-radius: 0.25rem;
   box-shadow: inset 0 0.1rem 0.1rem rgba(0, 0, 0, 0.1);
@@ -13322,7 +13322,7 @@ fieldset[disabled][disabled] .has-rose .form-control,
 
 .bmd-form-group .bmd-help {
   margin-top: 0;
-  font-size: 0.75rem;
+  font-size: 1rem;
 }
 
 .bmd-form-group .form-control.form-control-success,

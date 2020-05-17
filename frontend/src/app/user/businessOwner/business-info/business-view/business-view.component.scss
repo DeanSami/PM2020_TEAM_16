@@ -1,3 +1,6 @@
+table {
+  width: 100%;
+}
 button {
   display: flex;
   min-width: 100px;
@@ -11,11 +14,4 @@ button {
   i {
     padding-left: 5px;
   }
-}
-h3 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-mat-radio-group {
-   margin-right: 1.5rem;
 }

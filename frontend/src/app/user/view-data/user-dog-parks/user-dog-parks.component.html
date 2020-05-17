@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-12 col-lg-4" *ngFor="let park of dogParks">
+    <mat-card class="card m-3">
+      <mat-card-header>
+        <div mat-card-avatar class="header-image">
+          <img mat-card-avatar [src]="park.icon" alt="icon">
+        </div>
+        <mat-card-title>{{park.name}}</mat-card-title>
+        <mat-card-subtitle>מתוחזק ע"י: {{park.operator}}</mat-card-subtitle>
+      </mat-card-header>
+      <img class="cover-image" mat-card-image [src]="park.image" alt="image">
+      <mat-card-content fxLayout="column">
+        <span>מצב המתקן: {{conditionTypeTitles[park.condition]}}</span>
+        <span>מותאם לנכים: {{park.handicapped ? 'כן' : 'לא'}}</span>
+        <span>שכונה: {{park.neighborhood}}</span>
+        <span>רחוב: {{park.street}} {{park.house_number}}</span>
+      </mat-card-content>
+<!--      <mat-card-actions>-->
+<!--        <button mat-button>LIKE</button>-->
+<!--        <button mat-button>SHARE</button>-->
+<!--      </mat-card-actions>-->
+    </mat-card>
+  </div>
+
+</div>

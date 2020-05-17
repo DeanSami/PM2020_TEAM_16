@@ -64,12 +64,15 @@ import {UserDogParksResolver} from './user/resolvers/userDogParksResolver.resolv
 import {MatStepperModule} from '@angular/material/stepper';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import {MatExpansionModule} from "@angular/material/expansion";
+import {MatExpansionModule} from '@angular/material/expansion';
 import {GamesService} from './user/services/games.service';
 import { BusinessInfoComponent } from './user/businessOwner/business-info/business-info.component';
 import { TreasureHuntViewComponent } from './user/businessOwner/treasure-hunt/treasure-hunt-view.component';
-import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatPaginatorModule} from '@angular/material/paginator';
 import { BusinessViewComponent } from './user/businessOwner/business-info/business-view/business-view.component';
+import { ViewDataComponent } from './user/view-data/view-data.component';
+import { UserDogParksComponent } from './user/view-data/user-dog-parks/user-dog-parks.component';
+import { PlacesImageModalComponent } from './admin/places-image-modal/places-image-modal.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -105,7 +108,10 @@ export function createTranslateLoader(http: HttpClient) {
     TreasureHuntFormComponent,
     BusinessInfoComponent,
     TreasureHuntViewComponent,
-    BusinessViewComponent
+    BusinessViewComponent,
+    ViewDataComponent,
+    UserDogParksComponent,
+    PlacesImageModalComponent
   ],
   imports: [
     HttpClientModule,

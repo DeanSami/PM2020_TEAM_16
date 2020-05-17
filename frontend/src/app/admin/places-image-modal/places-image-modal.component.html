@@ -1,0 +1,22 @@
+<mat-card class="card m-3">
+  <mat-card-header>
+    <div mat-card-avatar class="header-image">
+      <input type="file" (change)="selectFile($event, 0)" #iconInput class="d-none" >
+      <img mat-card-avatar [src]="imageSrcIcon || icon" alt="icon" (click)="iconInput.click()">
+    </div>
+    <mat-card-title>{{currentPlace.name}}</mat-card-title>
+    <mat-card-subtitle>מתוחזק ע"י: {{currentPlace.operator}}</mat-card-subtitle>
+  </mat-card-header>
+  <input type="file" (change)="selectFile($event, 1)" #imageInput class="d-none" >
+  <img class="cover-image" mat-card-image [src]="imageSrcImage || image" alt="image" (click)="imageInput.click()">
+  <mat-card-content fxLayout="column">
+    <span>מצב המתקן: {{conditionTypeTitles[currentPlace.condition]}}</span>
+    <span>מותאם לנכים: {{currentPlace.handicapped ? 'כן' : 'לא'}}</span>
+    <span>שכונה: {{currentPlace.neighborhood}}</span>
+    <span>רחוב: {{currentPlace.street}} {{currentPlace.house_number}}</span>
+  </mat-card-content>
+</mat-card>
+<div fxLayout="row" fxLayoutAlign="space-between center">
+  <button *ngIf="dialogData" class="btn btn-raised mr-1 btn-primary" (click)="uploadImage()">שמור</button>
+
+</div>

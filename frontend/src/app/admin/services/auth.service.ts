@@ -45,10 +45,10 @@ export class AuthService {
           reject(err);
         });
       } else if (this.token) {
-        this.api.get('admin/login').subscribe((response: LoginResponse) => {
-          if (response.token) {
+        this.api.get('admin/login').subscribe((response: User) => {
+          if (response.session) {
             this.loggedIn = true;
-            this.currentUser.next(response.user);
+            this.currentUser.next(response);
             resolve(this.loggedIn);
           }
           reject(false);

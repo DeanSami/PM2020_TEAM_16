@@ -1,42 +1,40 @@
-<div class="container">
-  <hr>
-  <h5>בחר עסק לעריכה, או צור עסק חדש</h5>
-  <mat-select [value]="currentBusiness.id" *ngIf="businessesInfo.length > 1" (selectionChange)="updateEditForm($event)">
-    <mat-option *ngFor="let business of businessesInfo" [value]="business.id">{{business.name}}</mat-option>
-    <mat-option [value]="-1">צור עסק חדש...</mat-option>
-  </mat-select>
-  <hr>
-  <h1>פרטי העסק</h1>
-  <form>
+<div>
+  <h3>{{myBusinesses && myBusinesses.id ? 'עדכן עסק' : 'צור עסק חדש'}}</h3>
+
+  <form [formGroup]="form" fxLayout="column" fxLayoutAlign="space-around none">
 
     <mat-form-field appearance="fill">
       <mat-label>שם העסק</mat-label>
-      <input matInput placeholder="שם העסק" id="name" required [(ngModel)]="currentBusiness.name" name="name"/>
-    </mat-form-field>
-
-    <mat-form-field appearance="fill">
-      <mat-label>תיאור העסק</mat-label>
-      <input matInput placeholder="תיאור העסק" id="desc" [(ngModel)]="currentBusiness.description" name="desc">
+      <input matInput placeholder="שם העסק" id="name" name="name" formControlName="name" />
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>טלפון</mat-label>
-      <input matInput placeholder="טלפון" id="phone" required [(ngModel)]="currentBusiness.phone" name="phone">
+      <input matInput placeholder="שם העסק" id="phone" formControlName="phone" />
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>כתובת</mat-label>
-      <input matInput placeholder="כתובת" id="addr" [(ngModel)]="currentBusiness.address" name="addr">
+      <input matInput placeholder="שם העסק" id="address" formControlName="address" />
     </mat-form-field>
 
-    <mat-checkbox [(ngModel)]="currentBusiness.dog_friendly" name="dog_friend">עסק ידידותי לכלבים?</mat-checkbox>
-    <hr>
-    <div *ngIf="!edit; else editIt">
-      <button mat-stroked-button color="primary" type="submit" (click)="publishNewBusiness()">פרסם</button>
+    <mat-form-field appearance="fill">
+      <mat-label>תיאור</mat-label>
+      <input matInput placeholder="שם העסק" id="description" formControlName="description" />
+    </mat-form-field>
+    <div fxLayout="column" fxLayoutAlign="start start" >
+      <mat-checkbox id="dog_friendly" formControlName="dog_friendly">עסק ידידותי לכלבים?</mat-checkbox>
+      <label for="type">סוג העסק:</label>
+      <mat-radio-group id="type" fxLayout="column" aria-label="Select an option" formControlName="type">
+        <mat-radio-button [value]="businessesType.Pet_shop">{{businessesTypeTitles[businessesType.Pet_shop]}}</mat-radio-button>
+        <mat-radio-button [value]="businessesType.Barber_Dog">{{businessesTypeTitles[businessesType.Barber_Dog]}}</mat-radio-button>
+      </mat-radio-group>
     </div>
-    <ng-template #editIt>
-      <button mat-stroked-button color="primary" type="submit" (click)="editCurrentBusiness()">עדכן</button>
-    </ng-template>
+
+    <div fxLayout="row" fxLayoutAlign="end center">
+      <button type="button" class="btn btn-primary btn-raise" (click)="save()">
+        <i class="ft-check"></i>{{myBusinesses && myBusinesses.id ? 'עדכן פרטי עסק' : 'צור עסק חדש'}}</button>
+    </div>
 
   </form>
 </div>

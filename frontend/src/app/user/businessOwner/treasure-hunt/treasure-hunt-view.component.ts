@@ -14,7 +14,7 @@ import { User } from '../../../models/users';
   styleUrls: ['./treasure-hunt-view.component.scss']
 })
 export class TreasureHuntViewComponent implements OnInit {
-  displayedColumns: string[] = ['owner_id', 'name', 'start', 'end', 'start_location', 'finish_location', 'action']
+  displayedColumns: string[] = ['name', 'start', 'end', 'start_location', 'finish_location', 'players', 'action'];
   myGames: Games[];
   dataSource: MatTableDataSource<Games>;
   private currentUser: User;

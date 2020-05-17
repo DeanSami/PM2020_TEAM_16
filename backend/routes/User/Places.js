@@ -115,6 +115,7 @@ router.get('/' , function(req, res) {
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json();
             } else {
+                fillImages(return_row);
                 console.log('<LOG> - GET /user/places/get - SUCCESS');
                 res.status(globals.status_codes.OK).json(return_row)
             }
@@ -132,12 +133,31 @@ router.get('/' , function(req, res) {
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json();
             } else {
+                fillImages(result);
                 console.log('<LOG> - GET /user/places/get - SUCCESS');
                 res.status(globals.status_codes.OK).json(result)
             }
         })
     }
 });
+
+function fillImages(places) {
+    if(places && places.length > 0) {
+        places.forEach(place => {
+            if (place.icon === '') {
+                place.icon = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/places/icon-default.png';
+            } else {
+                place.icon = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/places/' + place.icon;
+            }
+            if (place.image === '') {
+                place.image = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/places/image-default.jpg';
+            } else {
+                place.image = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/places/' + place.image;
+            }
+        });
+    }
+}
+
 router.patch('/',function (req,res) {
     console.log('<LOG> - UPDATE /user/places - Invoke');
     const {

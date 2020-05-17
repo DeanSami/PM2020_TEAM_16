@@ -12,7 +12,8 @@ export interface User {
   birthday?: string;
   gender: UserGender;
   hobbies: number;
-  businesses?: Businesses[]
+  session: string;
+  businesses?: Businesses[];
   created_at?: string;
   update_at?: string;
 }

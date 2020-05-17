@@ -4,12 +4,6 @@
 <div class="mat-elevation-z8">
   <table mat-table [dataSource]="dataSource">
 
-    <!-- Position Column -->
-    <ng-container matColumnDef="owner_id">
-      <th mat-header-cell *matHeaderCellDef> מנהל המשחק </th>
-      <td mat-cell *matCellDef="let element"> {{element.owner_id}} </td>
-    </ng-container>
-
     <!-- Name Column -->
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef> שם המשחק </th>
@@ -35,9 +29,15 @@
     </ng-container>
 
     <!-- Symbol Column -->
-    <ng-container matColumnDef="finish_location">s
+    <ng-container matColumnDef="finish_location">
       <th mat-header-cell *matHeaderCellDef> מיקום סיום </th>
       <td mat-cell *matCellDef="let element"> {{element.finish_location}} </td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="players">
+      <th mat-header-cell *matHeaderCellDef> שחקנים</th>
+      <td mat-cell *matCellDef="let element"> {{element.players}} </td>
     </ng-container>
 
     <ng-container matColumnDef="action">

@@ -10,7 +10,7 @@ export class AwsS3Service {
 
   constructor() { }
 
-  uploadFile(file, name): Promise<ManagedUpload.SendData> {
+  uploadFile(file, name, src = 'userImages/'): Promise<ManagedUpload.SendData> {
     const contentType = file.type;
     const bucket = new S3(
       {
@@ -21,7 +21,7 @@ export class AwsS3Service {
     );
     const params = {
       Bucket: config.bucketName,
-      Key: 'userImages/' + name,
+      Key: src + name,
       Body: file,
       ACL: 'public-read',
       ContentType: contentType

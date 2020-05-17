@@ -86,7 +86,7 @@ function checkPermission(data, headers, callback) {
         type
     } = data;
 
-    if (!name || !owner_id || !phone || !type)
+    if (!name || !owner_id || !phone || isNaN(type))
     {
         console.log('<LOG> - POST /business/add - At least 1 field is missing');
         callback({status: globals.status_codes.Bad_Request, message: 'missing arguments'});

@@ -139,7 +139,9 @@ router.patch('/',function (req,res) {
             operator,
             handicapped,
             condition,
-            active
+            active,
+            icon,
+            image
         } = req.body;
 
         if (name == undefined
@@ -150,6 +152,8 @@ router.patch('/',function (req,res) {
             || operator == undefined
             || handicapped == undefined
             || condition == undefined
+            || icon == undefined
+            || image == undefined
             || active == undefined)
         {
             console.log('<LOG> - UPDATE /dog_parks - At least 1 field is missing');
@@ -161,6 +165,8 @@ router.patch('/',function (req,res) {
             || typeof(house_number) !== 'string'
             || typeof(neighborhood) !== 'string'
             || typeof(operator) !== 'string'
+            || typeof(icon) !== 'string'
+            || typeof(image) !== 'string'
             || (typeof(handicapped) !== 'boolean' && typeof(handicapped) !== 'number')
             || typeof(condition) !== 'number'
             || (typeof(active) !== 'boolean' && typeof(active) !== 'number'))
@@ -168,7 +174,7 @@ router.patch('/',function (req,res) {
             console.log('<LOG> - UPDATE /dog_parks - Error with type of at least 1 input field');
             res.status(globals.status_codes.Bad_Request).json()
         } else {
-            var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition, active:active};
+            var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition, icon:icon, image:image, active:active};
             if (street !== undefined)
                 values.street = street;
 

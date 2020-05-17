@@ -95,15 +95,8 @@ router.get('/',function(req,res){
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json()
             } else {
-                if(result.length > 0)
-                {
-                    console.log('<LOG> - GET /interest point - SUCCESS')
-                    res.status(globals.status_codes.OK).json(result)
-                }
-                else{
-                    console.log('<LOG> - GET /interest point - Unauthorized Credentials');
-                    res.status(globals.status_codes.Unauthorized).json()
-                }
+                    console.log('<LOG> - GET /interest point - SUCCESS');
+                    res.status(globals.status_codes.OK).json(result);
             }
         })
     }
@@ -146,6 +139,8 @@ router.patch('/',function (req,res) {
             operator,
             handicapped,
             condition,
+            icon,
+            image,
             active
         } = req.body;
 
@@ -156,6 +151,8 @@ router.patch('/',function (req,res) {
             || neighborhood == undefined
             || operator == undefined
             || handicapped == undefined
+            || icon == undefined
+            || image == undefined
             || condition == undefined
             || active == undefined)
         {
@@ -168,6 +165,8 @@ router.patch('/',function (req,res) {
             || typeof(house_number) !== 'string'
             || typeof(neighborhood) !== 'string'
             || typeof(operator) !== 'string'
+            || typeof(icon) !== 'string'
+            || typeof(image) !== 'string'
             || (typeof(handicapped) !== 'boolean' && typeof(handicapped) !== 'number')
             || typeof(condition) !== 'number'
             || (typeof(active) !== 'boolean' && typeof(active) !== 'number'))
@@ -176,7 +175,8 @@ router.patch('/',function (req,res) {
             res.status(globals.status_codes.Bad_Request).json()
         } else {
             var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,
-                    type:type,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition, active:active};
+                    type:type,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition,
+                    active:active, icon:icon, image:image};
             if (street !== undefined)
                 values.street = street;
 

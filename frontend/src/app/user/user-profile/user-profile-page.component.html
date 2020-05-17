@@ -31,19 +31,16 @@
                       </div>
                     </li>
                     <li class="col-3">
-                      <div [ngClass]="currentPage === 'TimeLine' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">
-                        <a (click)="showPage('TimeLine')" >המשחקים שלי</a>
-                      </div>
-                    </li>
-                    <li class="col-3">
-                      <div [ngClass]="currentPage === 'Friends' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">
-                      <a (click)="showPage('Friends')" >משחקי עבר</a>
+                      <div [ngClass]="currentPage === 'MyGames' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">
+                        <a (click)="showPage('MyGames')" >המשחקים שלי</a>
                       </div>
                     </li>
                     <li class="col-3">
                       <div [ngClass]="currentPage === 'business' ? 'primary font-medium-2 font-weight-600 active' : 'primary font-medium-2 font-weight-600'">
                         <a *ngIf="currentUser.user_type === userTypes.BusinessOwner" (click)="showPage('business')" >העסקים שלי</a>
                       </div>
+                    </li>
+                    <li class="col-3">
                     </li>
                   </ul>
                 </div>
@@ -228,32 +225,21 @@
 <!--About section ends-->
 
 <!--User Timeline section starts-->
-<section *ngIf="currentPage === 'TimeLine'">
-    <div class="container">
+<section *ngIf="currentPage === 'MyGames'">
+    <div *ngIf="currentUser.user_type === userTypes.BusinessOwner" class="container">
       <app-treasure-hunt-view [dogParks]="dogParks"></app-treasure-hunt-view>
-<!--      <app-new-treasure-hunt [dogParks]="dogParks"></app-new-treasure-hunt>-->
+    </div>
+    <div *ngIf="currentUser.user_type === userTypes.DogOwner" class="container">
+      המשחקים שלי יוזר רגיל
     </div>
 </section>
 <!--User Timeline section ends-->
 
-<!--User's friend section starts-->
-<section id="friends" *ngIf="currentPage === 'Friends'">
-    <div class="row">
-        <div class="col-12">
-            <div class="content-header">משחקי עבר</div>
-        </div>
-    </div>
-    <div class="row">
-
-    </div>
-</section>
-<!--User's friend section starts-->
 
 <!--User's uploaded photos section starts-->
 <section id="business" *ngIf="currentUser.user_type === userTypes.BusinessOwner && currentPage === 'business'">
   <div class="container">
     <app-business-view [myBusinesses]="currentUser.businesses"></app-business-view>
-<!--    <app-create-business-info></app-create-business-info>-->
   </div>
 </section>
 <!--User's uploaded photos section starts-->
