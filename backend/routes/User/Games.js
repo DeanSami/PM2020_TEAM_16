@@ -44,27 +44,32 @@ router.get('/' , function(req, res) {
                     res.status(globals.status_codes.Server_Error).json();
                 } else {
                     let games = JSON.parse(JSON.stringify(games_result));
-                    let query = `SELECT * FROM game_steps WHERE game_id = ?;`.repeat(games.length).slice(0, -1);
-                    let ids = []
-                    for (game of games)  {
-                        ids.push(game.id);
-                    }
-
-                    db.query(query, ids, function (err, steps_result) {
-                        if (err) {
-                            console.log('<LOG> - GET /user/games/get - ERROR');
-                            console.error(err);
-                            res.status(globals.status_codes.Server_Error).json();
-                        } else {
-                            if (Array.isArray(steps_result) && steps_result.length >= 0 && !Array.isArray(steps_result[0])) {
-                                games[0].steps = steps_result;
-                            } else {
-                                for (let i = 0; i < games.length; i++) games[i].steps = steps_result[i];
-                            }
-                            console.log('<LOG> - GET /user/games/get - SUCCESS');
-                            res.status(globals.status_codes.OK).json(games)
+                    if (Array.isArray(games) && games.length === 0) {
+                        console.log('<LOG> - GET /user/games/get - SUCCESS');
+                        res.status(globals.status_codes.OK).json(games)
+                    } else {
+                        let query = `SELECT * FROM game_steps WHERE game_id = ?;`.repeat(games.length).slice(0, -1);
+                        let ids = []
+                        for (game of games)  {
+                            ids.push(game.id);
                         }
-                    });
+
+                        db.query(query, ids, function (err, steps_result) {
+                            if (err) {
+                                console.log('<LOG> - GET /user/games/get - ERROR');
+                                console.error(err);
+                                res.status(globals.status_codes.Server_Error).json();
+                            } else {
+                                if (Array.isArray(steps_result) && steps_result.length >= 0 && !Array.isArray(steps_result[0])) {
+                                    games[0].steps = steps_result;
+                                } else {
+                                    for (let i = 0; i < games.length; i++) games[i].steps = steps_result[i];
+                                }
+                                console.log('<LOG> - GET /user/games/get - SUCCESS');
+                                res.status(globals.status_codes.OK).json(games)
+                            }
+                        });
+                    }
                 }
             })
         } else {
