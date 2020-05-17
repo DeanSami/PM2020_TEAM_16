@@ -185,8 +185,7 @@ router.get('/login', function (req, res) {
                             console.error(err);
                             res.status(globals.status_codes.Server_Error).json()
                         } else {
-                            if (businesses_res.length > 0)
-                                result[0].businesses = businesses_res
+                            result[0].businesses = businesses_res
                             res.status(globals.status_codes.OK).json(result[0])
                         }
                     })
