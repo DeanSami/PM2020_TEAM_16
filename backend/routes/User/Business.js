@@ -12,11 +12,21 @@ router.post('/create', function (req, res) {
             db.query('INSERT INTO businesses SET ?', result, function (err, inserted_row) {
                 if (err) {
                     console.log('<LOG> - POST /user/business/add - ERROR');
-                    console.error(err)
-                    res.status(globals.status_codes.Server_Error).json()
+                    console.error(err);
+                    res.status(globals.status_codes.Server_Error).json();
                 } else {
-                    console.log('<LOG> - POST /user/business/add - SUCCESS');
-                    res.status(globals.status_codes.OK).json()
+                    if (inserted_row && inserted_row.insertId) {
+                        db.query('SELECT * FROM businesses WHERE id = ?', [inserted_row.insertId], function (err, result) {
+                            if (err) {
+                                console.log('<LOG> - POST /user/business/add - ERROR get business');
+                                console.error(err);
+                                res.status(globals.status_codes.Server_Error).json();
+                            } else {
+                                console.log('<LOG> - POST /user/business/add - SUCCESS');
+                                res.status(globals.status_codes.OK).json(result[0]);
+                            }
+                        });
+                    }
                 }
             });
         }
