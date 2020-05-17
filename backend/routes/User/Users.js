@@ -229,13 +229,6 @@ router.get('/checkValidationCode', function (req, res) {
     }
 });
 
-function sendSms(phone, message, callback) {
-    console.log('got param: ', phone, message);
-    sns.publish({
-        Message: message,
-        PhoneNumber: phone
-    }, callback);
-}
 
 function insertSessionAndSendSms(user, token, code, phone, res) {
     db.query('UPDATE user_sessions SET deleted = 1 WHERE user_id = ?',[user.id],function (err, result){
