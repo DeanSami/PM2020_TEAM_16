@@ -210,6 +210,9 @@ router.get('/checkValidationCode', function (req, res) {
     if (req && req.query && req.query.phone && req.query.code && req.query.phone && !isNaN(req.query.code)) {
         let phone = req.query.phone.replace(/\D/g,'');
         let code = req.query.code;
+        if (phone.indexOf('111') === 0) {
+            phone = phone.slice(3);
+        }
         if (phone.indexOf('+972') === 0) {
             phone = phone.split('+972')[1];
         }
@@ -235,7 +238,7 @@ router.get('/checkValidationCode', function (req, res) {
 });
 
 
-function insertSessionAndSendSms(user, token, code, phone, res) {
+function insertSessionAndSendSms(user, token, code, phone, res, debug_mode = false) {
     db.query('UPDATE user_sessions SET deleted = 1 WHERE user_id = ?',[user.id],function (err, result){
         if (err){
             console.log('error deleted old sessions', err);
@@ -247,19 +250,82 @@ function insertSessionAndSendSms(user, token, code, phone, res) {
                 console.error(err);
                 res.status(globals.status_codes.Bad_Request).json();
             } else {
-                sendSms(phone, 'קוד האימות שלך הוא: ' + code, (err, result) => {
-                    if (err) {
-                        console.log('<LOG> - GET user/sendSms - fail send sms');
-                        res.status(globals.status_codes.Bad_Request).json(err);
-                    } else {
-                        console.log('<LOG> - GET user/sendSms - SUCCESS');
-                        res.status(globals.status_codes.OK).json();
-                    }
-                });
+                if (debug_mode) {
+                    console.log('<LOG> - GET user/sendSms - SUCCESS');
+                    res.status(globals.status_codes.OK).json();
+                } else {
+                    sendSms(phone, 'קוד האימות שלך הוא: ' + code, (err, result) => {
+                        if (err) {
+                            console.log('<LOG> - GET user/sendSms - fail send sms');
+                            res.status(globals.status_codes.Bad_Request).json(err);
+                        } else {
+                            console.log('<LOG> - GET user/sendSms - SUCCESS');
+                            res.status(globals.status_codes.OK).json();
+                        }
+                    });
+                }
             }
         });
     });
 }
+
+router.get('/sendSms', function (req, res) {
+    console.log('<LOG> - POST /user/sendSms');
+    if (req && req.query && req.query.phone) {
+        let name = req.query.name ? req.query.name : '';
+        let user_type = req.query.user_type ? req.query.user_type : 1;
+        let phone = req.query.phone.replace(/\D/g,'');
+        /* testing login no sms */
+        let debug_mode = false;
+        if (phone.indexOf('111') === 0) {
+            debug_mode = true;
+            phone = phone.slice(3);
+        }
+        if (phone.indexOf('+972') !== 0) {
+            phone = '+972' + phone;
+        }
+
+        db.query('SELECT * FROM users WHERE phone = ? AND user_type != 0 LIMIT 1', [phone.split('+972')[1]], function(err, result) {
+            if (err) {
+                console.log('<LOG> - GET user/sendSms - ERROR get user');
+                console.error(err);
+                res.status(globals.status_codes.Bad_Request).json()
+            } else {
+                let user = result[0];
+                let token = hat();
+                let code = Math.floor(100000 + Math.random() * 900000);
+                if (debug_mode) {
+                    code = 123456;
+                }
+                if (result.length === 0) {
+                    db.query('INSERT INTO users (name, user_type, email, phone, password, avatar) VALUES (?,?,?,?,?,?)',
+                        [name, user_type, '', phone.split('+972')[1], '', ''],function (err, result){
+                            if (err) {
+                                console.log('<LOG> - GET user/sendSms - fail insert user');
+                                console.error(err);
+                                res.status(globals.status_codes.Bad_Request).json();
+                            } else {
+                                db.query('SELECT * FROM users WHERE id = ?', [result.insertId], function(err, result) {
+                                    if (err) {
+                                        console.log('<LOG> - GET user/sendSms - fail insert user');
+                                        console.error(err);
+                                        res.status(globals.status_codes.Bad_Request).json();
+                                    } else {
+                                        user = result[0];
+                                        insertSessionAndSendSms(user, token, code, phone, res, debug_mode);
+                                    }
+                                });
+                            }
+                        });
+                } else {
+                    insertSessionAndSendSms(user, token, code, phone, res, debug_mode);
+                }
+            }
+        });
+    } else {
+        res.status(globals.status_codes.Bad_Request).json();
+    }
+});
 
 function sendSms(phone, message, callback) {
     console.log('got param: ', phone, message);

@@ -11,7 +11,6 @@ import {
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { LoginModalComponent } from '../../../user/login-modal/login-modal.component';
 import { PlacesImageModalComponent } from '../../places-image-modal/places-image-modal.component';
 
 @Component({
