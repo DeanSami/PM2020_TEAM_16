@@ -35,7 +35,7 @@ describe('Admin Login With Correct Credentials', () => {
     it('Should return successfull', done => {
         request(app)
         .post('/admin/login')
-        .send({phone: '0524222916', pass: '1234'})
+        .send({phone: '054test', pass: '1234test'})
         .expect(globals.status_codes.OK)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .end((err, res) => {
