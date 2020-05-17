@@ -183,10 +183,10 @@ router.get('/login', function (req, res) {
                         if (err) {
                             console.log('<LOG> - GET /user/login - ERROR');
                             console.error(err);
-                            res.status(globals.status_codes.Server_Error).json()
+                            res.status(globals.status_codes.Server_Error).json();
                         } else {
-                            result[0].businesses = businesses_res
-                            res.status(globals.status_codes.OK).json(result[0])
+                            result[0].businesses = businesses_res;
+                            res.status(globals.status_codes.OK).json(result[0]);
                         }
                     })
                 } else {
