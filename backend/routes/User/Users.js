@@ -198,54 +198,7 @@ router.get('/login', function (req, res) {
 });
 
 
-router.get('/sendSms', function (req, res) {
-    console.log('<LOG> - POST /user/sendSms');
-    if (req && req.query && req.query.phone) {
-        let name = req.query.name ? req.query.name : '';
-        let user_type = req.query.user_type ? req.query.user_type : 1;
-        let phone = req.query.phone.replace(/\D/g,'');
-        if (phone.indexOf('+972') !== 0) {
-            phone = '+972' + phone;
-        }
 
-        db.query('SELECT * FROM users WHERE phone = ? AND user_type != 0 LIMIT 1', [phone.split('+972')[1]], function(err, result) {
-            if (err) {
-                console.log('<LOG> - GET user/sendSms - ERROR get user');
-                console.error(err);
-                res.status(globals.status_codes.Bad_Request).json()
-            } else {
-                let user = result[0];
-                let token = hat();
-                let code = Math.floor(100000 + Math.random() * 900000);
-                if (result.length === 0) {
-                    db.query('INSERT INTO users (name, user_type, email, phone, password, avatar) VALUES (?,?,?,?,?,?)',
-                        [name, user_type, '', phone.split('+972')[1], '', ''],function (err, result){
-                            if (err) {
-                                console.log('<LOG> - GET user/sendSms - fail insert user');
-                                console.error(err);
-                                res.status(globals.status_codes.Bad_Request).json();
-                            } else {
-                                db.query('SELECT * FROM users WHERE id = ?', [result.insertId], function(err, result) {
-                                    if (err) {
-                                        console.log('<LOG> - GET user/sendSms - fail insert user');
-                                        console.error(err);
-                                        res.status(globals.status_codes.Bad_Request).json();
-                                    } else {
-                                        user = result[0];
-                                        insertSessionAndSendSms(user, token, code, phone, res);
-                                    }
-                                });
-                            }
-                    });
-                } else {
-                    insertSessionAndSendSms(user, token, code, phone, res);
-                }
-            }
-        });
-    } else {
-        res.status(globals.status_codes.Bad_Request).json();
-    }
-});
 
 router.get('/checkValidationCode', function (req, res) {
     console.log('<LOG> - POST /user/check code');
@@ -275,6 +228,7 @@ router.get('/checkValidationCode', function (req, res) {
         res.status(globals.status_codes.Bad_Request).json({message: 'missing arguments'});
     }
 });
+
 
 function insertSessionAndSendSms(user, token, code, phone, res) {
     db.query('UPDATE user_sessions SET deleted = 1 WHERE user_id = ?',[user.id],function (err, result){
