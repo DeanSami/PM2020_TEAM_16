@@ -5,13 +5,13 @@ const router = express.Router()
 
 //GET Games
 router.get('/' , function(req, res) {
-    console.log('<LOG> - GET /user/games/get - Invoke');
+    globals.log_msg('GET /user/games/get - Invoke');
     //if the clint want specific park dog
     if (req.query.id) {
         let id = req.query.id;
         db.query('SELECT * FROM games WHERE id = ? AND deleted = 0', [id], function (err, result) {
             if (err) {
-                console.log('<LOG> - GET /user/games/get - ERROR');
+                globals.log_msg('GET /user/games/get - id provided - ERROR');
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json();
             } else {
@@ -19,12 +19,12 @@ router.get('/' , function(req, res) {
                     let game = result[0];
                     db.query('SELECT * FROM game_steps WHERE game_id = ?', [game.id], function (err, result) {
                         if (err) {
-                            console.log('<LOG> - GET /user/games/get - ERROR');
+                            globals.log_msg('GET /user/games/get - game steps with id provided - ERROR');
                             console.error(err);
                             res.status(globals.status_codes.Server_Error).json();
                         } else {
                             game.steps = result;
-                            console.log('<LOG> - GET /user/games/get - SUCCESS');
+                            globals.log_msg('GET /user/games/get - id provided - SUCCESS');
                             res.status(globals.status_codes.OK).json(game)
                         }
                     });
@@ -39,13 +39,13 @@ router.get('/' , function(req, res) {
             let id = req.query.owner_id;
             db.query('SELECT * FROM games WHERE deleted = 0 AND owner_id = ?',[id], function (err, games_result) {
                 if (err) {
-                    console.log('<LOG> - GET /user/games/get - ERROR');
+                    globals.log_msg('GET /user/games/get - owner id provided - ERROR');
                     console.error(err);
                     res.status(globals.status_codes.Server_Error).json();
                 } else {
                     let games = JSON.parse(JSON.stringify(games_result));
                     if (Array.isArray(games) && games.length === 0) {
-                        console.log('<LOG> - GET /user/games/get - SUCCESS');
+                        globals.log_msg('GET /user/games/get - owner id provided - SUCCESS');
                         res.status(globals.status_codes.OK).json(games)
                     } else {
                         let query = `SELECT * FROM game_steps WHERE game_id = ?;`.repeat(games.length).slice(0, -1);
@@ -56,7 +56,7 @@ router.get('/' , function(req, res) {
 
                         db.query(query, ids, function (err, steps_result) {
                             if (err) {
-                                console.log('<LOG> - GET /user/games/get - ERROR');
+                                globals.log_msg('GET /user/games/get - ERROR');
                                 console.error(err);
                                 res.status(globals.status_codes.Server_Error).json();
                             } else {
@@ -65,7 +65,7 @@ router.get('/' , function(req, res) {
                                 } else {
                                     for (let i = 0; i < games.length; i++) games[i].steps = steps_result[i];
                                 }
-                                console.log('<LOG> - GET /user/games/get - SUCCESS');
+                                globals.log_msg('GET /user/games/get - SUCCESS');
                                 res.status(globals.status_codes.OK).json(games)
                             }
                         });
@@ -75,11 +75,11 @@ router.get('/' , function(req, res) {
         } else {
             db.query('SELECT * FROM games WHERE deleted = 0',[], function (err, result) {
                 if (err) {
-                    console.log('<LOG> - GET /user/games/get - ERROR');
+                    globals.log_msg('GET /user/games/get - ERROR');
                     console.error(err);
                     res.status(globals.status_codes.Server_Error).json();
                 } else {
-                    console.log('<LOG> - GET /user/games/get - SUCCESS');
+                    globals.log_msg('GET /user/games/get - SUCCESS');
                     res.status(globals.status_codes.OK).json(result)
                 }
             })
@@ -88,7 +88,7 @@ router.get('/' , function(req, res) {
 });
 //REQUEST to get Game list per user
 router.post('/myGames' , function(req, res) {
-    console.log('<LOG> - GET /user/myGames/get - Invoke');
+    globals.log_msg('GET /user/myGames/get - Invoke');
 
     if (req.body.id) {
         let id = req.body.id;
@@ -97,22 +97,22 @@ router.post('/myGames' , function(req, res) {
                                          games.id = active_players.game_id AND 
                                             active_players.user_id = users.id`, [id], function (err, result) {
             if (err) {
-                console.log('<LOG> - GET /user/myGames/get - ERROR');
+                globals.log_msg('GET /user/myGames/get - ERROR');
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json();
             } else {
-                console.log('<LOG> - GET /user/games/get - SUCCESS');
+                globals.log_msg('GET /user/games/get - SUCCESS');
                 res.status(globals.status_codes.OK).json(result)
             }
         })
     } else {
-        console.log('<LOG> - GET /user/myGames/get - missing arguments');
+        globals.log_msg('GET /user/myGames/get - missing arguments');
         res.status(globals.status_codes.Server_Error).json({message: 'missing arguments'});
     }
 });
 
 // router.patch('/myGames', function (req,res) {
-//     console.log('<LOG> - GET /user/myGames/patch - Invoke');
+//     globals.log_msg('GET /user/myGames/patch - Invoke');
 //     if(req.body.user_id && req.body.game_id)
 //     {
 //         let user_id = req.body.user_id;
@@ -120,22 +120,22 @@ router.post('/myGames' , function(req, res) {
 //         let now_date = Date.now();
 //         db.query('UPDATE active_players SET finish_at = ? WHERE user_id = ? AND game_id = ?', [now_date,user_id,game_id],function (err,result) {
 //             if (err) {
-//                 console.log('<LOG> - GET /user/myGames/patch - ERROR');
+//                 globals.log_msg('GET /user/myGames/patch - ERROR');
 //                 console.error(err);
 //                 res.status(globals.status_codes.Server_Error).json();
 //         }else{
-//                 console.log('<LOG> - GET /user/games/patch - SUCCESS');
+//                 globals.log_msg('GET /user/games/patch - SUCCESS');
 //                 res.status(globals.status_codes.OK).json(result)
 //             }
 //         })
 //     } else {
-//         console.log('<LOG> - GET /user/myGames/patch - missing arguments');
+//         globals.log_msg('GET /user/myGames/patch - missing arguments');
 //         res.status(globals.status_codes.Server_Error).json({message: 'missing arguments'});
 //     }
 // });
 
 router.post('/create', function (req, res) {
-    console.log('<LOG> - POST /user/games/add - Invoke');
+    globals.log_msg('POST /user/games/add - Invoke');
 
     let checkDataResult = checkData(req.body);
     if (checkDataResult && checkDataResult.status) {
@@ -145,7 +145,7 @@ router.post('/create', function (req, res) {
     /* check for existing owner user */
     db.query('SELECT * FROM users WHERE id = ? AND user_type = ?', [req.body.owner_id, 2], function (err, result) {
         if (err || !result || !result.length) {
-            console.log('<LOG> - POST /games/create - ERROR in search owner');
+            globals.log_msg('POST /games/create - ERROR in search owner');
             console.error(err)
             res.status(globals.status_codes.Server_Error).json({message: 'can not find owner by owner_id'});
             return;
@@ -163,7 +163,7 @@ router.post('/create', function (req, res) {
         /* Begin transaction */
         db.beginTransaction(function(err) {
             if (err) {
-                console.log('<LOG> - POST /games/create - ERROR create transaction');
+                globals.log_msg('POST /games/create - ERROR create transaction');
                 console.error(err)
                 res.status(globals.status_codes.Server_Error).json();
                 return;
@@ -171,7 +171,7 @@ router.post('/create', function (req, res) {
 
             db.query('INSERT INTO games SET ?', game, function (err, result) {
                 if (err) {
-                    console.log('<LOG> - POST /games/create - ERROR insert game');
+                    globals.log_msg('POST /games/create - ERROR insert game');
                     console.error(err)
                     res.status(globals.status_codes.Server_Error).json();
                     return;
@@ -196,7 +196,7 @@ router.post('/create', function (req, res) {
 
                     db.query(sql, [insertSteps], function(err) {
                         if (err) {
-                            console.log('<LOG> - POST /games/create - ERROR insert steps');
+                            globals.log_msg('POST /games/create - ERROR insert steps');
                             console.error(err)
                             db.rollback(function() {
                                 console.log('rollback error', err);
@@ -233,7 +233,7 @@ router.post('/create', function (req, res) {
 });
 
 router.patch('/edit', function (req, res) {
-    console.log('<LOG> - POST /user/games/update - Invoke');
+    globals.log_msg('POST /user/games/update - Invoke');
     if (!req.body.id) {
         res.status(globals.status_codes.Bad_Request).json({message: 'missing argument id'});
         return;
@@ -248,7 +248,7 @@ router.patch('/edit', function (req, res) {
     /* check for existing owner user */
     db.query('SELECT * FROM users WHERE id = ? AND user_type = ?', [req.body.owner_id, globals.user_types.businessOwner], function (err, result) {
         if (err || !result || !result.length) {
-            console.log('<LOG> - POST /games/create - ERROR in search owner');
+            globals.log_msg('POST /games/create - ERROR in search owner');
             console.error(err)
             res.status(globals.status_codes.Server_Error).json({message: 'can not find owner by owner_id'});
             return;
@@ -265,13 +265,13 @@ router.patch('/edit', function (req, res) {
 
         db.query('UPDATE games SET ? WHERE id = ?', [game, req.body.id], function (err, update_result) {
             if (err) {
-                console.log('<LOG> - POST /games/create - ERROR insert game');
+                globals.log_msg('POST /games/create - ERROR insert game');
                 console.error(err)
                 res.status(globals.status_codes.Server_Error).json();
             } else {
                 db.query('SELECT * FROM games WHERE id = ?', [req.body.id], function(err, select_result) {
                     if (err) {
-                        console.log('<LOG> - POST /games/create - ERROR insert game');
+                        globals.log_msg('POST /games/create - ERROR insert game');
                         console.error(err)
                         res.status(globals.status_codes.Server_Error).json();
                     }
@@ -284,11 +284,11 @@ router.patch('/edit', function (req, res) {
 });
 
 router.get('/played', function (req, res) {
-    console.log('<LOG> - POST /user/games/played - Invoke');
+    globals.log_msg('POST /user/games/played - Invoke');
 
     db.query('SELECT * FROM active_players, users WHERE users.id = active_players.user_id AND game_id = ?', [req.body.game_id], function (err, result) {
         if (err) {
-            console.log('<LOG> - POST /games//played - ERROR find players');
+            globals.log_msg('POST /games//played - ERROR find players');
             console.error(err)
             res.status(globals.status_codes.Bad_Request).json({message: 'cannot find players by game_id'});
             return;
@@ -301,7 +301,7 @@ router.get('/played', function (req, res) {
                 delete player.deleted;
             });
         }
-        console.log('<LOG> - GET /user/games/played - SUCCESS');
+        globals.log_msg('GET /user/games/played - SUCCESS');
         res.status(globals.status_codes.OK).json(result)
     });
 });
@@ -318,7 +318,7 @@ function checkData(data) {
     } = data;
 
     if (!name || !owner_id || !start || !end || !start_location || !finish_location) {
-        console.log('<LOG> - POST /games/create - At least 1 field is missing');
+        globals.log_msg('POST /games/create - At least 1 field is missing');
         return {status: globals.status_codes.Bad_Request, message: 'missing argument'};
     }
     if (typeof owner_id !== 'number' ||
@@ -327,7 +327,7 @@ function checkData(data) {
         typeof end !== 'string' ||
         typeof start_location !== 'number' ||
         typeof finish_location !== 'number') {
-        console.log('<LOG> - POST /games/create - Error with type of at least 1 input field');
+        globals.log_msg('POST /games/create - Error with type of at least 1 input field');
         return {status: globals.status_codes.Bad_Request, message: 'type error in game field'};
     }
     if (steps && Array.isArray(steps)) {
@@ -346,7 +346,7 @@ function checkData(data) {
             }
         });
         if (error) {
-            console.log('<LOG> - POST /games/create - Error with game step');
+            globals.log_msg('POST /games/create - Error with game step');
             return {status: globals.status_codes.Bad_Request, message: messageError};
         }
         return {};
@@ -354,7 +354,7 @@ function checkData(data) {
         if (!steps) {
             return {};
         }
-        console.log('<LOG> - POST /games/create - Error with game steps');
+        globals.log_msg('POST /games/create - Error with game steps');
         return {status: globals.status_codes.Bad_Request, message: 'error with game steps'};
     }
     return;

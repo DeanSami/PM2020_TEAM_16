@@ -11,25 +11,25 @@ const A_DogParks = require('./Admin_Dog_Parks')
 router.use(function isAdmin (req, res, next) {
     if (req.originalUrl == '/admin/login' || req.originalUrl == '/admin/register') next();
     else {
-    console.log('<LOG> - POST /admin/* - Middleware')
+    globals.log_msg('POST /admin/* - Middleware')
         const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth'];
         if (incoming_token) {
             db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ? AND user_type = ?', [incoming_token, globals.user_types.admin], function (err, result) {
                 if (err) {
-                    console.log('<LOG> - POST /admin/* - ERROR');
+                    globals.log_msg('POST /admin/* - ERROR');
                     console.error(err);
                     res.status(globals.status_codes.Server_Error).json()
                 }
                 else if (result.length > 0) {
-                    console.log('<LOG> - POST /admin/* - SUCCESS');
+                    globals.log_msg('POST /admin/* - SUCCESS');
                     next()
                 } else {
-                    console.log('<LOG> - POST /admin/* - Unauthorized Access Attempt');
+                    globals.log_msg('POST /admin/* - Unauthorized Access Attempt');
                     res.status(globals.status_codes.Forbidden).json()
                 }
             })
         } else {
-            console.log('<LOG> - POST /admin/* - Missing Credentials');
+            globals.log_msg('POST /admin/* - Missing Credentials');
             res.status(globals.status_codes.Forbidden).json()
         }
     }
@@ -60,11 +60,11 @@ router.post('/register', function(req, res) {
 });
 //LOGIN REQUEST
 router.post('/login', function (req, res) {
-    console.log('<LOG> - POST /admin/login - Invoke');
+    globals.log_msg('POST /admin/login - Invoke');
     const phone = req.body.phone;
     db.query('SELECT * FROM users WHERE phone = ?', [phone], function (err, phone_query_result) {
         if (err) {
-            console.log('<LOG> - POST /admin/login - ERROR');
+            globals.log_msg('POST /admin/login - ERROR');
             console.error(err);
             res.status(globals.status_codes.Server_Error).json()
         } else {
@@ -76,18 +76,18 @@ router.post('/login', function (req, res) {
                         res.status(globals.status_codes.Server_Error).json()
                     } else {
                         if (!pass_compare) {
-                            console.log('<LOG> - POST /admin/login - Wrong Credentials pass');
+                            globals.log_msg('POST /admin/login - Wrong Credentials pass');
                             res.status(globals.status_codes.Unauthorized).json()
                         } else {
                             delete phone_query_result[0].password;
                             var token = hat();
                             db.query('INSERT INTO user_sessions(user_id,session) VALUES (?,?)',[phone_query_result[0].id,token],function (err, insert_query_result){
                                 if (err) {
-                                    console.log('<LOG> - POST /admin/login - Wrong Values inserted');
+                                    globals.log_msg('POST /admin/login - Wrong Values inserted');
                                     console.error(err);
                                     res.status(globals.status_codes.Unauthorized).json()
                                 } else {
-                                    console.log('<LOG> - POST /admin/login - SUCCESS');
+                                    globals.log_msg('POST /admin/login - SUCCESS');
                                     res.status(globals.status_codes.OK).json({
                                         token: token,
                                         user: phone_query_result[0]
@@ -98,7 +98,7 @@ router.post('/login', function (req, res) {
                     }
                 })
             } else {
-                console.log('<LOG> - POST /admin/login - Wrong Credentials');
+                globals.log_msg('POST /admin/login - Wrong Credentials');
                 res.status(globals.status_codes.Unauthorized).json()
             }
         }
@@ -106,27 +106,27 @@ router.post('/login', function (req, res) {
 });
 //ADMIN LOGIN
 router.get('/login', function (req, res) {
-    console.log('<LOG> - GET /admin/login - Invoke');
+    globals.log_msg('GET /admin/login - Invoke');
     const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
     if (incoming_token) {
         db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ?', [incoming_token], function(err, result) {
             if (err) {
-                console.log('<LOG> - GET /admin/login - ERROR');
+                globals.log_msg('GET /admin/login - ERROR');
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json()
             } else {
                 if (result.length > 0) {
                     delete result[0].password;
-                    console.log('<LOG> - GET /admin/login - SUCCESS');
+                    globals.log_msg('GET /admin/login - SUCCESS');
                     res.status(globals.status_codes.OK).json(result[0])
                 } else {
-                    console.log('<LOG> - GET /admin/login - Unauthorized Credentials');
+                    globals.log_msg('GET /admin/login - Unauthorized Credentials');
                     res.status(globals.status_codes.Unauthorized).json()
                 }
             }
         })
     } else {
-        console.log('<LOG> - GET /admin/login - Credentials Missing');
+        globals.log_msg('GET /admin/login - Credentials Missing');
         res.status(globals.status_codes.Bad_Request).json()
     }
 });

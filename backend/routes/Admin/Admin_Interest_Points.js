@@ -5,7 +5,7 @@ const router = express.Router()
 
 // ADD REQUEST INTEREST POINT
 router.post('/', function (req, res) {
-    console.log('<LOG> - POST /admin/interesting_point - Invoke');
+    globals.log_msg('POST /admin/interesting_point - Invoke');
 
         const {
             type,
@@ -29,7 +29,7 @@ router.post('/', function (req, res) {
             || handicapped == undefined
             || condition == undefined)
         {
-            console.log('<LOG> - POST /interesting_point - At least 1 field is missing');
+            globals.log_msg('POST /interesting_point - At least 1 field is missing');
             res.status(globals.status_codes.Bad_Request).json()
         }
         else if (typeof(name) !== 'string'
@@ -41,7 +41,7 @@ router.post('/', function (req, res) {
             || (typeof(handicapped) !== 'boolean' && typeof(handicapped) !== 'number')
             || typeof(condition) !== 'number')
         {
-            console.log('<LOG> - POST /interesting_point - Error with type of at least 1 input field');
+            globals.log_msg('POST /interesting_point - Error with type of at least 1 input field');
             res.status(globals.status_codes.Bad_Request).json()
         } else {
             var values = {type: type, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition};
@@ -50,17 +50,17 @@ router.post('/', function (req, res) {
 
             db.query('INSERT INTO places SET ?', values, function (err, result) {
                 if (err) {
-                    console.log('<LOG> - POST /admin/interesting_point - ERROR');
+                    globals.log_msg('POST /admin/interesting_point - ERROR');
                     console.error(err)
                     res.status(globals.status_codes.Server_Error).json()
                 } else {
                     db.query('SELECT * FROM places WHERE id = (?)', [result.insertId], function (err, result) {
                         if (err) {
-                            console.log('<LOG> - POST /admin/interesting_point - ERROR');
+                            globals.log_msg('POST /admin/interesting_point - ERROR');
                             console.error(err);
                             res.status(globals.status_codes.Server_Error).json()
                         } else {
-                            console.log('<LOG> - POST /admin/interesting_point - SUCCESS');
+                            globals.log_msg('POST /admin/interesting_point - SUCCESS');
                             res.status(globals.status_codes.OK).json(result[0])
                         }
                     })
@@ -72,17 +72,17 @@ router.post('/', function (req, res) {
 
 //GET REQUEST INTEREST POINT
 router.get('/',function(req,res){
-    console.log('<LOG> - GET /interestpoint - Invoke');
+    globals.log_msg('GET /interestpoint - Invoke');
     if(req.body.id)
     {
         var temp_id = req.body.id;
         db.query('SELECT * FROM places WHERE id = ? AND type != ? AND deleted = 0',[temp_id,globals.places_types.dog_park],function(err,result){
            if(err){
-               console.log('<LOG> - GET /interest point - ERROR');
+               globals.log_msg('GET /interest point - ERROR');
                console.error(err);
                res.status(globals.status_codes.Server_Error).json()
            } else {
-                console.log('<LOG> - GET /interest point - SUCCESS');
+                globals.log_msg('GET /interest point - SUCCESS');
                 res.status(globals.status_codes.OK).json(result[0])
            }
         });
@@ -91,11 +91,11 @@ router.get('/',function(req,res){
     else {
         db.query('SELECT * FROM places WHERE type != ? AND deleted =0',[globals.places_types.dog_park] , function (err,result) {
             if (err) {
-                console.log('<LOG> - GET /interest point - ERROR');
+                globals.log_msg('GET /interest point - ERROR');
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json()
             } else {
-                    console.log('<LOG> - GET /interest point - SUCCESS');
+                    globals.log_msg('GET /interest point - SUCCESS');
                     res.status(globals.status_codes.OK).json(result);
             }
         })
@@ -109,14 +109,14 @@ router.delete('/',function (req,res) {
         console.log("id = ",temp_id);
         db.query('UPDATE places SET deleted = 1 WHERE deleted = 0 AND id = ?',[temp_id],function (err,result) {
         if(err){
-            console.log('<LOG> - DELETE /interest point - ERROR');
+            globals.log_msg('DELETE /interest point - ERROR');
             console.error(err);
             res.status(globals.status_codes.Server_Error).json()
         } else {
             if (result.affectedRows > 0) {
                 res.status(globals.status_codes.OK).json()
             } else {
-                console.log('<LOG> - DELETE /interestpoint - Wrong Parameters');
+                globals.log_msg('DELETE /interestpoint - Wrong Parameters');
                 res.status(globals.status_codes.Bad_Request).json();
             }
         }
@@ -126,7 +126,7 @@ router.delete('/',function (req,res) {
 //todo update for interesting points
 //UPDATE INTERESTING POINTS REQUEST
 router.patch('/',function (req,res) {
-    console.log('<LOG> - UPDATE /interesting_point - Invoke');
+    globals.log_msg('UPDATE /interesting_point - Invoke');
         const {
             id,
             name,
@@ -156,7 +156,7 @@ router.patch('/',function (req,res) {
             || condition == undefined
             || active == undefined)
         {
-            console.log('<LOG> - UPDATE /dog_parks - At least 1 field is missing');
+            globals.log_msg('UPDATE /dog_parks - At least 1 field is missing');
             res.status(globals.status_codes.Bad_Request).json()
         }
         else if (typeof(name) !== 'string'
@@ -171,7 +171,7 @@ router.patch('/',function (req,res) {
             || typeof(condition) !== 'number'
             || (typeof(active) !== 'boolean' && typeof(active) !== 'number'))
         {
-            console.log('<LOG> - UPDATE /interesting_point - Error with type of at least 1 input field');
+            globals.log_msg('UPDATE /interesting_point - Error with type of at least 1 input field');
             res.status(globals.status_codes.Bad_Request).json()
         } else {
             var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,
@@ -183,17 +183,17 @@ router.patch('/',function (req,res) {
             var temp_id = values.id;
             db.query('UPDATE places SET ? WHERE id = ?', [values, temp_id], function (err, update_result) {
                 if (err) {
-                    console.log('<LOG> - PATCH /interesting_point - ERROR');
+                    globals.log_msg('PATCH /interesting_point - ERROR');
                     console.error(err);
                     res.status(globals.status_codes.Server_Error).json()
                 } else {
                     db.query('SELECT * FROM places WHERE id = ?', [temp_id], function (err, select_result) {
                         if (err) {
-                            console.log('<LOG> - PATCH /interesting_point - ERROR');
+                            globals.log_msg('PATCH /interesting_point - ERROR');
                     console.error(err);
                     res.status(globals.status_codes.Server_Error).json()
                         }
-                        console.log('<LOG> - PATCH /interesting_point - SUCCESS');
+                        globals.log_msg('PATCH /interesting_point - SUCCESS');
                         res.status(globals.status_codes.OK).json(select_result[0])
                     })
                 }

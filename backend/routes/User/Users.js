@@ -30,12 +30,12 @@ router.use(function isUser (req, res, next) {
         req.originalUrl.toLowerCase() === '/user/games/mygames' ||
         req.originalUrl.toLowerCase() === '/user/edituser'
     ) {
-        console.log('<LOG> - POST /user/* - Middleware')
+        globals.log_msg('POST /user/* - Middleware')
         const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth'];
         if (incoming_token) {
             db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ? AND user_type != ?', [incoming_token, globals.user_types.admin], function (err, result) {
                 if (err) {
-                    console.log('<LOG> - POST /user/* - ERROR');
+                    globals.log_msg('POST /user/* - ERROR');
                     console.error(err);
                     res.status(globals.status_codes.Server_Error).json();
                 }
@@ -50,17 +50,17 @@ router.use(function isUser (req, res, next) {
                     ) {
                         if (req.originalUrl.toLowerCase() === '/user/games/mygames') {
                             if (result[0].id !== req.body.id && !isNaN(req.body.id)) {
-                                console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
+                                globals.log_msg('POST /user/* - Unauthorized Access Attempt');
                                 res.status(globals.status_codes.Unauthorized).json();
                                 return;
                             } else {
-                                console.log('<LOG> - POST /user/* - SUCCESS');
+                                globals.log_msg('POST /user/* - SUCCESS');
                                 next();
                                 return;
                             }
                         }
                         if (result[0].id !== req.body.owner_id && !isNaN(req.body.owner_id)) {
-                            console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
+                            globals.log_msg('POST /user/* - Unauthorized Access Attempt');
                             res.status(globals.status_codes.Unauthorized).json();
                             return;
                         }
@@ -68,12 +68,12 @@ router.use(function isUser (req, res, next) {
                             if (req.body.game_id && !isNaN(req.body.game_id)) {
                                 db.query('SELECT * FROM games WHERE id = ? AND owner_id = ?', [req.body.game_id, req.body.owner_id], function (err, result) {
                                     if (err) {
-                                        console.log('<LOG> - GET /user/login - ERROR');
+                                        globals.log_msg('GET /user/login - ERROR');
                                         console.error(err);
                                         res.status(globals.status_codes.Server_Error).json()
                                     } else {
                                         if (result && result.length > 0) {
-                                            console.log('<LOG> - POST /user/played - SUCCESS');
+                                            globals.log_msg('POST /user/played - SUCCESS');
                                             next();
                                         } else {
                                             res.status(globals.status_codes.Unauthorized).json();
@@ -86,28 +86,28 @@ router.use(function isUser (req, res, next) {
                         }
                         if (req.originalUrl === '/user/editUser') {
                             if (result[0].id !== req.body.id) {
-                                console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
+                                globals.log_msg('POST /user/* - Unauthorized Access Attempt');
                                 res.status(globals.status_codes.Unauthorized).json();
                                 return;
                             } else {
-                                console.log('<LOG> - POST /user/* - SUCCESS');
+                                globals.log_msg('POST /user/* - SUCCESS');
                                 next();
                             }
                         } else {
-                            console.log('<LOG> - POST /user/* - SUCCESS');
+                            globals.log_msg('POST /user/* - SUCCESS');
                             next();
                         }
                     } else {
-                        console.log('<LOG> - POST /user/* - SUCCESS');
+                        globals.log_msg('POST /user/* - SUCCESS');
                         next();
                     }
                 } else {
-                    console.log('<LOG> - POST /user/* - Unauthorized Access Attempt');
+                    globals.log_msg('POST /user/* - Unauthorized Access Attempt');
                     res.status(globals.status_codes.Unauthorized).json();
                 }
             })
         } else {
-            console.log('<LOG> - POST /user/* - Missing Credentials');
+            globals.log_msg('POST /user/* - Missing Credentials');
             res.status(globals.status_codes.Unauthorized).json();
         }
     } else {
@@ -122,7 +122,7 @@ router.use('/business', BUSINESS);
 
 
 router.post('/editUser', function (req, res) {
-    console.log('<LOG> - GET /user/edit - Invoke');
+    globals.log_msg('GET /user/edit - Invoke');
 
     // todo validate birthday
     let user = {
@@ -151,29 +151,29 @@ router.post('/editUser', function (req, res) {
 
     db.query('UPDATE users SET ? WHERE id = ?', [user, req.body.id], function(err, result) {
         if (err) {
-            console.log('<LOG> - GET /user/edit - ERROR');
+            globals.log_msg('GET /user/edit - ERROR');
             console.error(err);
             res.status(globals.status_codes.Server_Error).json()
         } else {
-            console.log('<LOG> - GET /user/login - SUCCESS');
+            globals.log_msg('GET /user/login - SUCCESS');
             res.status(globals.status_codes.OK).json()
         }
     })
 });
 
 router.get('/login', function (req, res) {
-    console.log('<LOG> - GET /user/login - Invoke');
+    globals.log_msg('GET /user/login - Invoke');
     const incoming_token = JSON.parse(JSON.stringify(req.headers))['x-auth']
     if (incoming_token) {
         db.query('SELECT * FROM user_sessions, users WHERE user_sessions.user_id = users.id AND user_sessions.session = ?', [incoming_token], function(err, result) {
             if (err) {
-                console.log('<LOG> - GET /user/login - ERROR');
+                globals.log_msg('GET /user/login - ERROR');
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json()
             } else {
                 if (result.length > 0) {
                     delete result[0].password;
-                    console.log('<LOG> - GET /user/login - SUCCESS');
+                    globals.log_msg('GET /user/login - SUCCESS');
                     if (result[0].avatar === '') {
                         result[0].avatar = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/defaultAvater.jpg';
                     } else {
@@ -181,7 +181,7 @@ router.get('/login', function (req, res) {
                     }
                     db.query('SELECT * FROM businesses WHERE owner_id  = ?', [result[0].user_id], function(err, businesses_res) {
                         if (err) {
-                            console.log('<LOG> - GET /user/login - ERROR');
+                            globals.log_msg('GET /user/login - ERROR');
                             console.error(err);
                             res.status(globals.status_codes.Server_Error).json();
                         } else {
@@ -190,13 +190,13 @@ router.get('/login', function (req, res) {
                         }
                     })
                 } else {
-                    console.log('<LOG> - GET /admin/login - Unauthorized Credentials');
+                    globals.log_msg('GET /admin/login - Unauthorized Credentials');
                     res.status(globals.status_codes.Unauthorized).json()
                 }
             }
         })
     } else {
-        console.log('<LOG> - GET /admin/login - Credentials Missing');
+        globals.log_msg('GET /admin/login - Credentials Missing');
         res.status(globals.status_codes.Bad_Request).json()
     }
 });
@@ -205,7 +205,7 @@ router.get('/login', function (req, res) {
 
 
 router.get('/checkValidationCode', function (req, res) {
-    console.log('<LOG> - POST /user/check code');
+    globals.log_msg('POST /user/check code');
     if (req && req.query && req.query.phone && req.query.code && req.query.phone && !isNaN(req.query.code)) {
         let phone = req.query.phone.replace(/\D/g,'');
         let code = req.query.code;
@@ -218,13 +218,13 @@ router.get('/checkValidationCode', function (req, res) {
 
         db.query('SELECT * FROM users, user_sessions WHERE users.id = user_sessions.user_id AND phone = ? AND validation_code = ? AND user_sessions.deleted = 0', [phone, code], function(err, result) {
             if (err) {
-                console.log('<LOG> - GET user/sendSms - ERROR check validation code');
+                globals.log_msg('GET user/sendSms - ERROR check validation code');
                 console.error(err);
                 res.status(globals.status_codes.Bad_Request).json()
             } else {
                 if (result.length > 0) {
                     let user = result[0];
-                    console.log('<LOG> - GET user/sendSms - SUCCESS');
+                    globals.log_msg('GET user/sendSms - SUCCESS');
                     res.status(globals.status_codes.OK).json({token: user.session});
                 } else {
                     res.status(globals.status_codes.Bad_Request).json({message: 'incorrect validation code'});
@@ -245,20 +245,20 @@ function insertSessionAndSendSms(user, token, code, phone, res, debug_mode = fal
         db.query('INSERT INTO user_sessions(user_id, session, validation_code) VALUES (?,?,?)',[user.id, token, code],function (err, result){
             let user_session = result.user
             if (err) {
-                console.log('<LOG> - GET user/sendSms - fail insert session');
+                globals.log_msg('GET user/sendSms - fail insert session');
                 console.error(err);
                 res.status(globals.status_codes.Bad_Request).json();
             } else {
                 if (debug_mode) {
-                    console.log('<LOG> - GET user/sendSms - SUCCESS');
+                    globals.log_msg('GET user/sendSms - SUCCESS');
                     res.status(globals.status_codes.OK).json();
                 } else {
                     sendSms(phone, 'קוד האימות שלך הוא: ' + code, (err, result) => {
                         if (err) {
-                            console.log('<LOG> - GET user/sendSms - fail send sms');
+                            globals.log_msg('GET user/sendSms - fail send sms');
                             res.status(globals.status_codes.Bad_Request).json(err);
                         } else {
-                            console.log('<LOG> - GET user/sendSms - SUCCESS');
+                            globals.log_msg('GET user/sendSms - SUCCESS');
                             res.status(globals.status_codes.OK).json();
                         }
                     });
@@ -269,7 +269,7 @@ function insertSessionAndSendSms(user, token, code, phone, res, debug_mode = fal
 }
 
 router.get('/sendSms', function (req, res) {
-    console.log('<LOG> - POST /user/sendSms');
+    globals.log_msg('POST /user/sendSms');
     if (req && req.query && req.query.phone) {
         let name = req.query.name ? req.query.name : '';
         let user_type = req.query.user_type ? req.query.user_type : 1;
@@ -286,7 +286,7 @@ router.get('/sendSms', function (req, res) {
 
         db.query('SELECT * FROM users WHERE phone = ? AND user_type != 0 LIMIT 1', [phone.split('+972')[1]], function(err, result) {
             if (err) {
-                console.log('<LOG> - GET user/sendSms - ERROR get user');
+                globals.log_msg('GET user/sendSms - ERROR get user');
                 console.error(err);
                 res.status(globals.status_codes.Bad_Request).json()
             } else {
@@ -300,13 +300,13 @@ router.get('/sendSms', function (req, res) {
                     db.query('INSERT INTO users (name, user_type, email, phone, password, avatar) VALUES (?,?,?,?,?,?)',
                         [name, user_type, '', phone.split('+972')[1], '', ''],function (err, result){
                             if (err) {
-                                console.log('<LOG> - GET user/sendSms - fail insert user');
+                                globals.log_msg('GET user/sendSms - fail insert user');
                                 console.error(err);
                                 res.status(globals.status_codes.Bad_Request).json();
                             } else {
                                 db.query('SELECT * FROM users WHERE id = ?', [result.insertId], function(err, result) {
                                     if (err) {
-                                        console.log('<LOG> - GET user/sendSms - fail insert user');
+                                        globals.log_msg('GET user/sendSms - fail insert user');
                                         console.error(err);
                                         res.status(globals.status_codes.Bad_Request).json();
                                     } else {

@@ -6,18 +6,18 @@ const router = express.Router()
 //ADD PARK REQUEST
 
 router.delete('/',function (req,res){
-    console.log('<LOG> - DELETE /user/places - Invoke');
+    globals.log_msg('DELETE /user/places - Invoke');
     if(req.query.id && !isNaN(req.query.id)) {
         db.query('UPDATE places SET deleted = 1 WHERE id = ?', [req.query.id],function (err, result) {
             if (err) {
-                console.log('<LOG> - DELETE /user/places - ERROR');
+                globals.log_msg('DELETE /user/places - ERROR');
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json();
             } if (result.affectedRows > 0) {
                 console.log("<LOG> - DELETE /users/places - SUCCESS");
                 res.status(globals.status_codes.OK).json()
             } else {
-                console.log('<LOG> - DELETE /users/places - query ERROR');
+                globals.log_msg('DELETE /users/places - query ERROR');
                 res.status(globals.status_codes.Bad_Request).json();
             }
 
@@ -29,7 +29,7 @@ router.delete('/',function (req,res){
 });
 
 router.post('/', function (req, res) {
-    console.log('<LOG> - POST /user/places/add - Invoke');
+    globals.log_msg('POST /user/places/add - Invoke');
 
     const {
         name,
@@ -54,7 +54,7 @@ router.post('/', function (req, res) {
         type === undefined ||
         condition === undefined)
     {
-        console.log('<LOG> - POST /places/add - At least 1 field is missing');
+        globals.log_msg('POST /places/add - At least 1 field is missing');
         res.status(globals.status_codes.Bad_Request).json();
         return;
     }
@@ -68,7 +68,7 @@ router.post('/', function (req, res) {
         (typeof(handicapped) !== 'boolean' && typeof(handicapped) !== 'number') ||
         typeof(condition) !== 'number')
     {
-            console.log('<LOG> - POST /places/add - Error with type of at least 1 input field');
+            globals.log_msg('POST /places/add - Error with type of at least 1 input field');
             res.status(globals.status_codes.Bad_Request).json();
             return;
     }
@@ -92,11 +92,11 @@ router.post('/', function (req, res) {
 
         db.query('INSERT INTO places SET ?', place, function (err, inserted_row) {
             if (err) {
-                console.log('<LOG> - POST /user/places/add - ERROR');
+                globals.log_msg('POST /user/places/add - ERROR');
                 console.error(err)
                 res.status(globals.status_codes.Server_Error).json()
             } else {
-                console.log('<LOG> - POST /user/places/add - SUCCESS');
+                globals.log_msg('POST /user/places/add - SUCCESS');
                 res.status(globals.status_codes.OK).json()
             }
         });
@@ -105,18 +105,18 @@ router.post('/', function (req, res) {
 
 
 router.get('/' , function(req, res) {
-    console.log('<LOG> - GET /user/places/get - Invoke');
+    globals.log_msg('GET /user/places/get - Invoke');
     //if the clint want specific park dog
     if (req.body.id && !isNaN(req.body.id)) {
         let temp_id = req.body.id;
         db.query('SELECT * FROM places WHERE id = ?', [temp_id], function (err, return_row) {
             if (err) {
-                console.log('<LOG> - GET /user/places/get - ERROR');
+                globals.log_msg('GET /user/places/get - ERROR');
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json();
             } else {
                 fillImages(return_row);
-                console.log('<LOG> - GET /user/places/get - SUCCESS');
+                globals.log_msg('GET /user/places/get - SUCCESS');
                 res.status(globals.status_codes.OK).json(return_row)
             }
         })
@@ -129,12 +129,12 @@ router.get('/' , function(req, res) {
         }
         db.query('SELECT * FROM places WHERE deleted = 0 ' + query, query_array, function (err, result) {
             if (err) {
-                console.log('<LOG> - GET /user/places/get - ERROR');
+                globals.log_msg('GET /user/places/get - ERROR');
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json();
             } else {
                 fillImages(result);
-                console.log('<LOG> - GET /user/places/get - SUCCESS');
+                globals.log_msg('GET /user/places/get - SUCCESS');
                 res.status(globals.status_codes.OK).json(result)
             }
         })
@@ -159,7 +159,7 @@ function fillImages(places) {
 }
 
 router.patch('/',function (req,res) {
-    console.log('<LOG> - UPDATE /user/places - Invoke');
+    globals.log_msg('UPDATE /user/places - Invoke');
     const {
         id,
         name,
@@ -187,7 +187,7 @@ router.patch('/',function (req,res) {
         type == undefined ||
         active == undefined)
     {
-        console.log('<LOG> - UPDATE /user/places - At least 1 field is missing');
+        globals.log_msg('UPDATE /user/places - At least 1 field is missing');
         res.status(globals.status_codes.Bad_Request).json()
         return;
     }
@@ -204,7 +204,7 @@ router.patch('/',function (req,res) {
          typeof(type) !== 'number' ||
          (typeof(active) !== 'boolean' && typeof(active) !== 'number'))
     {
-        console.log('<LOG> - UPDATE /user/places - Error with type of at least 1 input field');
+        globals.log_msg('UPDATE /user/places - Error with type of at least 1 input field');
         res.status(globals.status_codes.Bad_Request).json()
         return;
     }
@@ -226,11 +226,11 @@ router.patch('/',function (req,res) {
 
     db.query('UPDATE places SET ? WHERE id = ?', [place, place.id], function (err, update_result) {
         if (err) {
-            console.log('<LOG> - PATCH /user/places - ERROR');
+            globals.log_msg('PATCH /user/places - ERROR');
             console.error(err);
             res.status(globals.status_codes.Server_Error).json()
         } else {
-            console.log('<LOG> - PATCH /user/places - SUCCESS');
+            globals.log_msg('PATCH /user/places - SUCCESS');
             res.status(globals.status_codes.OK).json()
         }
     })

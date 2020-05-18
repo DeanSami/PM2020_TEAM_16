@@ -2,6 +2,7 @@ const request = require('supertest');
 const app = require('../index');
 
 const globals = require('../globals');
+globals.mode = 'test';
 
 describe('Admin Login With Empty Info', () => {
     it('Should return unsuccessfull', done => {

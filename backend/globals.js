@@ -13,8 +13,13 @@ module.exports = {
         NAME: 'pm2020_team16'
     },
     log_func: function Log (req, res, next) {
-        console.log('<LOG> -', new Date().toUTCString());
+        if (this.mode === 'debug')
+            console.log('<LOG> - ', new Date().toUTCString());
         next();
+    },
+    log_msg: function LogMsg(msg) {
+        if (this.mode === 'debug')
+            console.log('<LOG> - ' + msg);
     },
     places_types: {
         dog_park: 0,
@@ -35,5 +40,6 @@ module.exports = {
     },
     aws: {
 
-    }
+    },
+    mode: 'debug'
 }

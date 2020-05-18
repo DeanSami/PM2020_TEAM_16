@@ -4,25 +4,25 @@ const db = require('../../db-connect')
 const router = express.Router()
 
 router.post('/create', function (req, res) {
-    console.log('<LOG> - POST /user/business/add - Invoke');
+    globals.log_msg('POST /user/business/add - Invoke');
     checkPermission(req.body, req.headers, (result) => {
         if (result && result.status) {
             res.status(result.status).json(result.message)
         } else {
             db.query('INSERT INTO businesses SET ?', result, function (err, inserted_row) {
                 if (err) {
-                    console.log('<LOG> - POST /user/business/add - ERROR');
+                    globals.log_msg('POST /user/business/add - ERROR');
                     console.error(err);
                     res.status(globals.status_codes.Server_Error).json();
                 } else {
                     if (inserted_row && inserted_row.insertId) {
                         db.query('SELECT * FROM businesses WHERE id = ?', [inserted_row.insertId], function (err, result) {
                             if (err) {
-                                console.log('<LOG> - POST /user/business/add - ERROR get business');
+                                globals.log_msg('POST /user/business/add - ERROR get business');
                                 console.error(err);
                                 res.status(globals.status_codes.Server_Error).json();
                             } else {
-                                console.log('<LOG> - POST /user/business/add - SUCCESS');
+                                globals.log_msg('POST /user/business/add - SUCCESS');
                                 res.status(globals.status_codes.OK).json(result[0]);
                             }
                         });
@@ -43,11 +43,11 @@ router.patch('/edit', function (req, res) {
             } else {
                 db.query('UPDATE businesses SET ? WHERE id = ?', [result, id], function (err, inserted_row) {
                     if (err) {
-                        console.log('<LOG> - POST /user/business/add - ERROR');
+                        globals.log_msg('POST /user/business/add - ERROR');
                         console.error(err)
                         res.status(globals.status_codes.Server_Error).json()
                     } else {
-                        console.log('<LOG> - POST /user/business/add - SUCCESS');
+                        globals.log_msg('POST /user/business/add - SUCCESS');
                         res.status(globals.status_codes.OK).json()
                     }
                 });
@@ -57,27 +57,27 @@ router.patch('/edit', function (req, res) {
 });
 
 router.get('/' , function(req, res) {
-    console.log('<LOG> - GET /user/business - Invoke');
+    globals.log_msg('GET /user/business - Invoke');
     if (req.body.id && !isNaN(req.body.id)) {
         let temp_id = req.body.id;
         db.query('SELECT * FROM businesses WHERE id = ?', [temp_id], function (err, return_row) {
             if (err) {
-                console.log('<LOG> - GET /user/business - ERROR');
+                globals.log_msg('GET /user/business - ERROR');
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json();
             } else {
-                console.log('<LOG> - GET /user/business - SUCCESS');
+                globals.log_msg('GET /user/business - SUCCESS');
                 res.status(globals.status_codes.OK).json(return_row)
             }
         })
     } else {
         db.query('SELECT * FROM businesses', [], function (err, result) {
             if (err) {
-                console.log('<LOG> - GET /user/business - ERROR');
+                globals.log_msg('GET /user/business - ERROR');
                 console.error(err);
                 res.status(globals.status_codes.Server_Error).json();
             } else {
-                console.log('<LOG> - GET /user/business - SUCCESS');
+                globals.log_msg('GET /user/business - SUCCESS');
                 res.status(globals.status_codes.OK).json(result)
             }
         })
@@ -98,7 +98,7 @@ function checkPermission(data, headers, callback) {
 
     if (!name || !owner_id || !phone || isNaN(type))
     {
-        console.log('<LOG> - POST /business/add - At least 1 field is missing');
+        globals.log_msg('POST /business/add - At least 1 field is missing');
         callback({status: globals.status_codes.Bad_Request, message: 'missing arguments'});
     }
     else {
@@ -115,14 +115,14 @@ function checkPermission(data, headers, callback) {
 
         db.query('SELECT * FROM users WHERE id = ? AND user_type = ?', [owner_id, globals.user_types.businessOwner], function (err, result) {
             if (err) {
-                console.log('<LOG> - POST /user/business/add - ERROR');
+                globals.log_msg('POST /user/business/add - ERROR');
                 console.error(err);
                 callback({status: globals.status_codes.Server_Error});
             } else {
                 if (result && result.length > 0) {
                     callback(business);
                 } else {
-                    console.log('<LOG> - POST /user/business/add - invalid owner_id');
+                    globals.log_msg('POST /user/business/add - invalid owner_id');
                     console.error(err);
                     callback({status: globals.status_codes.Bad_Request, message: 'invalid owner_id'});
                 }
