@@ -69,15 +69,15 @@ describe('Business Owner Login, Creating new Business, and Editing a business in
 });
 
 describe('Creating new Trasure Hunt, and Editing a Treasure Hunt',  function() {
-    it('Should Create a new Treasure Hunt.', function(done) {
+    it('Should Create a new Treasure Hunt, then edit it.', function(done) {
         request(app)
-            .post('/user/business/create')
+            .post('/user/games/create')
             .set('x-auth', '9fcebfae4ea0d68e8cc51ef3ec849904')
             .send({
                 owner_id: 7,
                 name: "Integration Test Game",
-                start: new Date(),
-                end: new Date(),
+                start: "2020-05-05 14:00:00",
+                end: "2020-05-05 14:00:00",
                 start_location: 1,
                 finish_location: 2,
                 steps: [
@@ -95,27 +95,62 @@ describe('Creating new Trasure Hunt, and Editing a Treasure Hunt',  function() {
             .expect('Content-Type', 'application/json; charset=utf-8')
             .end((err, create_result) => {
                 if (err) return done(err);
-                done();
+                expect(create_result).toHaveProperty('body');
+                expect(create_result.body).toHaveProperty('id');
+                request(app)
+                    .patch('/user/games/edit')
+                    .set('x-auth', '9fcebfae4ea0d68e8cc51ef3ec849904')
+                    .send({
+                        id: create_result.body.id,
+                        owner_id: 7,
+                        name: "Integration test edit",
+                        start: "2020-05-05 14:00:00",
+                        end: "2020-05-05 14:00:00",
+                        start_location: 2,
+                        finish_location: 3
+                    })
+                    .expect(globals.status_codes.OK)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, edit_res) => {
+                        if (err) return done(err);
+                        done();
+                    });
+
             });
     });
 
-    it('Should Delete the last treasure hunt.', function(done) {
+});
+
+describe('Business Owner login, Get all Business Owner Current Games',  function() {
+    it('Should login as a business owner.', function(done) {
         request(app)
-            .patch('/user/business/edit')
+            .get('/user/login')
             .set('x-auth', '9fcebfae4ea0d68e8cc51ef3ec849904')
-            .send({
-                id: 6,
-                name: "Integration Test Edit",
-                owner_id: 7,
-                phone: "086444444",
-                type: 2
-            })
+            .expect(globals.status_codes.OK)
+            .end(function (err, login_res) {
+                if (err) {
+                    console.log('login test');
+                    console.log(err);
+                    return done(err);
+                }
+                expect(login_res.body).toHaveProperty('id');
+                expect(login_res.body.id).toEqual(7);
+                expect(login_res.body).toHaveProperty('user_type');
+                expect(login_res.body.user_type).toEqual(2);
+                expect(login_res.body).toHaveProperty('businesses');
+                done();
+            });
+    });
+    it('Should Get all games for business owner.', function(done) {
+        request(app)
+            .get('/user/games?owner_id=7')
             .expect(globals.status_codes.OK)
             .expect('Content-Type', 'application/json; charset=utf-8')
             .end((err, res) => {
                 if (err) return done(err);
+                expect(res.body).toBeInstanceOf(Array);
                 done();
-            });
+            })
     });
 });
 

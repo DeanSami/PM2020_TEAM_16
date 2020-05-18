@@ -56,7 +56,7 @@ router.get('/' , function(req, res) {
 
                         db.query(query, ids, function (err, steps_result) {
                             if (err) {
-                                globals.log_msg('GET /user/games/get - ERROR');
+                                globals.log_msg('GET /user/games/get - owner id provided, steps - ERROR');
                                 console.error(err);
                                 res.status(globals.status_codes.Server_Error).json();
                             } else {
@@ -65,7 +65,7 @@ router.get('/' , function(req, res) {
                                 } else {
                                     for (let i = 0; i < games.length; i++) games[i].steps = steps_result[i];
                                 }
-                                globals.log_msg('GET /user/games/get - SUCCESS');
+                                globals.log_msg('GET /user/games/get - owner id provided, steps - SUCCESS');
                                 res.status(globals.status_codes.OK).json(games)
                             }
                         });
@@ -75,11 +75,11 @@ router.get('/' , function(req, res) {
         } else {
             db.query('SELECT * FROM games WHERE deleted = 0',[], function (err, result) {
                 if (err) {
-                    globals.log_msg('GET /user/games/get - ERROR');
+                    globals.log_msg('GET /user/games/get - no id was provided - ERROR');
                     console.error(err);
                     res.status(globals.status_codes.Server_Error).json();
                 } else {
-                    globals.log_msg('GET /user/games/get - SUCCESS');
+                    globals.log_msg('GET /user/games/get - no id was provided - SUCCESS');
                     res.status(globals.status_codes.OK).json(result)
                 }
             })
@@ -194,7 +194,7 @@ router.post('/create', function (req, res) {
                     let sql = "INSERT INTO game_steps " +
                         "(game_id, step_num, name, secret_key, start_location, finish_location, description) VALUES ?";
 
-                    db.query(sql, [insertSteps], function(err) {
+                    db.query(sql, [insertSteps], function(err, insertion_res) {
                         if (err) {
                             globals.log_msg('POST /games/create - ERROR insert steps');
                             console.error(err)
@@ -204,14 +204,14 @@ router.post('/create', function (req, res) {
                             });
                             res.status(globals.status_codes.Server_Error).json();
                         } else {
-                            db.commit(function(err) {
+                            db.commit(function(err, commit_res) {
                                 if (err) {
                                     db.rollback(function() {
                                         throw err;
                                     });
                                 }
-                                res.status(globals.status_codes.OK).json();
-                                console.log('Transaction Complete.');
+                                res.status(globals.status_codes.OK).json({id: insertion_res.insertId});
+                                globals.log_msg('Transaction Complete.');
                             });
                         }
                     });
@@ -223,7 +223,7 @@ router.post('/create', function (req, res) {
                             });
                         }
                         res.status(globals.status_codes.OK).json();
-                        console.log('Transaction Complete.');
+                        globals.log_msg('Transaction Complete.');
                     });
                 }
             });
