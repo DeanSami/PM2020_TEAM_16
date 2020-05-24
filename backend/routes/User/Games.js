@@ -40,18 +40,17 @@ router.patch('/endgame/:game_id', function (req, res) {
 });
 
 //REQUEST to get Game list per user
-router.post('/mygames' , function(req, res) {
+router.get('/mygames' , function(req, res) {
     globals.log_msg('GET /user/myGames/get - Invoke');
     if (req.user_session.id !== req.body.id && !isNaN(req.body.id)) {
         globals.log_msg('POST /user/mygames - Unauthorized Access Attempt');
         res.status(globals.status_codes.Unauthorized).json();
     }
-    if (req.body.id) {
-        let id = req.body.id;
-        db.query(`SELECT games.*, active_players.*
-        FROM users, games, active_players WHERE users.id = ? AND 
+        db.query(`SELECT games.*, active_players.*, game_steps.*
+        FROM users, games, active_players, game_steps WHERE users.id = ? AND 
         games.id = active_players.game_id AND 
-        active_players.user_id = users.id`, [id], function (err, result) {
+        active_players.user_id = users.id AND
+        game_steps.id = active_players.step_id`, [req.user_session.id], function (err, result) {
             if (err) {
                 globals.log_msg('GET /user/myGames/get - ERROR');
                 console.error(err);
@@ -61,10 +60,6 @@ router.post('/mygames' , function(req, res) {
                 res.status(globals.status_codes.OK).json(result)
             }
         })
-    } else {
-        globals.log_msg('GET /user/myGames/get - missing arguments');
-        res.status(globals.status_codes.Server_Error).json({message: 'missing arguments'});
-    }
 });
 
 // router.patch('/myGames', function (req,res) {
