@@ -29,14 +29,21 @@ router.get('/startgame/:game_id', function(req, res) {
 
 router.patch('/endgame/:game_id', function (req, res) {
     globals.log_msg('PATCH /user/games/endgame/:id');
-    db.query('UPDATE active_players SET finish_at = NOW() WHERE user_id = ? AND game_id = ?', [req.user_session.id, req.params.game_id], function(err, games) {
-        if (err) {
-            globals.log_msg('PATCH /user/games/endgame/:id - ERROR');
-            console.error(err);
-            res.status(globals.status_codes.Server_Error).json();
-        }
-        res.status(globals.status_codes.OK).json();
-    })
+    let game_id = req.body.game_id;
+    if (!req.body.game_id) {
+        globals.log_msg('PATCH /user/games/endgame/ - ERROR');
+        console.error(err);
+        res.status(globals.status_codes.Bad_Request).json();
+    } else {
+        db.query('UPDATE active_players SET finish_at = NOW() WHERE user_id = ? AND game_id = ?', [req.user_session.id, req.body.game_id], function(err, games) {
+            if (err) {
+                globals.log_msg('PATCH /user/games/endgame/:id - ERROR');
+                console.error(err);
+                res.status(globals.status_codes.Server_Error).json();
+            }
+            res.status(globals.status_codes.OK).json();
+        });
+    }
 });
 
 //REQUEST to get Game list per user
@@ -46,20 +53,20 @@ router.get('/mygames' , function(req, res) {
         globals.log_msg('POST /user/mygames - Unauthorized Access Attempt');
         res.status(globals.status_codes.Unauthorized).json();
     }
-        db.query(`SELECT games.*, active_players.*, game_steps.*
-        FROM users, games, active_players, game_steps WHERE users.id = ? AND 
-        games.id = active_players.game_id AND 
-        active_players.user_id = users.id AND
-        game_steps.id = active_players.step_id`, [req.user_session.id], function (err, result) {
-            if (err) {
-                globals.log_msg('GET /user/myGames/get - ERROR');
-                console.error(err);
-                res.status(globals.status_codes.Server_Error).json();
-            } else {
-                globals.log_msg('GET /user/games/get - SUCCESS');
-                res.status(globals.status_codes.OK).json(result)
-            }
-        })
+    db.query(`SELECT games.*, active_players.*, game_steps.*
+    FROM users, games, active_players, game_steps WHERE users.id = ? AND 
+    games.id = active_players.game_id AND 
+    active_players.user_id = users.id AND
+    game_steps.id = active_players.step_id`, [req.user_session.id], function (err, result) {
+        if (err) {
+            globals.log_msg('GET /user/myGames/get - ERROR');
+            console.error(err);
+            res.status(globals.status_codes.Server_Error).json();
+        } else {
+            globals.log_msg('GET /user/games/get - SUCCESS');
+            res.status(globals.status_codes.OK).json(result)
+        }
+    })
 });
 
 // router.patch('/myGames', function (req,res) {
