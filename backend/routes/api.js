@@ -183,4 +183,23 @@ router.get('/business' , function(req, res) {
     }
 });
 
+
+
+function fillImages(places) {
+    if(places && places.length > 0) {
+        places.forEach(place => {
+            if (place.icon === '') {
+                place.icon = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/places/icon-default.png';
+            } else {
+                place.icon = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/places/' + place.icon;
+            }
+            if (place.image === '') {
+                place.image = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/places/image-default.jpg';
+            } else {
+                place.image = 'https://s3-eu-west-1.amazonaws.com/files.doggiehunt/places/' + place.image;
+            }
+        });
+    }
+}
+
 module.exports = router;
