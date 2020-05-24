@@ -3,6 +3,44 @@ const express = require('express')
 const db = require('../../db-connect')
 const router = express.Router()
 
+router.get('/games', function (req, res) {
+    db.query('SELECT * FROM games WHERE deleted = 0 AND owner_id = ?',[req.user_session.id], function (err, games_result) {
+        if (err) {
+            globals.log_msg('GET /games - owner id provided - ERROR');
+            console.error(err);
+            res.status(globals.status_codes.Server_Error).json();
+        } else {
+            let games = JSON.parse(JSON.stringify(games_result));
+            if (Array.isArray(games) && games.length === 0) {
+                globals.log_msg('GET /games - owner id provided - SUCCESS');
+                res.status(globals.status_codes.OK).json(games)
+            } else {
+                let query = `SELECT * FROM game_steps WHERE game_id = ?;`.repeat(games.length).slice(0, -1);
+                let ids = []
+                for (game of games)  {
+                    ids.push(game.id);
+                }
+                
+                db.query(query, ids, function (err, steps_result) {
+                    if (err) {
+                        globals.log_msg('GET /games - owner id provided, steps - ERROR');
+                        console.error(err);
+                        res.status(globals.status_codes.Server_Error).json();
+                    } else {
+                        if (Array.isArray(steps_result) && steps_result.length >= 0 && !Array.isArray(steps_result[0])) {
+                            games[0].steps = steps_result;
+                        } else {
+                            for (let i = 0; i < games.length; i++) games[i].steps = steps_result[i];
+                        }
+                        globals.log_msg('GET /games - owner id provided, steps - SUCCESS');
+                        res.status(globals.status_codes.OK).json(games)
+                    }
+                });
+            }
+        }
+    })
+})
+
 router.post('/create', function (req, res) {
     globals.log_msg('POST /user/business/add - Invoke');
     checkPermission(req.body, req.headers, (result) => {
@@ -56,34 +94,6 @@ router.patch('/edit', function (req, res) {
     }
 });
 
-router.get('/' , function(req, res) {
-    globals.log_msg('GET /user/business - Invoke');
-    if (req.body.id && !isNaN(req.body.id)) {
-        let temp_id = req.body.id;
-        db.query('SELECT * FROM businesses WHERE id = ?', [temp_id], function (err, return_row) {
-            if (err) {
-                globals.log_msg('GET /user/business - ERROR');
-                console.error(err);
-                res.status(globals.status_codes.Server_Error).json();
-            } else {
-                globals.log_msg('GET /user/business - SUCCESS');
-                res.status(globals.status_codes.OK).json(return_row)
-            }
-        })
-    } else {
-        db.query('SELECT * FROM businesses', [], function (err, result) {
-            if (err) {
-                globals.log_msg('GET /user/business - ERROR');
-                console.error(err);
-                res.status(globals.status_codes.Server_Error).json();
-            } else {
-                globals.log_msg('GET /user/business - SUCCESS');
-                res.status(globals.status_codes.OK).json(result)
-            }
-        })
-    }
-});
-
 function checkPermission(data, headers, callback) {
     const {
         name,
@@ -95,7 +105,7 @@ function checkPermission(data, headers, callback) {
         address,
         type
     } = data;
-
+    
     if (!name || !owner_id || !phone || isNaN(type))
     {
         globals.log_msg('POST /business/add - At least 1 field is missing');
@@ -112,7 +122,7 @@ function checkPermission(data, headers, callback) {
             address: address ? address : '',
             type: type
         };
-
+        
         db.query('SELECT * FROM users WHERE id = ? AND user_type = ?', [owner_id, globals.user_types.businessOwner], function (err, result) {
             if (err) {
                 globals.log_msg('POST /user/business/add - ERROR');
