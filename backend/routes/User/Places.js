@@ -104,42 +104,7 @@ router.post('/', function (req, res) {
 });
 
 
-router.get('/' , function(req, res) {
-    globals.log_msg('GET /user/places/get - Invoke');
-    //if the clint want specific park dog
-    if (req.body.id && !isNaN(req.body.id)) {
-        let temp_id = req.body.id;
-        db.query('SELECT * FROM places WHERE id = ?', [temp_id], function (err, return_row) {
-            if (err) {
-                globals.log_msg('GET /user/places/get - ERROR');
-                console.error(err);
-                res.status(globals.status_codes.Server_Error).json();
-            } else {
-                fillImages(return_row);
-                globals.log_msg('GET /user/places/get - SUCCESS');
-                res.status(globals.status_codes.OK).json(return_row)
-            }
-        })
-    } else {
-        let query = '';
-        let query_array = [];
-        if (req.body.type && !isNaN(req.body.type)) {
-            query = 'AND type = ?'
-            query_array.push(req.body.type);
-        }
-        db.query('SELECT * FROM places WHERE deleted = 0 ' + query, query_array, function (err, result) {
-            if (err) {
-                globals.log_msg('GET /user/places/get - ERROR');
-                console.error(err);
-                res.status(globals.status_codes.Server_Error).json();
-            } else {
-                fillImages(result);
-                globals.log_msg('GET /user/places/get - SUCCESS');
-                res.status(globals.status_codes.OK).json(result)
-            }
-        })
-    }
-});
+
 
 function fillImages(places) {
     if(places && places.length > 0) {
