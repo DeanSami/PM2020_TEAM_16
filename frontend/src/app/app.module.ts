@@ -73,6 +73,7 @@ import { BusinessViewComponent } from './user/businessOwner/business-info/busine
 import { ViewDataComponent } from './user/view-data/view-data.component';
 import { UserDogParksComponent } from './user/view-data/user-dog-parks/user-dog-parks.component';
 import { PlacesImageModalComponent } from './admin/places-image-modal/places-image-modal.component';
+import { PlaceNameFromIdPipe } from './place-name-from-id.pipe';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -111,7 +112,8 @@ export function createTranslateLoader(http: HttpClient) {
     BusinessViewComponent,
     ViewDataComponent,
     UserDogParksComponent,
-    PlacesImageModalComponent
+    PlacesImageModalComponent,
+    PlaceNameFromIdPipe
   ],
   imports: [
     HttpClientModule,

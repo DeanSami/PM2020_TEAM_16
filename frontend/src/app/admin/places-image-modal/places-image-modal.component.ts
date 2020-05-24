@@ -3,6 +3,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ConditionTypeTitles, Place } from '../../models/places';
 import { AwsS3Service } from '../../user/aws-s3.service';
 import { ToastrService } from 'ngx-toastr';
+import { ThemePalette } from '@angular/material/core';
+import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-places-image-modal',
@@ -11,6 +13,10 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class PlacesImageModalComponent implements OnInit {
   currentPlace: Place;
+  color: ThemePalette = 'primary';
+  mode: ProgressSpinnerMode = 'indeterminate';
+  value = 50;
+  loading = false;
   icon: string ;
   image: string;
   selectedFilesIcon: FileList;
@@ -41,15 +47,19 @@ export class PlacesImageModalComponent implements OnInit {
   }
 
   uploadImage() {
+    this.loading = true;
     this.upload(0).then(() => {
       this.upload(1).then(() => {
         this.toastr.success('הפעולה הושלמה בהצלחה');
+        this.loading = false;
         this.dialogRef.close(this.currentPlace);
       }, err => {
-        this.toastr.success(err);
+        this.toastr.error(err);
+        this.loading = false;
       });
     }, (err) => {
-      this.toastr.success(err);
+      this.toastr.error(err);
+      this.loading = false;
     });
   }
 

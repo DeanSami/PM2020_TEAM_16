@@ -48,8 +48,8 @@ export class MyGamesComponent implements OnInit {
       width: '250px',
     }).afterClosed().subscribe(result => {
       if (result) {
-        console.log("game id =" + GameId);
-        console.log("user id =" + UserId);
+        console.log('game id =' + GameId);
+        console.log('user id =' + UserId);
         this.gamesService.finishGame(GameId, UserId).subscribe(() => {
           this.dataSource.data = this.dataSource.data.filter(game => game.id !== GameId);
           this.toastr.success('נעצר בהצלחה');
