@@ -13,12 +13,12 @@ export class PlacesService {
   places: Place[] = [];
 
   getInterestPoints(): Observable<Place[]> {
-    return this.api.get('user/places').pipe(tap((types: any) => {
+    return this.api.get('places').pipe(tap((types: any) => {
       this.places = types && types instanceof Array ? types : [];
     }));
   }
 
   getDogParks(): Observable<Place[]> {
-    return this.api.get('user/places', {type: PlacesType.Dog_garden});
+    return this.api.get('places', {type: PlacesType.Dog_garden});
   }
 }

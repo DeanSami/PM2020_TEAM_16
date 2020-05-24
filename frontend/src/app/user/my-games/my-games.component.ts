@@ -35,7 +35,7 @@ export class MyGamesComponent implements OnInit {
   ngOnInit(): void {
     this.userAuthService.currentUser.subscribe(user => {
       this.user = user;
-      this.gamesService.getGamesPlayedById(this.user.id).subscribe(games => {
+      this.gamesService.getGamesPlayedById().subscribe(games => {
         this.games = games;
         this.dataSource = new MatTableDataSource<UserGames>(this.games);
       }, err => console.log(err));

@@ -15,16 +15,16 @@ export class GamesService {
     if (params && params.owner_id) {
       return this.api.get('user/business/games', params);
     } else {
-      return this.api.get('user/games');
+      return this.api.get('games');
     }
   }
 
-  getGamesPlayedById(id: number) {
-    return this.api.post('user/games/myGames', {id});
+  getGamesPlayedById() {
+    return this.api.get('user/games/myGames', );
   }
 
-  finishGame(GameId: number){
-    return this.api.patch('user/games/endgame', {GameId});
+  finishGame(id: number){
+    return this.api.patch('user/games/endgame', {game_id: id});
   }
 
   // deleteGame(GameID: number) {

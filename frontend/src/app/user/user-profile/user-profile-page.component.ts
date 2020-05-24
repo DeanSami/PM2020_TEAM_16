@@ -73,7 +73,7 @@ export class UserProfilePageComponent implements OnInit {
           console.log(err);
         });
       } else {
-        this.gameService.getGamesPlayedById(user.id).subscribe(games => {
+        this.gameService.getGamesPlayedById().subscribe(games => {
           this.myGames = games;
         }, err => {
           console.log(err);
