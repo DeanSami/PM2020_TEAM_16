@@ -27,7 +27,7 @@ router.get('/startgame/:game_id', function(req, res) {
     });
 });
 
-router.patch('/endgame/:game_id', function (req, res) {
+router.patch('/endgame', function (req, res) {
     globals.log_msg('PATCH /user/games/endgame/:id');
     let game_id = req.body.game_id;
     if (!req.body.game_id) {
