@@ -74,6 +74,11 @@ import { ViewDataComponent } from './user/view-data/view-data.component';
 import { UserDogParksComponent } from './user/view-data/user-dog-parks/user-dog-parks.component';
 import { PlacesImageModalComponent } from './admin/places-image-modal/places-image-modal.component';
 import { PlaceNameFromIdPipe } from './place-name-from-id.pipe';
+import { AllGamesComponent } from './user/view-data/all-games/all-games.component';
+import { UserGamesResolverResolver } from './user/resolvers/userGamesResolver.resolver';
+import { GameInfoModalComponent } from './user/view-data/all-games/game-info-modal/game-info-modal.component';
+import { UserPlacesResolver } from './user/resolvers/userPlaces.resolver';
+import { NextStepModalComponent } from './user/my-games/next-step-modal/next-step-modal.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -113,7 +118,10 @@ export function createTranslateLoader(http: HttpClient) {
     ViewDataComponent,
     UserDogParksComponent,
     PlacesImageModalComponent,
-    PlaceNameFromIdPipe
+    PlaceNameFromIdPipe,
+    AllGamesComponent,
+    GameInfoModalComponent,
+    NextStepModalComponent
   ],
   imports: [
     HttpClientModule,
@@ -179,6 +187,8 @@ export function createTranslateLoader(http: HttpClient) {
     ApiProviderService,
     LoadingService,
     UserDogParksResolver,
+    UserPlacesResolver,
+    UserGamesResolverResolver,
     GamesService
   ],
   bootstrap: [AppComponent],

@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AreYouSureDialogComponent } from '../../are-you-sure-dialog/are-you-sure-dialog.component';
 import { ToastrService } from 'ngx-toastr';
-import { Games } from '../../models/Games';
+import { UserGames } from '../../models/Games';
 import { GamesService } from '../services/games.service';
 import {UserAuthService} from '../user-auth.service';
 import {User} from '../../models/users';
+import { NextStepModalComponent } from './next-step-modal/next-step-modal.component';
 
 @Component({
   selector: 'app-my-games',
@@ -16,8 +16,8 @@ import {User} from '../../models/users';
 })
 export class MyGamesComponent implements OnInit {
   displayedColumns: string[] = ['name', 'start', 'end', 'start_location', 'step_id', 'finish_location', 'action'];
-  dataSource: MatTableDataSource<Games>;
-  games: Games[];
+  dataSource: MatTableDataSource<UserGames>;
+  games: UserGames[];
   user: User;
 
   applyFilter(event: Event) {
@@ -37,26 +37,35 @@ export class MyGamesComponent implements OnInit {
       this.user = user;
       this.gamesService.getGamesPlayedById(this.user.id).subscribe(games => {
         this.games = games;
-        this.dataSource = new MatTableDataSource<Games>(this.games);
+        this.dataSource = new MatTableDataSource<UserGames>(this.games);
       }, err => console.log(err));
     }, err => console.log(err));
 
   }
 
-  finishGame(GameId: number, UserId: number) {
+  finishGame(GameId: number) {
     this.dialog.open(AreYouSureDialogComponent, {
       width: '250px',
     }).afterClosed().subscribe(result => {
       if (result) {
-        console.log('game id =' + GameId);
-        console.log('user id =' + UserId);
-        this.gamesService.finishGame(GameId, UserId).subscribe(() => {
+        this.gamesService.finishGame(GameId).subscribe(() => {
           this.dataSource.data = this.dataSource.data.filter(game => game.id !== GameId);
           this.toastr.success('נעצר בהצלחה');
         }, err =>  {
           console.log(err);
           this.toastr.error('ארעה שגיאה בניסיון לעצירת המשחק');
         });
+      }
+    });
+  }
+
+  nextStepModal(element: UserGames) {
+    this.dialog.open(NextStepModalComponent, {
+      width: '250px',
+      data: element
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.toastr.success('');
       }
     });
   }
