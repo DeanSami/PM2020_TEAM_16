@@ -1,7 +1,25 @@
+.body-modal {
+  position: relative;
 
-.header-image {
-  background-size: cover;
-}
-.cover-image {
-  height: 250px;;
+  .loading-background {
+    position: absolute;
+    z-index: 2;
+    background: #fff;
+    opacity: 0.6;
+
+    mat-progress-spinner {
+      opacity: 1;
+      ::ng-deep circle {
+        stroke: #5777ba!important;
+      }
+    }
+  }
+
+  .header-image {
+    background-size: cover;
+  }
+
+  .cover-image {
+    height: 250px;;
+  }
 }

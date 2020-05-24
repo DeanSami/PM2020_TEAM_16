@@ -2,9 +2,10 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ConditionType, ConditionTypeTitles, Place, PlaceActiveType, PlacesType, PlaceTypeTitles } from '../../../models/places';
 import { InterestingPointService } from '../../services/interesting-point.service';
+import { PlacesImageModalComponent } from '../../places-image-modal/places-image-modal.component';
 
 @Component({
   selector: 'app-new-interesting-point',
@@ -21,6 +22,7 @@ export class NewInterestingPointComponent implements OnInit {
     private interestingPointService: InterestingPointService,
     private router: Router,
     private toastr: ToastrService,
+    private dialog: MatDialog,
     public dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public dialogData: Place
   ) {
@@ -145,6 +147,34 @@ export class NewInterestingPointComponent implements OnInit {
     }, err => {
       this.toastr.error('הפעולה נכשלה');
       console.log('err', err);
+    });
+  }
+
+
+  preview() {
+    this.dialog.open(PlacesImageModalComponent, {
+      width: '600px',
+      direction: 'rtl',
+      data: this.dialogData
+    }).afterClosed().subscribe(result => {
+      if (result && result.id) {
+        if (this.dialogData.icon !== '' || this.dialogData.image !== '') {
+          this.dialogData.icon = result.icon;
+          this.dialogData.image = result.image;
+          this.interestingPointService
+            .updateInterestingPoint(this.dialogData)
+            .subscribe(
+              (res) => {
+                this.toastr.success('תמונות עודכנו בהצלחה');
+                this.dialogRef.close(res);
+              },
+              (err) => {
+                this.toastr.error('הפעולה נכשלה');
+                console.log('err', err);
+              }
+            );
+        }
+      }
     });
   }
 
