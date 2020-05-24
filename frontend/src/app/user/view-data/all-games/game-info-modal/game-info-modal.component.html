@@ -1,0 +1,15 @@
+<div class="details">
+  <h3>משחק - {{dialogData.name}}</h3>
+  <p fxLayout="column" fxLayoutAlign="center start">
+    <span>מנהל המשחק: {{dialogData.owner_id}}</span>
+    <span>תאריך תחילת המשחק: {{dialogData.start | date: 'dd/MM/yyyy'}}</span>
+    <span>תאריך סיום המשחק: {{dialogData.end | date: 'dd/MM/yyyy'}}</span>
+    <span>מקום תחילת המשחק: {{dialogData.start_location | placeNameFromId}}</span>
+    <span>מקום סיום המשחק: {{dialogData.finish_location | placeNameFromId}}</span>
+  </p>
+  <p class="steps" *ngIf="dialogData.steps.length > 0 || true">
+    משחק זה כולל {{dialogData.steps.length}} שלבים שונים
+    בהם תוכל לבקר באתרים:
+    <span *ngFor="let step of dialogData.steps">{{step.name}}</span>
+  </p>
+</div>
