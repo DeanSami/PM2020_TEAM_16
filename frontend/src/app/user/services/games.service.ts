@@ -11,19 +11,20 @@ export class GamesService {
 
   constructor(private api: ApiProviderService) {}
 
-
-  // { owenr_id: ... } - get all games thats owned by user with id ||
-  // { id: ... } get all games that are being played by user id
-  getGames(params: object): Observable<Games[]> {
-    return this.api.get('user/games', params);
+  getGames(params?: {owner_id: number}): Observable<Games[]> {
+    if (params && params.owner_id) {
+      return this.api.get('user/business/games', params);
+    } else {
+      return this.api.get('user/games');
+    }
   }
 
   getGamesPlayedById(id: number) {
     return this.api.post('user/games/myGames', {id});
   }
-  // REQUEST to finish/stop the game by given game id and user id
-  finishGame(GameId: number, UserId: number){
-    return this.api.patch('user/games/myGames', {GameId, UserId});
+
+  finishGame(GameId: number){
+    return this.api.patch('user/games/endgame', {GameId});
   }
 
   // deleteGame(GameID: number) {
@@ -40,5 +41,13 @@ export class GamesService {
 
   createNewGame(game: Games): Observable<Games[]> {
     return this.api.post('user/games/create', game);
+  }
+
+  startGame(id: number) {
+    return this.api.get('user/games/startGame', {id});
+  }
+
+  nextStep(data: {code: string, game_id: number}) {
+    return this.api.get('user/games/nextStep', data);
   }
 }

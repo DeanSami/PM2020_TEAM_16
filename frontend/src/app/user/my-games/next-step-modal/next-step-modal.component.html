@@ -1,0 +1,16 @@
+<div class="next-step">
+  <h3>{{dialogData.name}}</h3>
+  <div fxLayout="column" fxLayoutAlign="center start">
+    <span>שלב נוכחי: {{dialogData.step_id}}</span>
+    <span>רמז: {{dialogData.description}}</span>
+  </div>
+  <div class="next-step">
+    <form [formGroup]="form" fxLayout="column">
+      <mat-form-field appearance="fill">
+        <mat-label>קוד</mat-label>
+        <input matInput formControlName="code">
+      </mat-form-field>
+    </form>
+    <button fxFill class="btn btn-primary" (click)="nextStep()">שלח</button>
+  </div>
+</div>

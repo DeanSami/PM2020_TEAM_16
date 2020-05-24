@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { UserLayoutComponent } from './layouts/userLayout/userLayout.component';
-import { LoginComponent } from './admin/login/login.component';
 import { AdminGuard } from './admin.guard';
 import { DogParksResolver } from './admin/resolvers/dogParksResolver.resolver';
 import { FullAdminComponent } from './layouts/full-admin/full-admin.component';

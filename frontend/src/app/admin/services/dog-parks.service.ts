@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Place } from '../../models/places';
 import { ApiProviderService } from '../../services/api-provider.service';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
