@@ -3,28 +3,108 @@ const express = require('express')
 const db = require('../../db-connect')
 const router = express.Router()
 
+router.post('/next_stage', function (req, res) {
+    globals.log_msg('POST /user/games/next_stage - Invoke');
+    if (req.body.game_id) {
+        // Check if enrolled to game
+        if (req.body.secret_key) {
+            db.query('SELECT * FROM active_players WHERE user_id = ? AND game_id = ?', [req.user_session.id, req.body.game_id], function (err, active_players_records) {
+                if (err) {
+                    globals.log_msg('POST /user/games/next_stage - ERROR');
+                    console.error(err);
+                    res.status(globals.status_codes.Server_Error).json();
+                } else {
+                    if (active_players_records.length > 0) {
+                        let active_player_record = active_players_records[0];
+                        db.query('SELECT * FROM game_steps WHERE game_id = ?', [req.body.game_id], function(err, game_steps_records) {
+                            if (err) {
+                                globals.log_msg('POST /user/games/next_stage - ERROR');
+                                console.error(err);
+                                res.status(globals.status_codes.Server_Error).json();
+                            } else {
+                                if (game_steps_records.length > 0) {
+                                    let step_id = active_player_record.step_id;
+                                    let next_step_id = -1;
+                                    for (record of game_steps_records) {
+                                        if (record.id == step_id) next_step_id = record.finish_location;
+                                    }
+                                    if (next_step_id != -1) {
+                                        db.query('UPDATE active_players SET step_id = ? WHERE user_id = ? AND game_id = ?', [next_step_id, req.user_session.id, req.body.game_id], function(err, update_result) {
+                                            if (err) {          
+                                                globals.log_msg('POST /user/games/next_stage - ERROR');
+                                                console.error(err);
+                                                res.status(globals.status_codes.Server_Error).json({message: 'Error updating a record'});
+                                            } else {
+                                                globals.log_msg('POST /user/games/next_stage - SUCCESS');
+                                                active_player_record.step_id = next_step_id;
+                                                res.status(globals.status_codes.OK).json(active_player_record);
+
+                                            }
+                                        })
+                                    } else {
+                                        globals.log_msg('POST /user/games/next_stage - ERROR');
+                                        res.status(globals.status_codes.No_Content).json({message: 'game step wasnt found in game steps'});
+                                    }
+                                } else {
+                                    globals.log_msg('POST /user/games/next_stage - ERROR');
+                                    res.status(globals.status_codes.No_Content).json({message: 'game has no steps'});
+                                }
+                            }
+                        })
+                    } else {
+                        globals.log_msg('POST /user/games/next_stage - ERROR');
+                        res.status(globals.status_codes.Unauthorized).json({message: 'user is not enrolled in the game'});
+                    }
+                }
+            })
+        } else {
+            globals.log_msg('POST /user/games/next_stage - ERROR');
+            res.status(globals.status_codes.Bad_Request).json({message: "no secret key was supplied."})
+        }
+    } else {
+        globals.log_msg('POST /user/games/next_stage - ERROR');
+        res.status(globals.status_codes.Bad_Request).json({message: "no game id was supplied."})
+    }
+});
+
 router.get('/startgame/:game_id', function(req, res) {
     globals.log_msg('GET /user/games/startgame');
-    db.query('SELECT * FROM games WHERE id = ?', [req.params.id], function(err, games) {
-        if (err || games.length == 0) {
+    db.query('SELECT * FROM active_players WHERE game_id = ? AND user_id = ?', [req.params.game_id, req.user_session.id], function(err, isActive) {
+        if (err) {
             globals.log_msg('GET /user/games/startgame/:id - ERROR');
             console.error(err);
             res.status(globals.status_codes.Server_Error).json();
+        } else if (isActive.length > 0) {
+            res.status(globals.status_codes.Unauthorized).json({message: 'User is already enrolled to game'});
+        } else {
+            db.query('SELECT * FROM games WHERE id = ?', [req.params.game_id], function(err, games) {
+                if (err) {
+                    globals.log_msg('GET /user/games/startgame/:id - ERROR');
+                    console.error(err);
+                    res.status(globals.status_codes.Server_Error).json();
+                }
+                if (games.length == 0) {
+                    globals.log_msg('GET /user/games/startgame/:id - ERROR');
+                    res.status(globals.status_codes.No_Content).json({message: 'no game with the requested id exists'});
+                } else {
+                    let info = {
+                        game_id: req.params.game_id,
+                        user_id: req.user_session.id,
+                        step_id: games[0].start_location
+                    }
+                    db.query('INSERT INTO active_players SET ?', info, function(err, insert_res) {
+                        if (err) {
+                            globals.log_msg('GET /user/games/startgame/:id - ERROR');
+                            console.error(err);
+                            res.status(globals.status_codes.Server_Error).json();
+                        }
+                        res.status(globals.status_codes.OK).json();
+                    });
+                }
+            });
         }
-        let info = {
-            game_id: req.params.game_id,
-            user_id: req.user_session.id,
-            step_id: games[0].start_location
-        }
-        db.query('INSERT INTO active_players SET ?', info, function(err, insert_res) {
-            if (err) {
-                globals.log_msg('GET /user/games/startgame/:id - ERROR');
-                console.error(err);
-                res.status(globals.status_codes.Server_Error).json();
-            }
-            res.status(globals.status_codes.OK).json();
-        })
-    });
+    })
+    
 });
 
 router.patch('/endgame', function (req, res) {
@@ -53,7 +133,7 @@ router.get('/mygames' , function(req, res) {
         globals.log_msg('POST /user/mygames - Unauthorized Access Attempt');
         res.status(globals.status_codes.Unauthorized).json();
     }
-    db.query(`SELECT games.*, active_players.*, game_steps.*
+    db.query(`SELECT DISTINCT games.*, active_players.*, game_steps.*
     FROM users, games, active_players, game_steps WHERE users.id = ? AND 
     games.id = active_players.game_id AND 
     active_players.user_id = users.id AND
