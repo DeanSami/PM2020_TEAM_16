@@ -131,5 +131,33 @@ router.get('/login', function (req, res) {
     }
 });
 
+router.get('/businesses', function (req, res) {
+    globals.log_msg('GET /admin/businesses - Invoke');
+    db.query('SELECT businesses.*, users.name as owner_name FROM businesses, users WHERE users.id = businesses.owner_id', [], function(err, result) {
+        if (err) {
+            globals.log_msg('GET /admin/businesses - ERROR');
+            console.error(err);
+            res.status(globals.status_codes.Server_Error).json()
+        } else {
+            globals.log_msg('GET /admin/businesses - SUCCESS');
+            res.status(globals.status_codes.OK).json(result)
+        }
+    })
+});
+
+router.get('/getAdmins', function (req, res) {
+    globals.log_msg('GET /admin/getAdmins - Invoke');
+    db.query('SELECT id, name, email, phone, created_at FROM users WHERE user_type = ?', [0], function(err, result) {
+        if (err) {
+            globals.log_msg('GET /admin/getAdmins - ERROR');
+            console.error(err);
+            res.status(globals.status_codes.Server_Error).json()
+        } else {
+            globals.log_msg('GET /admin/getAdmins - SUCCESS');
+            res.status(globals.status_codes.OK).json(result)
+        }
+    })
+});
+
 
 module.exports = router;

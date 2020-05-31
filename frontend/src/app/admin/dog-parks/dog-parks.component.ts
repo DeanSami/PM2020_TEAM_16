@@ -7,6 +7,7 @@ import { AreYouSureDialogComponent } from '../../are-you-sure-dialog/are-you-sur
 import { NewDogParkComponent } from './new-dog-park/new-dog-park.component';
 import { DogParksService } from '../services/dog-parks.service';
 import { ToastrService } from 'ngx-toastr';
+import { ReportsService } from '../../services/reports.service';
 
 @Component({
   selector: 'app-dog-parks',
@@ -30,7 +31,8 @@ export class DogParksComponent implements OnInit {
     private rout: ActivatedRoute,
     private dialog: MatDialog,
     private toastr: ToastrService,
-    private dogParkService: DogParksService
+    private dogParkService: DogParksService,
+    private reportsService: ReportsService
     ) { }
 
   ngOnInit(): void {

@@ -79,6 +79,13 @@ import { UserGamesResolverResolver } from './user/resolvers/userGamesResolver.re
 import { GameInfoModalComponent } from './user/view-data/all-games/game-info-modal/game-info-modal.component';
 import { UserPlacesResolver } from './user/resolvers/userPlaces.resolver';
 import { NextStepModalComponent } from './user/my-games/next-step-modal/next-step-modal.component';
+import { ReportsService } from './services/reports.service';
+import { ReportsComponent } from './admin/reports/reports.component';
+import {NgxPrintModule} from 'ngx-print';
+import { GenerateModalComponent } from './admin/reports/generate-modal/generate-modal.component';
+import { BusinessesComponent } from './admin/businesses/businesses.component';
+import { BusinessesResolver } from './admin/resolvers/businessesResolver.resolver';
+import { AdminsResolver } from './admin/resolvers/adminsResolver.resolver';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -121,7 +128,10 @@ export function createTranslateLoader(http: HttpClient) {
     PlaceNameFromIdPipe,
     AllGamesComponent,
     GameInfoModalComponent,
-    NextStepModalComponent
+    NextStepModalComponent,
+    ReportsComponent,
+    GenerateModalComponent,
+    BusinessesComponent
   ],
   imports: [
     HttpClientModule,
@@ -147,6 +157,7 @@ export function createTranslateLoader(http: HttpClient) {
     ToastrModule.forRoot(),
     FormsModule,
     CarouselModule,
+    NgxPrintModule,
     AgmCoreModule.forRoot({
       apiKey: 'YOUR KEY',
     }),
@@ -184,12 +195,15 @@ export function createTranslateLoader(http: HttpClient) {
     AuthService,
     DogParksResolver,
     InterestingPointResolver,
+    BusinessesResolver,
     ApiProviderService,
     LoadingService,
     UserDogParksResolver,
     UserPlacesResolver,
     UserGamesResolverResolver,
-    GamesService
+    GamesService,
+    ReportsService,
+    AdminsResolver
   ],
   bootstrap: [AppComponent],
 })

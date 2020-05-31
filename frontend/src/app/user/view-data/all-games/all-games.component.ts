@@ -19,7 +19,7 @@ import { GameInfoModalComponent } from './game-info-modal/game-info-modal.compon
 export class AllGamesComponent implements OnInit {
   games: Games[] = [];
   currentUser: User;
-  displayedColumns: string[] = ['name', 'start', 'end', 'start_location', 'finish_location', 'owner', 'action'];
+  displayedColumns: string[] = ['name', 'start', 'end'/*, 'start_location', 'finish_location'*/, 'owner', 'action'];
   dataSource: MatTableDataSource<Games>;
   expandedElement: Games | null;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -37,6 +37,7 @@ export class AllGamesComponent implements OnInit {
   ngOnInit(): void {
     this.games = this.rout.snapshot.data.games;
     this.dataSource = new MatTableDataSource<Games>(this.games);
+    this.dataSource.paginator = this.paginator;
     this.userAuth.currentUser.subscribe(user => this.currentUser = user);
   }
 

@@ -5,8 +5,6 @@ import { Businesses, BusinessesType, BusinessesTypeTitles } from '../../../../mo
 import { MatDialog } from '@angular/material/dialog';
 import { UserAuthService } from '../../../user-auth.service';
 import { MatPaginator } from '@angular/material/paginator';
-import { Games } from '../../../../models/Games';
-import { TreasureHuntFormComponent } from '../../treasure-hunt/treasure-hunt-form/treasure-hunt-form.component';
 import { BusinessInfoComponent } from '../business-info.component';
 
 @Component({

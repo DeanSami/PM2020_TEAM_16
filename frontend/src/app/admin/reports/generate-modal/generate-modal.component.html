@@ -1,0 +1,26 @@
+<h1>{{reportName}}</h1>
+<div fxLayout="column">
+  <mat-form-field fxFill>
+    <mat-label>בחר תאריך התחלה</mat-label>
+    <input matInput [matDatepicker]="start_picker" [(ngModel)]="start" />
+    <mat-datepicker-toggle matSuffix [for]="start_picker"></mat-datepicker-toggle>
+    <mat-datepicker #start_picker></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field fxFill>
+    <mat-label>בחר תאריך סיום</mat-label>
+    <input matInput [matDatepicker]="end_picker" [(ngModel)]="end" />
+    <mat-datepicker-toggle matSuffix [for]="end_picker"></mat-datepicker-toggle>
+    <mat-datepicker #end_picker></mat-datepicker>
+  </mat-form-field>
+</div>
+<div class="pt-4" fxLayout="row" fxLayoutAlign="start center" >
+  <button fxFill class="btn btn-raised mr-1 btn-primary" (click)="generateReport()" >הנפק דוח</button>
+  <button
+    id="print-button-section"
+    printSectionId="print-section"
+    [printStyle]="{h1 : {'min-width': '100%', 'text-align': 'center'}, table : {'min-width': '100%', 'text-align': 'center'}}"
+    ngxPrint
+    hidden
+  ></button>
+</div>
+<div id="print-section" [innerHTML]="printHtml" hidden></div>

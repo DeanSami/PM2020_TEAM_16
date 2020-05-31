@@ -6,7 +6,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 import {InterestingPointService} from '../services/interesting-point.service';
 import {AreYouSureDialogComponent} from '../../are-you-sure-dialog/are-you-sure-dialog.component';
-import {NewDogParkComponent} from '../dog-parks/new-dog-park/new-dog-park.component';
 import {NewInterestingPointComponent} from './new-interesting-point/new-interesting-point.component';
 
 @Component({

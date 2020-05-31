@@ -31,4 +31,24 @@ export const ROUTES: RouteInfo[] = [
       isExternalLink: false,
       submenu: []
     },
+    {
+      path: '/admin/reports',
+      title: 'Reports',
+      icon: 'ft-paperclip',
+      class: '',
+      badge: '',
+      badgeClass: '',
+      isExternalLink: false,
+      submenu: []
+    },
+    {
+      path: '/admin/businesses',
+      title: 'Businesses',
+      icon: 'ft-bold',
+      class: '',
+      badge: '',
+      badgeClass: '',
+      isExternalLink: false,
+      submenu: []
+    },
 ];

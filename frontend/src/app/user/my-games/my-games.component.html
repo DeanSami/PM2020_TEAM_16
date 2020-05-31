@@ -1,4 +1,5 @@
-<div class="container">
+<div id="table" class="container">
+  <button (click)="printComponent('table')">export</button>
   <table mat-table fxFill [dataSource]="dataSource" class="mat-elevation-z8 text-left">
 
     <ng-container matColumnDef="name">
