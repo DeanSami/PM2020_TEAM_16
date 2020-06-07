@@ -1,15 +1,16 @@
 const globals = require('../../globals')
 const express = require('express')
 const db = require('../../db-connect')
-const _ = require('lodash');
+var ld = require('lodash');
 const router = express.Router()
 
 router.post('/next_stage', function (req, res) {
     globals.log_msg('POST /user/games/next_stage - Invoke');
     if (req.body.game_id) {
         // Check if enrolled to game
+        
         if (req.body.secret_key) {
-            db.query('SELECT * FROM active_players WHERE user_id = ? AND game_id = ?', [req.user_session.id, req.body.game_id], function (err, active_players_records) {
+            db.query('SELECT * FROM active_players WHERE user_id = ? AND game_id = ? AND finish_at = NULL', [req.user_session.id, req.body.game_id], function (err, active_players_records) {
                 if (err) {
                     globals.log_msg('POST /user/games/next_stage - ERROR');
                     console.error(err);
@@ -23,15 +24,23 @@ router.post('/next_stage', function (req, res) {
                                 console.error(err);
                                 res.status(globals.status_codes.Server_Error).json();
                             } else {
-                                if (game_steps_records.length > 1) {
-                                    sorted_game_steps_records = _sortBy(game_steps_records, [step_num])
-                                    let step_id = active_player_record.step_id;
-                                    let current_step = sorted_game_steps_records[_findIndex(sorted_game_steps_records, ['step_id', step_id])].step_num;
+                                if (game_steps_records.length > 0) {
+
+                                    sorted_game_steps_records = ld.sortBy(game_steps_records, ["step_num"])
+
+                                    let current_step_id = active_player_record.step_id;
+
+                                    let current_step_index = ld.findIndex(sorted_game_steps_records, ['id', current_step_id]);
+
+                                    let current_step = sorted_game_steps_records[current_step_index];
+
                                     if (current_step.secret_key == req.body.secret_key) {
-                                        let next_step_index = _findIndex(sorted_game_steps_records, ['step_num', current_step + 1]);
+
+                                        let next_step_index = ld.findIndex(sorted_game_steps_records, ['step_num', current_step.step_num + 1]);
                                         if (next_step_index != -1) { // if we found an index => there's a next step
                                             // there is a next step
-                                            db.query('UPDATE active_players SET step_id = ? WHERE user_id = ? AND game_id = ?', [sorted_game_steps_records[next_step_index].id, req.user_session.id, req.body.game_id], function(err, update_result) {
+                                            let next_step_id = sorted_game_steps_records[next_step_index].id;
+                                            db.query('UPDATE active_players SET step_id = ? WHERE user_id = ? AND game_id = ?', [next_step_id, req.user_session.id, req.body.game_id], function(err, update_result) {
                                                 if (err) {          
                                                     globals.log_msg('POST /user/games/next_stage - ERROR');
                                                     console.error(err);
@@ -52,8 +61,8 @@ router.post('/next_stage', function (req, res) {
                                                     res.status(globals.status_codes.Server_Error).json({message: 'Error updating a record'});
                                                 } else {
                                                     globals.log_msg('POST /user/games/next_stage - SUCCESS');
-                                                    active_player_record.step_id = next_step_id;
-                                                    res.status(globals.status_codes.OK).json(update_result);
+                                                    active_player_record.finish_at = (new Date()).toString();
+                                                    res.status(globals.status_codes.OK).json(active_player_record);
                                                 }
                                             })
                                         }
@@ -70,7 +79,7 @@ router.post('/next_stage', function (req, res) {
                         })
                     } else {
                         globals.log_msg('POST /user/games/next_stage - ERROR');
-                        res.status(globals.status_codes.Unauthorized).json({message: 'user is not enrolled in the game'});
+                        res.status(globals.status_codes.Unauthorized).json({message: 'user is not enrolled in the game or already finished game'});
                     }
                 }
             })
