@@ -159,5 +159,19 @@ router.get('/getAdmins', function (req, res) {
     })
 });
 
+router.get('/getPlayers', function(req, res) {
+    globals.log_msg('GET /admin/getPlayers - Invoke');
+    db.query('SELECT users.name, users.user_type, users.email, users.phone, users.avatar, users.birthday, users.hobbies, users.created_at, users.update_at FROM users, active_players WHERE users.id = active_players.user_id', function(err, result) {
+        if (err) {
+            globals.log_msg('GET /admin/getPlayers - ERROR');
+            console.error(err);
+            res.status(globals.status_codes.Server_Error).json()
+        } else {
+            globals.log_msg('GET /admin/getPlayers - SUCCESS');
+            res.status(globals.status_codes.OK).json(result)
+        }
+    })
+})
+
 
 module.exports = router;
