@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserGames } from '../../../models/Games';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -15,7 +15,8 @@ export class NextStepModalComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: UserGames,
     private toastr: ToastrService,
-    private gameService: GamesService
+    private gameService: GamesService,
+    public dialogRef: MatDialogRef<any>,
   ) { }
 
   form = new FormGroup({
@@ -43,7 +44,12 @@ export class NextStepModalComponent implements OnInit {
       secret_key: this.code.value
     };
     this.gameService.nextStep(data).subscribe(result => {
-      this.toastr.error('כל הכבוד! אתה מועבר לשלב הבא');
+      if (result.finish_at) {
+        this.toastr.success('כל הכבוד! סיימת את המשחק בהצלחה');
+      } else {
+        this.toastr.success('כל הכבוד! אתה מועבר לשלב הבא');
+      }
+      this.dialogRef.close(result);
     }, err => {
       this.toastr.error('הקוד שאוזן שגוי');
     });

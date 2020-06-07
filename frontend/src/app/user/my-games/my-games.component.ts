@@ -76,8 +76,9 @@ export class MyGamesComponent implements OnInit {
       width: '250px',
       data: element
     }).afterClosed().subscribe(result => {
-      if (result) {
-        this.toastr.success('');
+      if (result &&  result.step_id) {
+        element.finish_at = result.finish_at;
+        element.step_id = result.step_id;
       }
     });
   }

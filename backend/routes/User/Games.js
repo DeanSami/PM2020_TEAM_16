@@ -10,7 +10,7 @@ router.post('/next_stage', function (req, res) {
         // Check if enrolled to game
         
         if (req.body.secret_key) {
-            db.query('SELECT * FROM active_players WHERE user_id = ? AND game_id = ? AND finish_at = NULL', [req.user_session.id, req.body.game_id], function (err, active_players_records) {
+            db.query('SELECT * FROM active_players WHERE user_id = ? AND game_id = ? AND finish_at IS NULL', [req.user_session.id, req.body.game_id], function (err, active_players_records) {
                 if (err) {
                     globals.log_msg('POST /user/games/next_stage - ERROR');
                     console.error(err);

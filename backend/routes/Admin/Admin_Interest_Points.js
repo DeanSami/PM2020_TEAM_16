@@ -151,8 +151,6 @@ router.patch('/',function (req,res) {
             || neighborhood == undefined
             || operator == undefined
             || handicapped == undefined
-            || icon == undefined
-            || image == undefined
             || condition == undefined
             || active == undefined)
         {
@@ -165,8 +163,6 @@ router.patch('/',function (req,res) {
             || typeof(house_number) !== 'string'
             || typeof(neighborhood) !== 'string'
             || typeof(operator) !== 'string'
-            || typeof(icon) !== 'string'
-            || typeof(image) !== 'string'
             || (typeof(handicapped) !== 'boolean' && typeof(handicapped) !== 'number')
             || typeof(condition) !== 'number'
             || (typeof(active) !== 'boolean' && typeof(active) !== 'number'))
@@ -176,7 +172,11 @@ router.patch('/',function (req,res) {
         } else {
             var values = {id:id, name:name, SHAPE_Leng:SHAPE_Leng, SHAPE_Area:SHAPE_Area, house_number:house_number,
                     type:type,neighborhood:neighborhood, operator:operator, handicapped:handicapped, condition:condition,
-                    active:active, icon:icon, image:image};
+                    active:active};
+            if (image !== undefined)
+                values.image = image;
+            if (icon !== undefined)
+                values.icon = icon;
             if (street !== undefined)
                 values.street = street;
 
