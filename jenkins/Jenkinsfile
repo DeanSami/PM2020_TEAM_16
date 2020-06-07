@@ -39,5 +39,21 @@ pipeline {
                 echo 'Finished backend Tests'
             }
         }
+        stage('Measurments') {
+            agent {
+                docker {
+                    image 'node:10-alpine'
+                    args '-p 3000:3000'
+                }
+            }
+            steps {
+                sh 'npm install'
+                sh 'cd backend && npm install'
+                sh 'cd backend && npm run test'
+                sh 'npm install -g istanbul'
+                sh 'istanbul cover backend/__tests__/integration.test.js'
+                echo 'Finished backend Tests'
+            }
+        }
     }
 }
