@@ -60,13 +60,13 @@ export class ApiProviderService {
     }
 
     const url = environment.apiUrl + path;
-    if (path.indexOf('user') >= 0) {
-      if (this.userToken) {
-        headers = headers.append('x-auth', this.userToken);
-      }
-    } else {
+    if (path.indexOf('admin') >= 0) {
       if (this.token) {
         headers = headers.append('x-auth', this.token);
+      }
+    } else {
+      if (this.userToken) {
+        headers = headers.append('x-auth', this.userToken);
       }
     }
 

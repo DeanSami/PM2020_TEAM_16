@@ -93,9 +93,10 @@ router.post('/next_stage', function (req, res) {
     }
 });
 
-router.get('/startgame/:game_id', function(req, res) {
+router.get('/startGame', function(req, res) {
+    console.log('startGame');
     globals.log_msg('GET /user/games/startgame');
-    db.query('SELECT * FROM active_players WHERE game_id = ? AND user_id = ?', [req.params.game_id, req.user_session.id], function(err, isActive) {
+    db.query('SELECT * FROM active_players WHERE game_id = ? AND user_id = ?', [req.query.game_id, req.user_session.id], function(err, isActive) {
         if (err) {
             globals.log_msg('GET /user/games/startgame/:id - ERROR');
             console.error(err);
@@ -103,7 +104,8 @@ router.get('/startgame/:game_id', function(req, res) {
         } else if (isActive.length > 0) {
             res.status(globals.status_codes.Unauthorized).json({message: 'User is already enrolled to game'});
         } else {
-            db.query('SELECT * FROM games WHERE id = ?', [req.params.game_id], function(err, games) {
+            console.log(req.query.game_id);
+            db.query('SELECT * FROM games WHERE id = ?', [req.query.game_id], function(err, games) {
                 if (err) {
                     globals.log_msg('GET /user/games/startgame/:id - ERROR');
                     console.error(err);
@@ -111,9 +113,9 @@ router.get('/startgame/:game_id', function(req, res) {
                 }
                 if (games.length == 0) {
                     globals.log_msg('GET /user/games/startgame/:id - ERROR');
-                    res.status(globals.status_codes.No_Content).json({message: 'no game with the requested id exists'});
+                    res.status(globals.status_codes.Server_Error).json({message: 'no game with the requested id exists'});
                 } else {
-                    db.query('SELECT * FROM game_steps WHERE game_id = ? AND start_location = ? AND step_num = 1', [req.params.game_id, games[0].start_location], function (err, game_step) {
+                    db.query('SELECT * FROM game_steps WHERE game_id = ? AND start_location = ? AND step_num = 1', [req.query.game_id, games[0].start_location], function (err, game_step) {
                         if (err) {
                             globals.log_msg('GET /user/games/startgame/:id - ERROR');
                             console.error(err);
@@ -121,7 +123,7 @@ router.get('/startgame/:game_id', function(req, res) {
                         }
                         else {
                             let info = {
-                                game_id: req.params.game_id,
+                                game_id: req.query.game_id,
                                 user_id: req.user_session.id,
                                 step_id: game_step[0].id
                             }

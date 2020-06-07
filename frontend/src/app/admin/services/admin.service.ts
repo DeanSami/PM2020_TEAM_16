@@ -18,4 +18,8 @@ export class AdminService {
   getAdmins(): Observable<Users[]> {
     return this.api.get('admin/getAdmins');
   }
+
+  getUsersPlayers(): Observable<Users[]> {
+    return this.api.get('admin/getPlayers');
+  }
 }

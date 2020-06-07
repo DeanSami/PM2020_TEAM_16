@@ -51,4 +51,14 @@ export const ROUTES: RouteInfo[] = [
       isExternalLink: false,
       submenu: []
     },
+    {
+      path: '/admin/games',
+      title: 'Games',
+      icon: 'ft-codepen',
+      class: '',
+      badge: '',
+      badgeClass: '',
+      isExternalLink: false,
+      submenu: []
+    },
 ];

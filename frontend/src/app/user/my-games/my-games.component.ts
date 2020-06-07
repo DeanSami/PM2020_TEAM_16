@@ -18,7 +18,9 @@ export class MyGamesComponent implements OnInit {
   displayedColumns: string[] = ['name', 'start', 'end', 'start_location', 'step_id', 'finish_location', 'action'];
   dataSource: MatTableDataSource<UserGames>;
   games: UserGames[];
+  displayGames: UserGames[];
   user: User;
+  displayDone = false;
 
   applyFilter(event: Event) {
     // const filterValue = (event.target as HTMLInputElement).value;
@@ -37,10 +39,15 @@ export class MyGamesComponent implements OnInit {
       this.user = user;
       this.gamesService.getGamesPlayedById().subscribe(games => {
         this.games = games;
-        this.dataSource = new MatTableDataSource<UserGames>(this.games);
+        this.displayTableRows();
       }, err => console.log(err));
     }, err => console.log(err));
+  }
 
+  displayTableRows(displayDone = false) {
+    this.displayDone = displayDone ? !this.displayDone  : false;
+    this.displayGames = this.games.filter(game => !game.finish_at || this.displayDone);
+    this.dataSource = new MatTableDataSource<UserGames>(this.displayGames);
   }
 
   finishGame(GameId: number) {
@@ -49,11 +56,16 @@ export class MyGamesComponent implements OnInit {
     }).afterClosed().subscribe(result => {
       if (result) {
         this.gamesService.finishGame(GameId).subscribe(() => {
-          this.dataSource.data = this.dataSource.data.filter(game => game.id !== GameId);
-          this.toastr.success('נעצר בהצלחה');
+          const idx = this.games.findIndex(game => game.id === GameId);
+          if (idx >= 0) {
+            this.games[idx].finish_at = new Date().toISOString();
+            this.displayDone = !this.displayDone;
+            this.displayTableRows(true);
+          }
+          this.toastr.success('משחק הסתיים בהצלחה');
         }, err =>  {
           console.log(err);
-          this.toastr.error('ארעה שגיאה בניסיון לעצירת המשחק');
+          this.toastr.error('ארעה שגיאה בניסיון לסיים את המשחק');
         });
       }
     });
@@ -68,17 +80,6 @@ export class MyGamesComponent implements OnInit {
         this.toastr.success('');
       }
     });
-  }
-
-  printComponent(cmpName) {
-    const printContents = document.getElementById(cmpName).innerHTML;
-    const originalContents = document.body.innerHTML;
-
-    document.body.innerHTML = printContents;
-
-    window.print();
-
-    document.body.innerHTML = originalContents;
   }
 
 
