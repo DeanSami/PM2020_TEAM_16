@@ -7,7 +7,7 @@ globals.mode = 'test';
 describe('Business Owner Login, Creating new Business, and Editing a business info',  function() {
     it('Should login as a business owner.', function(done) {
         request(app)
-            .get('/user/login')
+            .get('/login')
             .set('x-auth', '9fcebfae4ea0d68e8cc51ef3ec849904')
             .expect(globals.status_codes.OK)
             .end(function (err, login_res) {
