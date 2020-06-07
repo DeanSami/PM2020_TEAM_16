@@ -124,7 +124,7 @@ describe('Creating new Trasure Hunt, and Editing a Treasure Hunt',  function() {
 describe('Business Owner login, Get all Business Owner Current Games',  function() {
     it('Should login as a business owner.', function(done) {
         request(app)
-            .get('/user/login')
+            .get('/login')
             .set('x-auth', '9fcebfae4ea0d68e8cc51ef3ec849904')
             .expect(globals.status_codes.OK)
             .end(function (err, login_res) {
@@ -143,7 +143,7 @@ describe('Business Owner login, Get all Business Owner Current Games',  function
     });
     it('Should Get all games for business owner.', function(done) {
         request(app)
-            .get('/user/games?owner_id=7')
+            .get('/games?owner_id=7')
             .expect(globals.status_codes.OK)
             .expect('Content-Type', 'application/json; charset=utf-8')
             .end((err, res) => {
