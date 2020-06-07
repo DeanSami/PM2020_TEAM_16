@@ -1,6 +1,7 @@
 const globals = require('../../globals')
 const express = require('express')
 const db = require('../../db-connect')
+const _ = require('lodash');
 const router = express.Router()
 
 router.post('/next_stage', function (req, res) {
@@ -22,31 +23,47 @@ router.post('/next_stage', function (req, res) {
                                 console.error(err);
                                 res.status(globals.status_codes.Server_Error).json();
                             } else {
-                                if (game_steps_records.length > 0) {
+                                if (game_steps_records.length > 1) {
+                                    sorted_game_steps_records = _sortBy(game_steps_records, [step_num])
                                     let step_id = active_player_record.step_id;
-                                    let next_step_id = -1;
-                                    for (record of game_steps_records) {
-                                        if (record.id == step_id) next_step_id = record.finish_location;
-                                    }
-                                    if (next_step_id != -1) {
-                                        db.query('UPDATE active_players SET step_id = ? WHERE user_id = ? AND game_id = ?', [next_step_id, req.user_session.id, req.body.game_id], function(err, update_result) {
-                                            if (err) {          
-                                                globals.log_msg('POST /user/games/next_stage - ERROR');
-                                                console.error(err);
-                                                res.status(globals.status_codes.Server_Error).json({message: 'Error updating a record'});
-                                            } else {
-                                                globals.log_msg('POST /user/games/next_stage - SUCCESS');
-                                                active_player_record.step_id = next_step_id;
-                                                res.status(globals.status_codes.OK).json(active_player_record);
-
-                                            }
-                                        })
+                                    let current_step = sorted_game_steps_records[_findIndex(sorted_game_steps_records, ['step_id', step_id])].step_num;
+                                    if (current_step.secret_key == req.body.secret_key) {
+                                        let next_step_index = _findIndex(sorted_game_steps_records, ['step_num', current_step + 1]);
+                                        if (next_step_index != -1) { // if we found an index => there's a next step
+                                            // there is a next step
+                                            db.query('UPDATE active_players SET step_id = ? WHERE user_id = ? AND game_id = ?', [sorted_game_steps_records[next_step_index].id, req.user_session.id, req.body.game_id], function(err, update_result) {
+                                                if (err) {          
+                                                    globals.log_msg('POST /user/games/next_stage - ERROR');
+                                                    console.error(err);
+                                                    res.status(globals.status_codes.Server_Error).json({message: 'Error updating a record'});
+                                                } else {
+                                                    globals.log_msg('POST /user/games/next_stage - SUCCESS');
+                                                    active_player_record.step_id = next_step_id;
+                                                    res.status(globals.status_codes.OK).json(active_player_record);
+                                                    
+                                                }
+                                            })
+                                        } else {
+                                            // no next step => it's the last step
+                                            db.query('UPDATE active_players SET finish_at = NOW() WHERE user_id = ? AND game_id = ?', [req.user_session.id, req.body.game_id], function(err, update_result) {
+                                                if (err) {
+                                                    globals.log_msg('POST /user/games/next_stage - ERROR');
+                                                    console.error(err);
+                                                    res.status(globals.status_codes.Server_Error).json({message: 'Error updating a record'});
+                                                } else {
+                                                    globals.log_msg('POST /user/games/next_stage - SUCCESS');
+                                                    active_player_record.step_id = next_step_id;
+                                                    res.status(globals.status_codes.OK).json(update_result);
+                                                }
+                                            })
+                                        }
                                     } else {
                                         globals.log_msg('POST /user/games/next_stage - ERROR');
-                                        res.status(globals.status_codes.No_Content).json({message: 'game step wasnt found in game steps'});
+                                        res.status(globals.status_codes.Bad_Request).json({message: 'secret key incorrect.'});
                                     }
                                 } else {
                                     globals.log_msg('POST /user/games/next_stage - ERROR');
+                                    console.log("log");
                                     res.status(globals.status_codes.No_Content).json({message: 'game has no steps'});
                                 }
                             }
@@ -59,11 +76,11 @@ router.post('/next_stage', function (req, res) {
             })
         } else {
             globals.log_msg('POST /user/games/next_stage - ERROR');
-            res.status(globals.status_codes.Bad_Request).json({message: "no secret key was supplied."})
+            res.status(globals.status_codes.Bad_Request).json({message: "no secret key was supplied." + JSON.stringify(req.body)})
         }
     } else {
         globals.log_msg('POST /user/games/next_stage - ERROR');
-        res.status(globals.status_codes.Bad_Request).json({message: "no game id was supplied."})
+        res.status(globals.status_codes.Bad_Request).json({message: "no game id was supplied." + JSON.stringify(req.body)})
     }
 });
 
@@ -87,19 +104,29 @@ router.get('/startgame/:game_id', function(req, res) {
                     globals.log_msg('GET /user/games/startgame/:id - ERROR');
                     res.status(globals.status_codes.No_Content).json({message: 'no game with the requested id exists'});
                 } else {
-                    let info = {
-                        game_id: req.params.game_id,
-                        user_id: req.user_session.id,
-                        step_id: games[0].start_location
-                    }
-                    db.query('INSERT INTO active_players SET ?', info, function(err, insert_res) {
+                    db.query('SELECT * FROM game_steps WHERE game_id = ? AND start_location = ? AND step_num = 1', [req.params.game_id, games[0].start_location], function (err, game_step) {
                         if (err) {
                             globals.log_msg('GET /user/games/startgame/:id - ERROR');
                             console.error(err);
                             res.status(globals.status_codes.Server_Error).json();
                         }
-                        res.status(globals.status_codes.OK).json();
+                        else {
+                            let info = {
+                                game_id: req.params.game_id,
+                                user_id: req.user_session.id,
+                                step_id: game_step[0].id
+                            }
+                            db.query('INSERT INTO active_players SET ?', info, function(err, insert_res) {
+                                if (err) {
+                                    globals.log_msg('GET /user/games/startgame/:id - ERROR');
+                                    console.error(err);
+                                    res.status(globals.status_codes.Server_Error).json();
+                                }
+                                res.status(globals.status_codes.OK).json();
+                            });
+                        }
                     });
+                    
                 }
             });
         }
