@@ -45,7 +45,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'cd backend && npx istanbul cover backend/__tests__/integration.test.js'
+                sh 'cd backend && npx istanbul cover __tests__/integration.test.js'
                 echo 'Finished backend Tests'
             }
         }
