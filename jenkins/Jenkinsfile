@@ -11,7 +11,7 @@ pipeline {
             steps {
                 sh 'npm install'
                 sh 'cd backend && npm install'
-                sh 'npm install -g istanbul'
+                sh 'npm install istanbul'
                 echo 'finished build'
             }
         }
