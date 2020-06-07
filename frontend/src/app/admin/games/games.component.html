@@ -1,0 +1,33 @@
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> שם המשחק </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="start">
+      <th mat-header-cell *matHeaderCellDef> זמן התחלה</th>
+      <td mat-cell *matCellDef="let element"> {{element.start | date: 'dd/MM/yyyy'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="end">
+      <th mat-header-cell *matHeaderCellDef>זמן סיום </th>
+      <td mat-cell *matCellDef="let element"> {{element.end | date: 'dd/MM/yyyy'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="owner">
+      <th mat-header-cell *matHeaderCellDef>שם מנהל </th>
+      <td mat-cell *matCellDef="let element"> {{element.owner_name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="steps">
+      <th mat-header-cell *matHeaderCellDef>כמות שלבים </th>
+      <td mat-cell *matCellDef="let element"> {{element.steps.length}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>
