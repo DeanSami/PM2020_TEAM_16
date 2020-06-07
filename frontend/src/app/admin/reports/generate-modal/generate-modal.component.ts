@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ReportsService } from '../../../services/reports.service';
-import { AdminReport, GameReport, PlaceReport } from '../../../models/Reports';
+import { AdminReport, GameReport, PlaceReport, UsersReport } from '../../../models/Reports';
 import { ConditionTypeTitles, PlaceTypeTitles } from '../../../models/places';
 
 @Component({
@@ -31,6 +31,9 @@ export class GenerateModalComponent implements OnInit {
         break;
       case 'admins':
         this.reportName = 'דוח מנהלים';
+        break;
+      case 'users':
+        this.reportName = 'דוח שחקנים';
         break;
     }
   }
@@ -118,6 +121,28 @@ export class GenerateModalComponent implements OnInit {
           {key: 'created_at', value: 'תאריך יצירה'}
         ];
         this.printHtml = this.reportService.createReport(adminColumns, adminRows, this.reportName);
+        break;
+      case 'users':
+        const usersRows: UsersReport[] = [];
+        const tmpUsers = this.start && this.end ?
+          this.dialogData.users.filter(g => new Date(g.created_at) >= this.start && new Date(g.created_at) <= this.end) :
+          this.dialogData.users;
+        tmpUsers.forEach(user => {
+          const row = {
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            created_at: user.created_at.split('T')[0]
+          };
+          usersRows.push(row);
+        });
+        const usersColumns = [
+          {key: 'name', value: 'שם המשתמש'},
+          {key: 'email', value: 'כתובת אימייל'},
+          {key: 'phone', value: 'טלפון'},
+          {key: 'created_at', value: 'תאריך יצירה'}
+        ];
+        this.printHtml = this.reportService.createReport(usersColumns, usersRows, this.reportName);
         break;
     }
     setTimeout(() => document.getElementById('print-button-section').click(), 200);

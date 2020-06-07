@@ -1,7 +1,7 @@
 <div class="next-step">
   <h3>{{dialogData.name}}</h3>
   <div fxLayout="column" fxLayoutAlign="center start">
-    <span>שלב נוכחי: {{dialogData.step_id}}</span>
+    <span>שלב נוכחי: {{dialogData.step_id | stepNameFromId}}</span>
     <span>רמז: {{dialogData.description}}</span>
   </div>
   <div class="next-step">

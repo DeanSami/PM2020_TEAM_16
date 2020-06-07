@@ -86,6 +86,9 @@ import { GenerateModalComponent } from './admin/reports/generate-modal/generate-
 import { BusinessesComponent } from './admin/businesses/businesses.component';
 import { BusinessesResolver } from './admin/resolvers/businessesResolver.resolver';
 import { AdminsResolver } from './admin/resolvers/adminsResolver.resolver';
+import { StepNameFromIdPipe } from './step-name-from-id.pipe';
+import { GamesComponent } from './admin/games/games.component';
+import { PlayersResolver } from './admin/resolvers/playersResolver.resolver';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -131,7 +134,9 @@ export function createTranslateLoader(http: HttpClient) {
     NextStepModalComponent,
     ReportsComponent,
     GenerateModalComponent,
-    BusinessesComponent
+    BusinessesComponent,
+    StepNameFromIdPipe,
+    GamesComponent
   ],
   imports: [
     HttpClientModule,
@@ -203,7 +208,8 @@ export function createTranslateLoader(http: HttpClient) {
     UserGamesResolverResolver,
     GamesService,
     ReportsService,
-    AdminsResolver
+    AdminsResolver,
+    PlayersResolver
   ],
   bootstrap: [AppComponent],
 })

@@ -15,6 +15,7 @@ export class ReportsComponent implements OnInit {
   games: Games[] = [];
   places: Place[] = [];
   admins: User[] = [];
+  users: User[] = [];
 
   constructor(
     private rout: ActivatedRoute,
@@ -25,6 +26,7 @@ export class ReportsComponent implements OnInit {
     this.places = this.rout.snapshot.data.places;
     this.games = this.rout.snapshot.data.games;
     this.admins = this.rout.snapshot.data.admins;
+    // this.users = this.rout.snapshot.data.users;
   }
 
   gameReport(type: string) {
@@ -34,6 +36,7 @@ export class ReportsComponent implements OnInit {
         games: this.games,
         places: this.places,
         admins: this.admins,
+        users: this.users,
         type
       }
     });

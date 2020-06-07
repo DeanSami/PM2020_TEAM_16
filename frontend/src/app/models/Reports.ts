@@ -24,3 +24,10 @@ export interface AdminReport {
   phone: string;
   created_at?: string;
 }
+
+export interface UsersReport {
+  name: string;
+  email: string;
+  phone: string;
+  created_at?: string;
+}

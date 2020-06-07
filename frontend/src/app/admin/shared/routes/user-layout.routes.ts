@@ -13,7 +13,7 @@ import { UserPlacesResolver } from '../../../user/resolvers/userPlaces.resolver'
 export const USER_FULL_ROUTES: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/home' },
   { path: 'home', component: UserMainComponent },
-  { path: 'profile', component: UserProfilePageComponent, canActivate: [UserGuard], resolve: { places: UserPlacesResolver} },
+  { path: 'profile', component: UserProfilePageComponent, canActivate: [UserGuard], resolve: { places: UserPlacesResolver, games: UserGamesResolverResolver } },
   // TODO reset canActivate at 'myGames' path
   { path: 'myGames', component: MyGamesComponent },
   {

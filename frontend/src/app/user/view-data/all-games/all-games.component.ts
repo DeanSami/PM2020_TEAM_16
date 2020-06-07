@@ -36,6 +36,7 @@ export class AllGamesComponent implements OnInit {
 
   ngOnInit(): void {
     this.games = this.rout.snapshot.data.games;
+    this.games = this.games.filter(game => new Date(game.end) > new Date());
     this.dataSource = new MatTableDataSource<Games>(this.games);
     this.dataSource.paginator = this.paginator;
     this.userAuth.currentUser.subscribe(user => this.currentUser = user);
@@ -53,7 +54,7 @@ export class AllGamesComponent implements OnInit {
       if (result) {
         this.gameService.startGame(game.id).subscribe(res => {
           this.toastr.success('הפעולה הושלמה בהצלחה');
-          this.router.navigate(['user/profile']);
+          this.router.navigate(['profile']);
         }, err => {
           console.log(err);
           this.toastr.error('התחלת משחק נכשלה');

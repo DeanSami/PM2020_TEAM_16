@@ -10,6 +10,8 @@ import { ReportsComponent } from '../../reports/reports.component';
 import { BusinessesComponent } from '../../businesses/businesses.component';
 import { BusinessesResolver } from '../../resolvers/businessesResolver.resolver';
 import { AdminsResolver } from '../../resolvers/adminsResolver.resolver';
+import { GamesComponent } from '../../games/games.component';
+import { PlayersResolver } from '../../resolvers/playersResolver.resolver';
 
 export const ADMIN_FULL_ROUTES: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/admin/dashboard' },
@@ -17,6 +19,7 @@ export const ADMIN_FULL_ROUTES: Routes = [
   { path: 'dogParks', component: DogParksComponent, resolve: { dogParks: DogParksResolver } },
   { path: 'interestingPoint', component: InterestingPointComponent, resolve: { interestingPoint: InterestingPointResolver } },
   { path: 'businesses', component: BusinessesComponent, resolve: {businesses: BusinessesResolver} },
+  { path: 'games', component: GamesComponent, resolve: {games: UserGamesResolverResolver} },
   {
     path: 'reports',
     component: ReportsComponent,
@@ -24,7 +27,8 @@ export const ADMIN_FULL_ROUTES: Routes = [
     {
       games: UserGamesResolverResolver,
       places: UserPlacesResolver,
-      admins: AdminsResolver
+      admins: AdminsResolver,
+      // users: PlayersResolver
     }
   },
 ];

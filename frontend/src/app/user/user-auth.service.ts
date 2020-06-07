@@ -31,7 +31,7 @@ export class UserAuthService {
     // this.token = "2f0863d333f4f0e30b1ddea2d1fa0c20"
     return new Promise((resolve, reject) => {
       if (this.token) {
-        this.api.get('user/login').subscribe((response: User) => {
+        this.api.get('login').subscribe((response: User) => {
           this.loggedIn = true;
           this.currentUser.next(response);
           resolve(this.loggedIn);
@@ -52,7 +52,7 @@ export class UserAuthService {
   sendSms(data: {phone: string, user_type: UserType}) {
     // this.token = '9c5bdc6363628534ce952b409a8b55bb';
     return new Promise((resolve, reject) => {
-        this.api.get('user/sendSms', data).subscribe((response: SmsResponse) => {
+        this.api.get('sendSms', data).subscribe((response: SmsResponse) => {
           resolve();
         }, err => {
           reject(err);
@@ -63,7 +63,7 @@ export class UserAuthService {
   checkSms(phone: string, code: string) {
     // this.token = '9c5bdc6363628534ce952b409a8b55bb';
     return new Promise((resolve, reject) => {
-      this.api.get('user/checkValidationCode', {phone, code}).subscribe((response: SmsResponse) => {
+      this.api.get('checkValidationCode', {phone, code}).subscribe((response: SmsResponse) => {
         if (response.token) {
           this.token = response.token;
           resolve();

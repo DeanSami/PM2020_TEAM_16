@@ -1,6 +1,7 @@
 export interface Games {
   id?: number;
   owner_id: number;
+  owner_name?: string;
   name: string;
   start: string;
   end: string;

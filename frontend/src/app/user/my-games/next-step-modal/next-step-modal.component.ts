@@ -40,7 +40,7 @@ export class NextStepModalComponent implements OnInit {
     }
     const data = {
       game_id: this.dialogData.game_id,
-      code: this.code.value
+      secret_key: this.code.value
     };
     this.gameService.nextStep(data).subscribe(result => {
       this.toastr.error('כל הכבוד! אתה מועבר לשלב הבא');
