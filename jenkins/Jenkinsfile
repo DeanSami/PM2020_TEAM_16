@@ -9,6 +9,8 @@ pipeline {
                 }
             }
             steps {
+                sh 'npm install'
+                sh 'cd backend && npm install'
                 echo 'finished build'
             }
         }
@@ -20,8 +22,6 @@ pipeline {
                 }
             }
             steps {
-                sh 'npm install'
-                sh 'cd frontend && npm install'
                 echo 'finished test'
             }
         }
@@ -33,9 +33,19 @@ pipeline {
                 }
             }
             steps {
-                sh 'npm install'
-                sh 'cd backend && npm install'
                 sh 'cd backend && npm run test'
+                echo 'Finished backend Tests'
+            }
+        }
+        stage('Code Coverage') {
+            agent {
+                docker {
+                    image 'node:10-alpine'
+                    args '-p 3000:3000'
+                }
+            }
+            steps {
+                sh 'cd backend && npx istanbul cover node_modules/mocha/bin/_mocha  __tests__/integration.test.js'
                 echo 'Finished backend Tests'
             }
         }
