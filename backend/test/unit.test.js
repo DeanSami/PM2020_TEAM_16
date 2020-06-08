@@ -1,18 +1,22 @@
-const request = require('supertest');
+var chai = require('chai');
+var chaiHttp = require('chai-http');
+var should = chai.should();
 const app = require('../index');
+
+chai.use(chaiHttp);
 
 const globals = require('../globals');
 globals.mode = 'test';
 
 describe('Admin Login With Empty Info', () => {
     it('Should return unsuccessfull', done => {
-        request(app)
+        chai.request(app)
         .post('/admin/login')
         .send({phone: '', pass: ''})
-        .expect(globals.status_codes.Unauthorized)
-        .expect('Content-Type', 'application/json; charset=utf-8')
         .end((err, res) => {
             if (err) return done(err);
+            res.should.have.status(globals.status_codes.Unauthorized);
+            res.should.have.header('Content-Type', 'application/json; charset=utf-8')
             done();
         });
     })
@@ -20,13 +24,13 @@ describe('Admin Login With Empty Info', () => {
 
 describe('Admin Login With Wrong Credentials', () => {
     it('Should return unsuccessfull', done => {
-        request(app)
+        chai.request(app)
         .post('/admin/login')
         .send({phone: '01', pass: '01'})
-        .expect(globals.status_codes.Unauthorized)
-        .expect('Content-Type', 'application/json; charset=utf-8')
         .end((err, res) => {
             if (err) return done(err);
+            res.should.have.status(globals.status_codes.Unauthorized)
+            res.should.have.header('Content-Type', 'application/json; charset=utf-8')
             done();
         });
     })
@@ -34,15 +38,15 @@ describe('Admin Login With Wrong Credentials', () => {
 
 describe('Admin Login With Correct Credentials', () => {
     it('Should return successfull', done => {
-        request(app)
+        chai.request(app)
         .post('/admin/login')
         .send({phone: '1231231231', pass: '123123'})
-        .expect(globals.status_codes.OK)
-        .expect('Content-Type', 'application/json; charset=utf-8')
         .end((err, res) => {
             if (err) return done(err);
-            expect(res.body).toHaveProperty('token');
-            expect(res.body).toHaveProperty('user');
+            res.should.have.status(globals.status_codes.OK)
+            res.should.have.header('Content-Type', 'application/json; charset=utf-8')
+            res.body.should.have.property('token');
+            res.body.should.have.property('user');
             done();
         });
     })
