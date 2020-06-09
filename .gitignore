@@ -1,10 +1,6 @@
 # dependencies
 /node_modules
 
-# code coverage reports
-/.nyc_output
-/coverage
-
 # IDEs and editors
 /.idea
 
@@ -21,4 +17,6 @@
 Thumbs.db
 
 # Configuration
-configs/config.js
+config.js
+
+*.http
