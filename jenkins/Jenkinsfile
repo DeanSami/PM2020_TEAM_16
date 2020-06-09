@@ -37,6 +37,18 @@ pipeline {
                 echo 'Finished backend Tests'
             }
         }
+        stage('Static Analysis') {
+            agent {
+                docker {
+                    image 'node:10-alpine'
+                    args '-p 3000:3000'
+                }
+            }
+            steps {
+                sh 'cd backend && npm run analysis'
+                echo 'Finished Static Analysis'
+            }
+        }
         stage('Code Coverage') {
             agent {
                 docker {
@@ -46,7 +58,7 @@ pipeline {
             }
             steps {
                 sh 'cd backend && npm run coverage'
-                echo 'Finished backend Tests'
+                echo 'Finished Code Coverage'
             }
         }
     }
