@@ -14,17 +14,6 @@ pipeline {
                 echo 'finished build'
             }
         }
-        stage('frontend test') {
-            agent {
-                docker {
-                    image 'node:6-alpine' 
-                    args '-p 3000:3000'
-                }
-            }
-            steps {
-                echo 'finished test'
-            }
-        }
         stage('Backend Tests') {
             agent {
                 docker {
