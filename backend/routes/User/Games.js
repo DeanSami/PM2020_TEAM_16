@@ -171,7 +171,7 @@ router.get('/mygames' , function(req, res) {
         globals.log_msg('POST /user/mygames - Unauthorized Access Attempt');
         res.status(globals.status_codes.Unauthorized).json();
     }
-    db.query(`SELECT DISTINCT games.*, active_players.*, game_steps.*
+    db.query(`SELECT DISTINCT game_steps.*, games.*, active_players.* 
     FROM users, games, active_players, game_steps WHERE users.id = ? AND 
     games.id = active_players.game_id AND 
     active_players.user_id = users.id AND

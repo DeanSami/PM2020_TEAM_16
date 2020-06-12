@@ -79,6 +79,10 @@ export class MyGamesComponent implements OnInit {
       if (result &&  result.step_id) {
         element.finish_at = result.finish_at;
         element.step_id = result.step_id;
+        this.gamesService.getGamesPlayedById().subscribe(games => {
+          this.games = games;
+          this.displayTableRows();
+        }, err => console.log(err));
       }
     });
   }

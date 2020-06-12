@@ -28,7 +28,7 @@ export const ADMIN_FULL_ROUTES: Routes = [
       games: UserGamesResolverResolver,
       places: UserPlacesResolver,
       admins: AdminsResolver,
-      // users: PlayersResolver
+      users: PlayersResolver
     }
   },
 ];

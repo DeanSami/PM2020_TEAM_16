@@ -26,7 +26,7 @@ export class ReportsComponent implements OnInit {
     this.places = this.rout.snapshot.data.places;
     this.games = this.rout.snapshot.data.games;
     this.admins = this.rout.snapshot.data.admins;
-    // this.users = this.rout.snapshot.data.users;
+    this.users = this.rout.snapshot.data.users;
   }
 
   gameReport(type: string) {

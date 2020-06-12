@@ -93,9 +93,9 @@
           </mat-expansion-panel-header>
           <p>
             מיקום התחלתי לצעד
-            {{step.start_location}}<br/>
+            {{step.start_location | stepNameFromId}}<br/>
             מיקום סופי לצעד
-            {{step.finish_location}}<br/>
+            {{step.finish_location | stepNameFromId}}<br/>
             קוד סודי
             {{step.secret_key}}<br/>
 
