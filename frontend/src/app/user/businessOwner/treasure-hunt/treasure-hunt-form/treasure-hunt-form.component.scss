@@ -15,3 +15,12 @@ button {
 mat-vertical-stepper {
   min-width: 100%;
 }
+
+p {
+  text-align: right;
+  direction: rtl;
+}
+
+.details-step-title {
+  text-decoration: underline;
+}

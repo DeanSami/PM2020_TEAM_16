@@ -65,25 +65,27 @@ export class UserProfilePageComponent implements OnInit {
 
   ngOnInit() {
     this.userService.currentUser.subscribe(user => {
-      this.currentUser = user;
-      if (user.user_type === UserType.BusinessOwner) {
-        this.gameService.getGames({owner_id: user.id}).subscribe(games => {
-          this.myGames = games;
-        }, err => {
-          console.log(err);
-        });
-      } else {
-        this.gameService.getGamesPlayedById().subscribe(games => {
-          this.myGames = games;
+      if (user) {
+        this.currentUser = user;
+        if (user.user_type === UserType.BusinessOwner) {
+          this.gameService.getGames({owner_id: user.id}).subscribe(games => {
+            this.myGames = games;
+          }, err => {
+            console.log(err);
+          });
+        } else {
+          this.gameService.getGamesPlayedById().subscribe(games => {
+            this.myGames = games;
+          }, err => {
+            console.log(err);
+          });
+        }
+        this.placesService.getDogParks().subscribe(parks => {
+          this.dogParks = parks;
         }, err => {
           console.log(err);
         });
       }
-      this.placesService.getDogParks().subscribe(parks => {
-        this.dogParks = parks;
-      }, err => {
-        console.log(err);
-      });
     });
   }
 

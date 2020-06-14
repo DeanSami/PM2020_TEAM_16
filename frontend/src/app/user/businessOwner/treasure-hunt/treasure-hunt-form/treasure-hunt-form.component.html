@@ -92,11 +92,11 @@
             </mat-panel-description>
           </mat-expansion-panel-header>
           <p>
-            מיקום התחלתי לצעד
-            {{step.start_location | stepNameFromId}}<br/>
-            מיקום סופי לצעד
-            {{step.finish_location | stepNameFromId}}<br/>
-            קוד סודי
+            <span class="details-step-title">מיקום התחלתי לצעד:</span>
+            {{step.start_location | placeNameFromId}}<br/>
+            <span class="details-step-title">מיקום סופי לצעד:</span>
+            {{step.finish_location | placeNameFromId}}<br/>
+            <span class="details-step-title">קוד סודי:</span>
             {{step.secret_key}}<br/>
 
           </p>
